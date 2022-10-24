@@ -5,19 +5,16 @@ SRCS	:= malloc.c \
 			realloc.c
 OBJS_DIR:= objs/
 OBJS	:= $(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
-DEPS	:= $(OBJS:.o=.d)
 LIBFT	:= libft
 VPATH	:= srcs/
 INCLUDES:= -I $(LIBFT)
 
 CC		:= gcc
-CFLAGS	:= -Wall -Wextra -Werror -MMD -MP $(INCLUDES)
+CFLAGS	:= -Wall -Wextra -Werror $(INCLUDES)
 HOSTTYPE ?= $(shell uname -m)_$(shell uname -s)
 
 .PHONY	: all
 all		: $(NAME)
-
--include $(DEPS)
 
 $(NAME)	: $(OBJS_DIR) $(OBJS)
 	$(MAKE) -C $(LIBFT)
