@@ -3,6 +3,6 @@
 
 void *realloc(void *ptr, size_t size)
 {
-	printf("malloc: ptr = %p, size = %zu\n", ptr, size);
+	printf("realloc: ptr = %p, size = %zu\n", ptr, size);
 	return (NULL);
 }

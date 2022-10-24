@@ -3,5 +3,5 @@
 
 void free(void *ptr)
 {
-	printf("malloc: ptr = %p\n", ptr);
+	printf("free: ptr = %p\n", ptr);
 }
