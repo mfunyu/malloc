@@ -1,8 +1,8 @@
 #include "libft.h"
-#include <stdio.h> //TODO: delete
+#include "ft_printf.h"
 
 void *malloc(size_t size)
 {
-	printf("malloc: size = %zu\n", size);
+	ft_printf("malloc: size = %d\n", size);
 	return (NULL);
 }
