@@ -38,20 +38,13 @@ clean	:
 fclean	: clean
 	$(MAKE) fclean -C $(LIBFT)
 	$(MAKE) fclean -C $(PRINTF) LIBFT=../$(LIBFT)
-	$(RM) $(NAME)
+	$(RM) $(NAME) .env
 
 .PHONY	: re
 re		: fclean all
 
-.PHONY	: export_env
-export_env	: 
-	export DYLD_LIBRARY_PATH=.
-	export DYLD_INSERT_LIBRARIES=myuid.so
-	export DYLD_FORCE_FLAT_NAMESPACE=1
-	echo $(DYLD_LIBRARY_PATH)
-
-.PHONY	: set_env
-set_env	: 
-	setenv DYLD_LIBRARY_PATH .
-	setenv DYLD_INSERT_LIBRARIES myuid.so
-	setenv DYLD_FORCE_FLAT_NAMESPACE 1
+.PHONY	: setup
+setup	:
+	cp .env.example .env
+	sed -ie 's/example.so/$(NAME)/' .env
+	@echo run source .env
