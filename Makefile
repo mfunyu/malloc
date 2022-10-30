@@ -21,6 +21,7 @@ $(NAME)	: $(OBJS_DIR) $(OBJS)
 	$(MAKE) -C $(LIBFT)
 	$(MAKE) -C $(PRINTF) LIBFT=../$(LIBFT)
 	$(CC) $(CFLAGS) -shared -o $@ $(OBJS) -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
+	ln -s $(NAME) libft_malloc.so
 
 $(OBJS_DIR)%.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
@@ -38,7 +39,7 @@ clean	:
 fclean	: clean
 	$(MAKE) fclean -C $(LIBFT)
 	$(MAKE) fclean -C $(PRINTF) LIBFT=../$(LIBFT)
-	$(RM) $(NAME) .env
+	$(RM) $(NAME) libft_malloc.so .env
 
 .PHONY	: re
 re		: fclean all
