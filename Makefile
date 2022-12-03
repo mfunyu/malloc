@@ -76,4 +76,4 @@ setup	:
 
 .PHONY	: test
 test	: all setup
-	$(CC) $(CFLAGS) ./test/main.c $(LIBS)
+	$(CC) $(CFLAGS) $(INCLUDES) ./test/main.c $(LIBS)
