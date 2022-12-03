@@ -21,11 +21,15 @@ VPATH	:= srcs
 
 NAME	= libft_malloc_$(HOSTTYPE).so
 CC		:= gcc
-CFLAGS	= -Wall -Wextra -Werror $(INCLUDES)
+CFLAGS	= -Wall -Wextra -Werror
 INCLUDES:= -I $(LIBFT) -I $(PRINTF) -I .
 LIBS	:= -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
 OBJS	:= $(addprefix $(DIR_OBJS)/, $(SRCS:.c=.o))
 HOSTTYPE ?= $(shell uname -m)_$(shell uname -s)
+
+ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), amd64)
+	CFLAGS += -fPIC
+endif
 
 # ---------------------------------------------------------------------------- #
 #                                  BASIC RULES                                 #
@@ -35,13 +39,13 @@ HOSTTYPE ?= $(shell uname -m)_$(shell uname -s)
 all		: $(NAME)
 
 $(NAME)	: $(DIR_OBJS) $(OBJS)
-	$(MAKE) -C $(LIBFT)
-	$(MAKE) -C $(PRINTF) LIBFT=../$(LIBFT)
+	$(MAKE) -C $(LIBFT) CFLAGS="$(CFLAGS)"
+	$(MAKE) -C $(PRINTF) LIBFT=../$(LIBFT) CFLAGS="$(CFLAGS)"
 	$(CC) $(CFLAGS) -shared -o $@ $(OBJS) $(LIBS)
 	ln -sf $(NAME) libft_malloc.so
 
 $(DIR_OBJS)/%.o: %.c
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
 
 $(DIR_OBJS):
 	@mkdir $@
