@@ -24,7 +24,7 @@ CC		:= gcc
 CFLAGS	= -Wall -Wextra -Werror $(INCLUDES)
 INCLUDES:= -I $(LIBFT) -I $(PRINTF) -I .
 LIBS	:= -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
-OBJS	:= $(addprefix $(DIR_OBJS), $(SRCS:.c=.o))
+OBJS	:= $(addprefix $(DIR_OBJS)/, $(SRCS:.c=.o))
 HOSTTYPE ?= $(shell uname -m)_$(shell uname -s)
 
 # ---------------------------------------------------------------------------- #
@@ -40,7 +40,7 @@ $(NAME)	: $(DIR_OBJS) $(OBJS)
 	$(CC) $(CFLAGS) -shared -o $@ $(OBJS) $(LIBS)
 	ln -sf $(NAME) libft_malloc.so
 
-$(DIR_OBJS)%.o: %.c
+$(DIR_OBJS)/%.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 $(DIR_OBJS):
