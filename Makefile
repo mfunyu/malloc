@@ -21,8 +21,9 @@ VPATH	:= srcs
 
 NAME	= libft_malloc_$(HOSTTYPE).so
 CC		:= gcc
-CFLAGS	:= -Wall -Wextra -Werror $(INCLUDES)
-INCLUDES:= -I $(LIBFT) -I $(PRINTF)
+CFLAGS	= -Wall -Wextra -Werror $(INCLUDES)
+INCLUDES:= -I $(LIBFT) -I $(PRINTF) -I .
+LIBS	:= -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
 OBJS	:= $(addprefix $(DIR_OBJS), $(SRCS:.c=.o))
 HOSTTYPE ?= $(shell uname -m)_$(shell uname -s)
 
@@ -36,8 +37,8 @@ all		: $(NAME)
 $(NAME)	: $(DIR_OBJS) $(OBJS)
 	$(MAKE) -C $(LIBFT)
 	$(MAKE) -C $(PRINTF) LIBFT=../$(LIBFT)
-	$(CC) $(CFLAGS) -shared -o $@ $(OBJS) -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
-	ln -s $(NAME) libft_malloc.so
+	$(CC) $(CFLAGS) -shared -o $@ $(OBJS) $(LIBS)
+	ln -sf $(NAME) libft_malloc.so
 
 $(DIR_OBJS)%.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
@@ -67,5 +68,8 @@ re		: fclean all
 .PHONY	: setup
 setup	:
 	cp .env.example .env
-	sed -ie 's/example.so/$(NAME)/' .env
 	@echo run source .env
+
+.PHONY	: test
+test	: all setup
+	$(CC) $(CFLAGS) ./test/main.c $(LIBS)
