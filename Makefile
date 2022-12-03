@@ -29,6 +29,7 @@ HOSTTYPE ?= $(shell uname -m)_$(shell uname -s)
 
 ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), amd64)
 	CFLAGS += -fPIC
+	HOST_ARCH = .amd64
 endif
 
 # ---------------------------------------------------------------------------- #
@@ -71,7 +72,7 @@ re		: fclean all
 
 .PHONY	: setup
 setup	:
-	cp .env.example .env
+	cp .env.example$(HOST_ARCH) .env
 	@echo run source .env
 
 .PHONY	: test
