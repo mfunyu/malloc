@@ -12,7 +12,7 @@
 # define SIZE(ptr) (*(unsigned int *)(ptr - WORD) & ~0x7)
 
 # define HEADER(ptr) (unsigned int *)(ptr - WORD)
-# define FOOTER(ptr) (unsigned int *)(ptr + SIZE(ptr) + WORD)
+# define FOOTER(ptr) (unsigned int *)(ptr + SIZE(ptr))
 # define NEXTPTR(ptr) ptr + SIZE(ptr) + DWORD
 
 void	free(void *ptr);
