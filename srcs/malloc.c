@@ -11,6 +11,28 @@ static char *g_heap_max;
 
 void print_heap(void)__attribute__((destructor));
 
+void	print_line(size_t len)
+{
+	size_t	i;
+
+	i = 0;
+	while (i++ < len)
+		ft_putchar_fd('-', STDOUT_FILENO);
+}
+
+void	print_single_line(size_t len)
+{
+	print_line(12);
+	ft_putchar_fd('+', STDOUT_FILENO);
+	print_line(4);
+	ft_putchar_fd('+', STDOUT_FILENO);
+	print_line(len + 2);
+	ft_putchar_fd('+', STDOUT_FILENO);
+	print_line(4);
+	ft_putchar_fd('+', STDOUT_FILENO);
+	ft_putchar_fd('\n', STDOUT_FILENO);
+}
+
 void print_heap()
 {
 	char	*ptr;
@@ -20,9 +42,14 @@ void print_heap()
 	ptr = g_heap_head + WORD;
 	while (ptr < g_heap_max && SIZE(ptr))
 	{
-		ft_printf("header size: %u\n", SIZE(ptr));
-		ft_printf("block data: %s\n", ptr);
-		ft_printf("footer size: %u\n", SIZE(ptr));
+		print_single_line(ft_strlen(ptr));
+		ft_printf("%p ", ptr - WORD);
+		ft_printf("| %d ", *HEADER(ptr));
+		ft_printf("| %s ", ptr);
+		ft_printf("| %d ", *FOOTER(ptr));
+		ft_printf("| ");
+		ft_printf("(%u -> %u : %p)\n", SIZE(ptr), SIZE(ptr) + DWORD, SIZE(ptr) + DWORD);
+		print_single_line(ft_strlen(ptr));
 		ptr = NEXTPTR(ptr);
 	}
 }
