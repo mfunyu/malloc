@@ -30,4 +30,10 @@ void	free(void *ptr);
 void	*malloc(size_t size);
 void	*realloc(void *ptr, size_t size);
 
+char *g_tiny_head;
+char *g_tiny_max;
+char *g_small_head;
+char *g_small_max;
+char *g_large_head;
+
 #endif /* MALLOC_H */

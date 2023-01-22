@@ -4,7 +4,8 @@
 
 SRCS	:= malloc.c \
 			free.c \
-			realloc.c
+			realloc.c \
+			print_malloc.c
 
 # ---------------------------------------------------------------------------- #
 #                                     PATHS                                    #

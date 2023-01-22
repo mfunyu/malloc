@@ -6,59 +6,6 @@
 # include <errno.h>
 # include <string.h>
 
-static char *g_tiny_head;
-static char *g_tiny_max;
-static char *g_small_head;
-static char *g_small_max;
-static char *g_large_head;
-
-void print_heap(void)__attribute__((destructor));
-
-void	print_line(size_t len)
-{
-	size_t	i;
-
-	i = 0;
-	while (i++ < len)
-		ft_putchar_fd('-', STDOUT_FILENO);
-}
-
-void	print_single_line(size_t len)
-{
-	print_line(12);
-	ft_putchar_fd('+', STDOUT_FILENO);
-	print_line(4);
-	ft_putchar_fd('+', STDOUT_FILENO);
-	print_line(len + 2);
-	ft_putchar_fd('+', STDOUT_FILENO);
-	print_line(4);
-	ft_putchar_fd('+', STDOUT_FILENO);
-	ft_putchar_fd('\n', STDOUT_FILENO);
-}
-
-void print_heap()
-{
-	char	*ptr;
-	ft_printf("head: %p\n", g_tiny_head);
-	ft_printf("end : %p\n", g_tiny_max);
-
-	ptr = g_tiny_head + WORD;
-	while (ptr < g_tiny_max && SIZE(ptr))
-	{
-		print_single_line(ft_strlen(ptr));
-		ft_printf("%p ", ptr - WORD);
-		if (!ALLOC(ptr))
-			ft_printf("%s", CYAN);
-		ft_printf("| %d ", *HEADER(ptr));
-		ft_printf("| %s ", ptr);
-		ft_printf("| %d ", *FOOTER(ptr));
-		ft_printf("| ");
-		ft_printf("%s", RESET);
-		ft_printf("(%u -> %u : %p)\n", SIZE(ptr), SIZE(ptr) + DWORD, SIZE(ptr) + DWORD);
-		print_single_line(ft_strlen(ptr));
-		ptr = NEXTPTR(ptr);
-	}
-}
 
 void error_exit()
 {
