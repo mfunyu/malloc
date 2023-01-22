@@ -25,6 +25,7 @@ CFLAGS	= -Wall -Wextra -Werror
 INCLUDES:= -I $(LIBFT) -I $(PRINTF) -I .
 LIBS	:= -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
 OBJS	:= $(addprefix $(DIR_OBJS)/, $(SRCS:.c=.o))
+DEPS	:= $(OBJS:.o=.d)
 HOSTTYPE ?= $(shell uname -m)_$(shell uname -s)
 
 ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), amd64)
@@ -39,6 +40,8 @@ endif
 .PHONY	: all
 all		: $(NAME)
 
+-include $(DEPS)
+
 $(NAME)	: $(DIR_OBJS) $(OBJS)
 	$(MAKE) -C $(LIBFT) CFLAGS="$(CFLAGS)"
 	$(MAKE) -C $(PRINTF) LIBFT=../$(LIBFT) CFLAGS="$(CFLAGS)"
@@ -46,7 +49,7 @@ $(NAME)	: $(DIR_OBJS) $(OBJS)
 	ln -sf $(NAME) libft_malloc.so
 
 $(DIR_OBJS)/%.o: %.c
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
+	$(CC) $(CFLAGS) -MMD -MP $(INCLUDES) -o $@ -c $<
 
 $(DIR_OBJS):
 	@mkdir $@
