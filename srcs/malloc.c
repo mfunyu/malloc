@@ -1,9 +1,31 @@
 #include "libft.h"
 #include "ft_printf.h"
+#include "malloc.h"
 #include <sys/mman.h>
 # include <unistd.h>
 # include <errno.h>
 # include <string.h>
+
+static char *g_heap_head;
+static char *g_heap_max;
+
+void print_heap(void)__attribute__((destructor));
+
+void print_heap()
+{
+	char	*ptr;
+	ft_printf("head: %p\n", g_heap_head);
+	ft_printf("end : %p\n", g_heap_max);
+
+	ptr = g_heap_head + WORD;
+	while (ptr < g_heap_max && SIZE(ptr))
+	{
+		ft_printf("header size: %u\n", SIZE(ptr));
+		ft_printf("block data: %s\n", ptr);
+		ft_printf("footer size: %u\n", SIZE(ptr));
+		ptr = NEXTPTR(ptr);
+	}
+}
 
 void error_exit()
 {
@@ -16,37 +38,62 @@ void error_exit()
 char *mem_init()
 {
 	int map_size;
-	static char *mem_heap;
 
 	map_size = getpagesize() * 42;
-	ft_printf("map_size: %d\n", map_size);
-
-	mem_heap = (char *)mmap(0, map_size, PROT_READ | PROT_WRITE,
+	// ft_printf("map_size: %d\n", map_size);
+	g_heap_head = (char *)mmap(0, map_size, PROT_READ | PROT_WRITE,
 							MAP_ANON | MAP_PRIVATE, -1, 0);
-	if (mem_heap == MAP_FAILED) {
+	if (g_heap_head == MAP_FAILED) {
 		error_exit();
 	}
-	return mem_heap;
+	g_heap_max = g_heap_head + map_size;
+	return g_heap_head;
 }
 
-char	*find_free(char *mem_heap, size_t size)
+void	extend_heap()
 {
-	static char *mem_end;
-	char *mem_head;
+	int		map_size;
+	char	*new_heap;
 
-	if (!mem_end)
-		mem_end = mem_heap;
-	mem_head = mem_end;
-	mem_end += size;
-	return mem_head;
+	map_size = getpagesize() * 42;
+	new_heap = (char *)mmap(g_heap_max, map_size, PROT_READ | PROT_WRITE,
+							MAP_ANON | MAP_PRIVATE, -1, 0);
+	if (new_heap == MAP_FAILED) {
+		error_exit();
+	}
+	g_heap_max += map_size;
+}
+
+char	*find_new_block(size_t size)
+{
+	static char*	mem_tail;
+	char*			mem_head;
+	size_t			block_size;
+
+	block_size = size + DWORD;
+	if (!mem_tail)
+		mem_tail = mem_init();
+	mem_head = mem_tail;
+	mem_tail += block_size;
+	if (mem_tail > g_heap_max)
+		extend_heap();
+
+	return mem_head + WORD;
 }
 
 char	*func(size_t size)
 {
-	static char *mem_heap;
-	if (!mem_heap)
-		mem_heap = mem_init();
-	return find_free(mem_heap, size);
+	char *	new_ptr;
+	size_t	aligned_size;
+
+	aligned_size = size;
+	if (size % DWORD)
+		aligned_size += DWORD - size % DWORD;
+	new_ptr = find_new_block(aligned_size);
+	PUT(HEADER(new_ptr), PACK(aligned_size, 1));
+	PUT(FOOTER(new_ptr), PACK(aligned_size, 1));
+
+	return new_ptr;
 }
 
 void *malloc(size_t size)
