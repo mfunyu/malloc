@@ -6,8 +6,11 @@
 # include <errno.h>
 # include <string.h>
 
-static char *g_heap_head;
-static char *g_heap_max;
+static char *g_tiny_head;
+static char *g_tiny_max;
+static char *g_small_head;
+static char *g_small_max;
+static char *g_large_head;
 
 void print_heap(void)__attribute__((destructor));
 
@@ -36,11 +39,11 @@ void	print_single_line(size_t len)
 void print_heap()
 {
 	char	*ptr;
-	ft_printf("head: %p\n", g_heap_head);
-	ft_printf("end : %p\n", g_heap_max);
+	ft_printf("head: %p\n", g_tiny_head);
+	ft_printf("end : %p\n", g_tiny_max);
 
-	ptr = g_heap_head + WORD;
-	while (ptr < g_heap_max && SIZE(ptr))
+	ptr = g_tiny_head + WORD;
+	while (ptr < g_tiny_max && SIZE(ptr))
 	{
 		print_single_line(ft_strlen(ptr));
 		ft_printf("%p ", ptr - WORD);
@@ -65,54 +68,80 @@ void error_exit()
 	exit(1);
 }
 
-char *mem_init()
+void	init_zones()
 {
-	int map_size;
+	int		page_size;
+	int		map_size;
 
-	map_size = getpagesize() * 42;
-	// ft_printf("map_size: %d\n", map_size);
-	g_heap_head = (char *)mmap(0, map_size, PROT_READ | PROT_WRITE,
+	page_size = getpagesize();
+	map_size = page_size * ((TINY_MAX + DWORD) * 100 % page_size + 1);
+	g_tiny_head = (char *)mmap(0, map_size, PROT_READ | PROT_WRITE,
 							MAP_ANON | MAP_PRIVATE, -1, 0);
-	if (g_heap_head == MAP_FAILED) {
+	if (g_tiny_head == MAP_FAILED) {
 		error_exit();
 	}
-	g_heap_max = g_heap_head + map_size;
-	return g_heap_head;
+	g_tiny_max = g_tiny_head + map_size;
+
+	map_size = page_size * ((SMALL_MAX + DWORD) * 100 % page_size + 1);
+	g_small_head = (char *)mmap(g_tiny_max + 1, map_size, PROT_READ | PROT_WRITE,
+							MAP_ANON | MAP_PRIVATE, -1, 0);
+	if (g_small_head == MAP_FAILED) {
+		error_exit();
+	}
+	g_small_max = g_small_head + map_size;
+	g_large_head = g_small_max + 1;
 }
 
-void	extend_heap()
+char*	alloc_large(size)
 {
-	int		map_size;
+	static char*	large_tail;
 	char	*new_heap;
 
-	map_size = getpagesize() * 42;
-	new_heap = (char *)mmap(g_heap_max, map_size, PROT_READ | PROT_WRITE,
+	if (!large_tail)
+		large_tail = g_large_head;
+	new_heap = (char *)mmap(large_tail, size, PROT_READ | PROT_WRITE,
 							MAP_ANON | MAP_PRIVATE, -1, 0);
 	if (new_heap == MAP_FAILED) {
 		error_exit();
 	}
-	g_heap_max += map_size;
+	large_tail += size;
+	return new_heap;
 }
 
 char	*find_new_block(size_t size)
 {
-	static char*	mem_tail;
-	char*			mem_head;
-	size_t			block_size;
+	static char*	tiny_tail;
+	static char*	small_tail;
+	size_t	block_size;
+	char*	head;
 
+	if (!tiny_tail && !small_tail) {
+		init_zones();
+		tiny_tail = g_tiny_head;
+		small_tail = g_small_head;
+	}
 	block_size = size + DWORD;
-	if (!mem_tail)
-		mem_tail = mem_init();
-	mem_head = mem_tail;
-	mem_tail += block_size;
-	if (mem_tail > g_heap_max)
-		extend_heap();
 
-	return mem_head + WORD;
+	if (size <= TINY_MAX) {
+		head = tiny_tail;
+		tiny_tail += block_size;
+		if (tiny_tail >= g_tiny_max)
+			error_exit();
+		return head + WORD;
+	}
+	else if (size <= SMALL_MAX) {
+		head = small_tail;
+		small_tail += block_size;
+		if (small_tail >= g_small_max)
+			error_exit();
+		return head + WORD;
+	}
+	return alloc_large(block_size) + WORD;
 }
 
-char	*func(size_t size)
+void *malloc(size_t size)
 {
+	ft_printf("malloc: size = %d\n", (int)size);
 	char *	new_ptr;
 	size_t	aligned_size;
 
@@ -124,10 +153,4 @@ char	*func(size_t size)
 	PUT(FOOTER(new_ptr), PACK(aligned_size, 1));
 
 	return new_ptr;
-}
-
-void *malloc(size_t size)
-{
-	ft_printf("malloc: size = %d\n", (int)size);
-	return func(size);
 }

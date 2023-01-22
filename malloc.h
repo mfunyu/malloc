@@ -6,6 +6,9 @@
 # define WORD 4
 # define DWORD 8
 
+# define TINY_MAX 0xFF
+# define SMALL_MAX 0xFFF
+
 # define PUT(ptr, value) *ptr = value
 
 # define PACK(size, alloc) (size | alloc)
