@@ -44,10 +44,13 @@ void print_heap()
 	{
 		print_single_line(ft_strlen(ptr));
 		ft_printf("%p ", ptr - WORD);
+		if (!ALLOC(ptr))
+			ft_printf("%s", CYAN);
 		ft_printf("| %d ", *HEADER(ptr));
 		ft_printf("| %s ", ptr);
 		ft_printf("| %d ", *FOOTER(ptr));
 		ft_printf("| ");
+		ft_printf("%s", RESET);
 		ft_printf("(%u -> %u : %p)\n", SIZE(ptr), SIZE(ptr) + DWORD, SIZE(ptr) + DWORD);
 		print_single_line(ft_strlen(ptr));
 		ptr = NEXTPTR(ptr);
