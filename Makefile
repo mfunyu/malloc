@@ -5,7 +5,10 @@
 SRCS	:= malloc.c \
 			free.c \
 			realloc.c \
-			print_malloc.c
+			calloc.c \
+			valloc.c \
+			print_malloc.c \
+			alloc_debug.c
 
 # ---------------------------------------------------------------------------- #
 #                                     PATHS                                    #
@@ -22,7 +25,7 @@ VPATH	:= srcs
 
 NAME	= libft_malloc_$(HOSTTYPE).so
 CC		:= gcc
-CFLAGS	= -Wall -Wextra -Werror
+CFLAGS	=  -Wall -Wextra -Werror
 INCLUDES:= -I $(LIBFT) -I $(PRINTF) -I .
 LIBS	:= -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
 OBJS	:= $(addprefix $(DIR_OBJS)/, $(SRCS:.c=.o))
