@@ -26,14 +26,18 @@
 # define YELLOW "\033[33m"
 # define RESET "\033[m"
 
-void	free(void *ptr);
-void	*malloc(size_t size);
-void	*realloc(void *ptr, size_t size);
 
-char *g_tiny_head;
-char *g_tiny_max;
-char *g_small_head;
-char *g_small_max;
-char *g_large_head;
+char	*g_tiny_head;
+char	*g_tiny_max;
+char	*g_small_head;
+char	*g_small_max;
+char	*g_large_head;
+
+# define DEBUG 1
+
+# ifdef DEBUG
+
+void	alloc_debug(const char *func_name, void *ret_addr);
+# endif
 
 #endif /* MALLOC_H */

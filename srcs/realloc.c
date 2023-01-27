@@ -1,8 +1,12 @@
 #include "libft.h"
+#include "malloc.h"
 #include "ft_printf.h"
 
-void *realloc(void *ptr, size_t size)
+void	*realloc(void *ptr, size_t size)
 {
-	ft_printf("realloc: ptr = %p, size = %d\n", ptr, size);
-	return (NULL);
+	alloc_debug(__func__, __builtin_return_address(0));
+	ft_printf("ptr = %p, size = %d\n", ptr, size);
+	if (!ptr)
+		ptr = malloc(size);
+	return (ptr);
 }
