@@ -107,6 +107,6 @@ void	*malloc(size_t size)
 	PUT(HEADER(new_ptr), PACK(aligned_size, 1));
 	PUT(FOOTER(new_ptr), PACK(aligned_size, 1));
 	alloc_debug(__func__, __builtin_return_address(0));
-	ft_printf("size = %d, ptr = %p\n", (int)size, new_ptr);
+	ft_printf("size = %d, ret = %p\n", (int)size, new_ptr);
 	return new_ptr;
 }
