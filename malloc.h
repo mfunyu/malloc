@@ -27,6 +27,11 @@
 # define RESET "\033[m"
 
 
+typedef struct s_malloc_zone
+{
+	char *name;
+}		t_malloc_zone;
+
 char	*g_tiny_head;
 char	*g_tiny_max;
 char	*g_small_head;
