@@ -12,8 +12,8 @@
 # define PUT(ptr, value) *ptr = value
 
 # define PACK(size, alloc) (size | alloc)
-# define SIZE(ptr) (*(unsigned int *)(ptr - WORD) & ~0x7)
-# define ALLOC(ptr) (*(unsigned int *)(ptr - WORD) & 0x1)
+# define SIZE(ptr) (*(unsigned int *)(ptr - WORD) & ~(DWORD - 1))
+# define ALLOC(ptr) (*(unsigned int *)(ptr - WORD) & (DWORD - 1))
 
 # define HEADER(ptr) (unsigned int *)(ptr - WORD)
 # define FOOTER(ptr) (unsigned int *)(ptr + SIZE(ptr))
