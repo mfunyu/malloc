@@ -16,6 +16,9 @@ void error_exit()
 	exit(1);
 }
 
+
+
+
 void	init_zones()
 {
 	int		page_size;
@@ -57,7 +60,7 @@ char*	alloc_large(size_t size)
 	return new_heap;
 }
 
-char	*find_new_block(size_t size)
+char	*default_malloc(size_t size)
 {
 	static char*	tiny_tail;
 	static char*	small_tail;
