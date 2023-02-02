@@ -6,7 +6,11 @@
 # define WORD 4
 # define DWORD 8
 
-# define TINY_MAX 0xFF
+# define TINY_QUONTAM (1 << 4)
+# define NUM_TINY_BLOCKS 100
+
+# define SMALL_THRESHOLD (TINY_QUONTAM * (64 - 1))
+# define LARGE_THRESHOLD (127 * 1024)
 # define SMALL_MAX 0xFFF
 
 # define PUT(ptr, value) *ptr = value
@@ -26,17 +30,25 @@
 # define YELLOW "\033[33m"
 # define RESET "\033[m"
 
-
-typedef struct s_malloc_zone
+typedef struct s_region
 {
-	char *name;
-}		t_malloc_zone;
+	void	*head;
+	void	*tail;
+	size_t	size;
+}	t_region;
 
-char	*g_tiny_head;
-char	*g_tiny_max;
-char	*g_small_head;
-char	*g_small_max;
-char	*g_large_head;
+typedef struct s_magazine
+{
+	void		*ptr;
+	t_region	*regions;
+}	t_magazine;
+
+typedef struct s_zone
+{
+	t_magazine	*mag_tiny;
+	t_magazine	*mag_small;
+	t_magazine	*mag_large;
+}	t_zone;
 
 # define DEBUG 1
 
