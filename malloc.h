@@ -7,7 +7,10 @@
 # define DWORD 8
 
 # define TINY_QUONTAM (1 << 4)
+# define TINY_ALIGN DWORD
 # define NUM_TINY_BLOCKS 100
+
+# define NO_ALIGNMENT 0
 
 # define SMALL_THRESHOLD (TINY_QUONTAM * (64 - 1))
 # define LARGE_THRESHOLD (127 * 1024)
@@ -37,17 +40,16 @@ typedef struct s_region
 	size_t	size;
 }	t_region;
 
-typedef struct s_magazine
-{
-	void		*ptr;
-	t_region	*regions;
-}	t_magazine;
-
 typedef struct s_zone
 {
-	t_magazine	*mag_tiny;
-	t_magazine	*mag_small;
-	t_magazine	*mag_large;
+	/* tiny */
+	t_region	tiny_region;
+
+	/* small */
+	t_region	small_region;
+
+	/* large */
+	t_region	large_region;
 }	t_zone;
 
 # define DEBUG 1
