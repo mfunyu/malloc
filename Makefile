@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------- #
 
 SRCS	:= malloc.c \
-			free.c \
+#			free.c \
 			realloc.c \
 			calloc.c \
 			valloc.c \
@@ -80,9 +80,14 @@ re		: fclean all
 .PHONY	: setup
 setup	:
 	cp .env.example$(HOST_ARCH) .env
-	@echo run source .env
+	@echo RUN source .env
 
 .PHONY	: test
 test	: all setup
 	$(CC) $(CFLAGS) $(INCLUDES) ./test/main.c $(LIBS)
-	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./a.out 
+
+ifeq ($(HOST_ARCH), "")
+	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./a.out
+else
+	LD_PRELOAD=./libft_malloc.so ./a.out
+endif
