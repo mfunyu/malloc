@@ -1,115 +1,76 @@
-#include "libft.h"
 #include "ft_printf.h"
 #include "malloc.h"
+#include <unistd.h>
 #include <sys/mman.h>
-# include <unistd.h>
-# include <errno.h>
-# include <string.h>
 
 
-void error_exit()
+t_malloc zones;
+
+size_t	align_size(size_t size)
 {
-	char	*err;
-
-	err = strerror(errno);
-	ft_putendl_fd(err, STDERR_FILENO);
-	exit(1);
+	return ((size + ALIGNMENT - 1) / ALIGNMENT + 1);
 }
 
-
-
-
-void	init_zones()
+void	*alloc_pages_by_size(size_t map_size)
 {
-	int		page_size;
-	int		map_size;
+	void	*ptr;
 
-	page_size = getpagesize();
-	map_size = page_size * ((TINY_MAX + DWORD) * 1000 % page_size + 1);
-	g_tiny_head = (char *)mmap(0, map_size, PROT_READ | PROT_WRITE,
-							MAP_ANON | MAP_PRIVATE, -1, 0);
-	if (g_tiny_head == MAP_FAILED) {
-		error_exit();
+	ptr = mmap(0, map_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+	if (ptr == MAP_FAILED) {
+		exit(1);
 	}
-	g_tiny_max = g_tiny_head + map_size;
-
-	map_size = page_size * ((SMALL_MAX + DWORD) * 100 % page_size + 1);
-	g_small_head = (char *)mmap(g_tiny_max + 1, map_size, PROT_READ | PROT_WRITE,
-							MAP_ANON | MAP_PRIVATE, -1, 0);
-	if (g_small_head == MAP_FAILED) {
-		error_exit();
-	}
-	g_small_max = g_small_head + map_size;
-	g_large_head = g_small_max + 1;
+	return (ptr);
 }
 
-char*	alloc_large(size_t size)
+size_t	get_map_size(size_t max_block_size)
 {
-	static char*	large_tail;
-	char	*new_heap;
+	static int	page_size;
+	size_t		map_size;
 
-	if (!large_tail)
-		large_tail = g_large_head;
-	new_heap = (char *)mmap(large_tail, size, PROT_READ | PROT_WRITE,
-							MAP_ANON | MAP_PRIVATE, -1, 0);
-	if (new_heap == MAP_FAILED) {
-		errno = ENOMEM;
-		error_exit();
+	if (!page_size) {
+		page_size = getpagesize();
+		ft_printf("pagesize: %d\n", page_size);
 	}
-	large_tail += size;
-	return new_heap;
+	map_size = page_size * ((max_block_size + ALIGNMENT) * MIN_BLOCKS / page_size);
+	ft_printf("mapsize: %d\n", map_size);
+	return map_size;
 }
 
-char	*default_malloc(size_t size)
+void	init_malloc()
 {
-	static char*	tiny_tail;
-	static char*	small_tail;
-	size_t	block_size;
-	char*	head;
+	zones.initialized = true;
+	zones.tiny_zone = alloc_pages_by_size(get_map_size(TINY_MAX));
+	zones.small_zone = alloc_pages_by_size(get_map_size(SMALL_MAX));
+	ft_printf("%p %p\n", zones.tiny_zone, zones.small_zone);
+}
 
-	if (!tiny_tail && !small_tail)
-	{
-		init_zones();
-		tiny_tail = g_tiny_head;
-		small_tail = g_small_head;
-	}
-	block_size = size + DWORD;
+void	*find_block(size_t size)
+{
+	size_t	aligned_size;
+	void	*ptr;
 
-	if (size <= TINY_MAX)
-	{
-		head = tiny_tail;
-		tiny_tail += block_size;
-		if (tiny_tail >= g_tiny_max) {
-			errno = ENOMEM;
-			error_exit();
-		}
-		return (head + WORD);
+	aligned_size = align_size(size);
+	if (!zones.initialized) {
+		init_malloc();
 	}
-	else if (size <= SMALL_MAX)
-	{
-		head = small_tail;
-		small_tail += block_size;
-		if (small_tail >= g_small_max) {
-			errno = ENOMEM;
-			error_exit();
-		}
-		return (head + WORD);
+	ptr = NULL;
+	/*
+	if (aligned_size < TINY_MAX) {
+		ptr =
+	} else if (aligned_size < SMALL_MAX) {
+		ptr =
+	} else {
+		ptr =
 	}
-	return alloc_large(block_size) + WORD;
+	*/
+	return (ptr);
 }
 
 void	*malloc(size_t size)
 {
-	char*		new_ptr;
-	size_t	aligned_size;
+	void	*ptr;
 
-	aligned_size = size;
-	if (size % DWORD)
-		aligned_size += DWORD - size % DWORD;
-	new_ptr = find_new_block(aligned_size);
-	PUT(HEADER(new_ptr), PACK(aligned_size, 1));
-	PUT(FOOTER(new_ptr), PACK(aligned_size, 1));
-	alloc_debug(__func__, __builtin_return_address(0));
-	ft_printf("size = %d, ret = %p\n", (int)size, new_ptr);
-	return new_ptr;
+	ft_printf("malloc called\n");
+	ptr = find_block(size);
+	return (ptr);
 }
