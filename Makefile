@@ -86,7 +86,7 @@ setup	:
 test	: all setup
 	$(CC) $(CFLAGS) $(INCLUDES) ./test/main.c $(LIBS)
 
-ifeq ($(HOST_ARCH), "")
+ifeq ($(HOST_ARCH), )
 	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./a.out
 else
 	LD_PRELOAD=./libft_malloc.so ./a.out
