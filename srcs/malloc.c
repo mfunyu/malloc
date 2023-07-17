@@ -4,7 +4,7 @@
 #include <sys/mman.h>
 
 
-t_malloc zones;
+t_malloc regions;
 
 size_t	align_size(size_t size)
 {
@@ -36,12 +36,30 @@ size_t	get_map_size(size_t max_block_size)
 	return map_size;
 }
 
+void	init_region(t_region *region, e_size size_type)
+{
+	size_t map_size;
+
+	switch (size_type) {
+		case TINY:
+			map_size = TINY_MAX;
+			break;
+		case SMALL:
+			map_size = SMALL_MAX;
+			break;
+		default:
+			map_size = 0;
+	}
+	region->head = alloc_pages_by_size(get_map_size(map_size));
+}
+
 void	init_malloc()
 {
-	zones.initialized = true;
-	zones.tiny_zone = alloc_pages_by_size(get_map_size(TINY_MAX));
-	zones.small_zone = alloc_pages_by_size(get_map_size(SMALL_MAX));
-	ft_printf("%p %p\n", zones.tiny_zone, zones.small_zone);
+	regions.initialized = true;
+	init_region(&(regions.tiny_region), TINY);
+	init_region(&(regions.small_region), SMALL);
+
+	ft_printf("%p %p\n", regions.tiny_region.head, regions.small_region.head);
 }
 
 void	*find_block(size_t size)
@@ -50,7 +68,7 @@ void	*find_block(size_t size)
 	void	*ptr;
 
 	aligned_size = align_size(size);
-	if (!zones.initialized) {
+	if (!regions.initialized) {
 		init_malloc();
 	}
 	ptr = NULL;
