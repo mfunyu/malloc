@@ -63,31 +63,34 @@ void	init_malloc()
 	ft_printf("%p %p\n", regions.tiny_region.head, regions.small_region.head);
 }
 
-/*
 void	*find_block_from_region(t_region *region, size_t size)
 {
-	void			*lst;
+	void			*free_chunk;
+	unsigned int	**prev;
+	unsigned int	**next;
 	unsigned int	block_size;
 	void			*ptr;
 
-	lst = region->freelist;
-	while (lst) {
-		block_size = *(unsigned int *)lst;
+	free_chunk = region->freelist;
+	while (free_chunk) {
+		block_size = *(unsigned int *)free_chunk;
 		if (block_size > size) {
-			if (block_size == size) {
-				ptr = lst;
-
-			} else {
-				ptr = lst + (block_size - size);
-				*(unsigned int *)ptr =
-			}
+			ptr = free_chunk + 8;
+			prev = (unsigned int **)ptr;
+			next = prev + 8;
+			unsigned int **prev_ptr = prev + 16;
+			*prev_ptr = *next;
+			unsigned int **next_ptr = next + 16;
+			*next_ptr = *prev;
+			return (ptr);
 		}
-		lst += size;
+		free_chunk = (void *)*((unsigned int**)free_chunk + 8);
 	}
-
+	ptr = region->tail + 8;
+	*(unsigned int *)(region->tail) = size;
+	region->tail += size + 16;
 	return (ptr);
 }
-*/
 
 void	*find_block(size_t size)
 {
