@@ -52,6 +52,7 @@ void	init_region(t_region *region, e_size size_type)
 			map_size = 0;
 	}
 	region->head = alloc_pages_by_size(get_map_size(map_size));
+	region->tail = region->head;
 }
 
 void	init_malloc()
@@ -107,9 +108,9 @@ void	*find_block(size_t size)
 	ft_printf("size: %d, aligned: %d\n", size, aligned_size);
 
 	if (aligned_size < TINY_MAX) {
-		ptr = regions.tiny_region.head;
+		ptr = find_block_from_region(&(regions.tiny_region), aligned_size);
 	} else if (aligned_size < SMALL_MAX) {
-		ptr = regions.small_region.head;
+		ptr = find_block_from_region(&(regions.small_region), aligned_size);
 	} else {
 		ptr = regions.large_region.head;
 	}
