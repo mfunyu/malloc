@@ -2,9 +2,10 @@
 # define MALLOC_H
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #define APPROX_PAGE_SIZE 4096
-#define MALLOC_ABSOLUTE_SIZE_MAX (SSIZE_MAX - (2 * APPROX_PAGE_SIZE))
+#define MALLOC_ABSOLUTE_SIZE_MAX (SIZE_MAX - (2 * APPROX_PAGE_SIZE))
 
 #define ALIGNMENT 16
 
