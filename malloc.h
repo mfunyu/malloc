@@ -3,7 +3,10 @@
 
 #include <stdbool.h>
 
-#define ALIGNMENT 8
+#define APPROX_PAGE_SIZE 4096
+#define MALLOC_ABSOLUTE_SIZE_MAX (SIZE_T_MAX - (2 * APPROX_PAGE_SIZE))
+
+#define ALIGNMENT 16
 
 #define TINY_MAX 1008
 #define SMALL_MAX 127 * 8192
@@ -31,6 +34,7 @@ typedef struct s_malloc
 	t_region	large_region;
 }			t_malloc;
 
+[]
 extern t_malloc	regions;
 
 #endif
