@@ -10,7 +10,7 @@ size_t page_size;
 
 size_t	align_size(size_t size)
 {
-	return ((size + (ALIGNMENT - 1)) & ~(ALIGNMENT - 1));
+	return ((size + (MALLOC_ALIGNMENT - 1)) & ~(MALLOC_ALIGNMENT - 1));
 }
 
 void	*alloc_pages_by_size(size_t map_size)
@@ -32,7 +32,7 @@ size_t	get_map_size(size_t max_block_size)
 		page_size = getpagesize();
 		ft_printf("pagesize: %d\n", page_size);
 	}
-	map_size = page_size * ((max_block_size + ALIGNMENT) * MIN_BLOCKS / page_size);
+	map_size = page_size * ((max_block_size + MALLOC_ALIGNMENT) * MIN_BLOCKS / page_size);
 	ft_printf("mapsize: %d\n", map_size);
 	return map_size;
 }
