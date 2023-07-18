@@ -92,18 +92,16 @@ void	*find_block_from_region(t_region *region, size_t size)
 void	*find_block(size_t size)
 {
 	size_t	aligned_size;
-	void	*ptr;
+	void	*ptr = NULL;
 
+	if (!size || size > MALLOC_ABSOLUTE_SIZE_MAX)
+		return (NULL);
 	if (!regions.initialized) {
 		init_malloc();
 	}
-	ft_printf("size: %d\n", size);
-	if (!size || size > MALLOC_ABSOLUTE_SIZE_MAX)
-		return (NULL);
-	ft_printf("%d\n", MALLOC_ABSOLUTE_SIZE_MAX);
+
 	aligned_size = align_size(size);
-	ptr = NULL;
-	(void)aligned_size;
+	ft_printf("size: %d, aligned: %d\n", size, aligned_size);
 
 	if (aligned_size < TINY_MAX) {
 		ptr = regions.tiny_region.head;
