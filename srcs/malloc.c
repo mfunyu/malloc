@@ -63,6 +63,7 @@ void	init_malloc()
 	ft_printf("%p %p\n", regions.tiny_region.head, regions.small_region.head);
 }
 
+/*
 void	*find_block_from_region(t_region *region, size_t size)
 {
 	void			*lst;
@@ -86,6 +87,7 @@ void	*find_block_from_region(t_region *region, size_t size)
 
 	return (ptr);
 }
+*/
 
 void	*find_block(size_t size)
 {
@@ -98,13 +100,15 @@ void	*find_block(size_t size)
 	ft_printf("size: %d\n", size);
 	if (!size || size > MALLOC_ABSOLUTE_SIZE_MAX)
 		return (NULL);
-	// ft_printf("%d\n", MALLOC_ABSOLUTE_SIZE_MAX);
+	ft_printf("%d\n", MALLOC_ABSOLUTE_SIZE_MAX);
 	aligned_size = align_size(size);
-	// ptr = NULL;
+	ptr = NULL;
+	(void)aligned_size;
+
 	if (aligned_size < TINY_MAX) {
-		ptr = find_block_from_region(&(regions.tiny_region), size);
+		ptr = regions.tiny_region.head;
 	} else if (aligned_size < SMALL_MAX) {
-		ptr = find_block_from_region(&(regions.small_region), size);
+		ptr = regions.small_region.head;
 	} else {
 		ptr = regions.large_region.head;
 	}
