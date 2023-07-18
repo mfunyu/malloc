@@ -10,7 +10,7 @@ size_t page_size;
 
 size_t	align_size(size_t size)
 {
-	return ((size + ALIGNMENT - 1) / ALIGNMENT + 1);
+	return ((size + (ALIGNMENT - 1)) & ~(ALIGNMENT - 1));
 }
 
 void	*alloc_pages_by_size(size_t map_size)
