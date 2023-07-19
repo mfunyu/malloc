@@ -63,6 +63,36 @@ void	init_malloc()
 	ft_printf("%p %p\n", g_regions.tiny_region.head, g_regions.small_region.head);
 }
 
+/*
+[chunk utilise]
+   chunk-> + ----------------------+
+           | size de chunk         | 8
+           + ----------------------+
+           | empty                 | 8
+     mem-> + ----------------------+
+           |                       |
+   	       |                       |
+nxtchunk-> + ----------------------+
+           | size de chunk         | 8
+           + ----------------------+
+
+[chunk free]
+   chunk-> + ----------------------+
+           | size of chunk         | 8
+           + ----------------------+
+           | empty                 | 8
+     mem-> + ----------------------+
+           | nextptr pour free-lst | 8
+           + ----------------------+
+		   | prevptr pour free-lst | 8
+           + ----------------------+
+           |                       |
+   	       |                       |
+nxtchunk-> + ----------------------+
+           | size de chunk         | 8
+           + ----------------------+
+*/
+
 void	*find_block_from_region(t_region *region, size_t size)
 {
 	void			*free_chunk;
