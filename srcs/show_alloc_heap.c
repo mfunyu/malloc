@@ -24,15 +24,15 @@ void	print_single_line(size_t len)
 	ft_putchar_fd('\n', STDOUT_FILENO);
 }
 
-void	print_head_to_end(void* head, void* max)
+void	print_head_to_end(void* head, void* tail)
 {
 	void	*chunk_ptr;
 	unsigned int  size;
 	void	*mem;
 
-	ft_printf("%p ~ %p (%d bytes)\n", head, max, max - head);
+	ft_printf("%p ~ %p (%d bytes)\n", head, tail, tail - head);
 	chunk_ptr = head;
-	while (chunk_ptr < max)
+	while (chunk_ptr < tail)
 	{
 		mem = chunk_ptr + WORD;
 		size = *((unsigned int *)chunk_ptr);
