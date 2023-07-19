@@ -11,11 +11,11 @@ size_t	align_size(size_t size)
 	return ((size + (MALLOC_ALIGNMENT - 1)) & ~(MALLOC_ALIGNMENT - 1));
 }
 
-void	*alloc_pages_by_size(size_t map_size)
+void	*alloc_pages_by_size(size_t map_size, void *start)
 {
 	void	*ptr;
 
-	ptr = mmap(0, map_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+	ptr = mmap(start, map_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
 	if (ptr == MAP_FAILED) {
 		exit(1);
 	}
@@ -42,16 +42,18 @@ void	init_region(t_region *region, e_size size_type)
 
 	switch (size_type) {
 		case TINY:
-			map_size = TINY_MAX;
+			map_size = get_map_size(TINY_MAX);
 			break;
 		case SMALL:
-			map_size = SMALL_MAX;
+			map_size = get_map_size(SMALL_MAX);
 			break;
 		default:
 			map_size = 0;
 	}
-	region->head = alloc_pages_by_size(get_map_size(map_size));
+	region->map_size = map_size;
+	region->head = alloc_pages_by_size(map_size, NULL);
 	region->tail = region->head;
+	region->mapped_till = region->head + region->map_size;
 }
 
 void	init_malloc()
@@ -115,6 +117,10 @@ void	*find_block_from_region(t_region *region, size_t size)
 			return (mem);
 		}
 		free_chunk = (void *)*((unsigned int**)free_chunk + BYTE);
+	}
+	if (region->tail + size + WORD > region->mapped_till) {
+		alloc_pages_by_size(region->map_size ,region->mapped_till);
+		region->mapped_till += region->map_size;
 	}
 	free_chunk = region->tail;
 	mem = free_chunk + WORD;

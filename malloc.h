@@ -24,8 +24,10 @@ typedef enum s_size
 
 typedef struct s_region
 {
+	size_t	map_size;
 	void	*head;
 	void	*tail;
+	void	*mapped_till;
 	void	*freelist;
 }				t_region;
 
