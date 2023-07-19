@@ -35,6 +35,6 @@ typedef struct s_malloc
 	t_region	large_region;
 }			t_malloc;
 
-extern t_malloc	regions;
+extern t_malloc	g_regions;
 
 #endif

@@ -4,9 +4,7 @@
 #include <stdio.h>
 #include <sys/mman.h>
 
-
-t_malloc regions;
-size_t page_size;
+t_malloc	g_regions;
 
 size_t	align_size(size_t size)
 {
@@ -27,6 +25,7 @@ void	*alloc_pages_by_size(size_t map_size)
 size_t	get_map_size(size_t max_block_size)
 {
 	size_t		map_size;
+	static int	page_size;
 
 	if (!page_size) {
 		page_size = getpagesize();
@@ -34,7 +33,7 @@ size_t	get_map_size(size_t max_block_size)
 	}
 	map_size = page_size * ((max_block_size + MALLOC_ALIGNMENT) * MIN_BLOCKS / page_size);
 	ft_printf("mapsize: %d\n", map_size);
-	return map_size;
+	return (map_size);
 }
 
 void	init_region(t_region *region, e_size size_type)
@@ -57,11 +56,11 @@ void	init_region(t_region *region, e_size size_type)
 
 void	init_malloc()
 {
-	regions.initialized = true;
-	init_region(&(regions.tiny_region), TINY);
-	init_region(&(regions.small_region), SMALL);
+	g_regions.initialized = true;
+	init_region(&(g_regions.tiny_region), TINY);
+	init_region(&(g_regions.small_region), SMALL);
 
-	ft_printf("%p %p\n", regions.tiny_region.head, regions.small_region.head);
+	ft_printf("%p %p\n", g_regions.tiny_region.head, g_regions.small_region.head);
 }
 
 void	*find_block_from_region(t_region *region, size_t size)
@@ -100,7 +99,7 @@ void	*find_block(size_t size)
 
 	if (!size || size > MALLOC_ABSOLUTE_SIZE_MAX)
 		return (NULL);
-	if (!regions.initialized) {
+	if (!g_regions.initialized) {
 		init_malloc();
 	}
 
@@ -108,11 +107,11 @@ void	*find_block(size_t size)
 	ft_printf("size: %d, aligned: %d\n", size, aligned_size);
 
 	if (aligned_size < TINY_MAX) {
-		ptr = find_block_from_region(&(regions.tiny_region), aligned_size);
+		ptr = find_block_from_region(&(g_regions.tiny_region), aligned_size);
 	} else if (aligned_size < SMALL_MAX) {
-		ptr = find_block_from_region(&(regions.small_region), aligned_size);
+		ptr = find_block_from_region(&(g_regions.small_region), aligned_size);
 	} else {
-		ptr = regions.large_region.head;
+		ptr = g_regions.large_region.head;
 	}
 
 	return (ptr);

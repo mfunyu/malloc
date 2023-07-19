@@ -59,9 +59,9 @@ void	show_alloc_heap()
 	t_region	small;
 	t_region	large;
 
-	tiny = regions.tiny_region;
-	small = regions.small_region;
-	large = regions.large_region;
+	tiny = g_regions.tiny_region;
+	small = g_regions.small_region;
+	large = g_regions.large_region;
 	ft_printf("TINY: %p ~ %p (%d bytes)\n", tiny.head, tiny.tail, tiny.tail - tiny.head);
 	print_head_to_end(tiny.head, tiny.tail);
 	ft_printf("SMALL: %p ~ %p (%d bytes)\n", small.head, small.tail, small.tail - small.head);
