@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------- #
 
 SRCS	:= malloc.c \
-			print_malloc.c 
+			show_alloc_heap.c 
 #			free.c \
 			realloc.c \
 			calloc.c \
