@@ -2,7 +2,7 @@
 #include "malloc.h"
 #include "ft_printf.h"
 
-void print_heap(void)__attribute__((destructor));
+void show_alloc_heap(void)__attribute__((destructor));
 
 void	print_line(size_t len)
 {
@@ -53,7 +53,7 @@ void	print_head_to_end(void* head, void* max)
 	}
 }
 
-void	print_heap()
+void	show_alloc_heap()
 {
 	t_region	tiny;
 	t_region	small;
