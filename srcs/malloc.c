@@ -99,27 +99,27 @@ void	*find_block_from_region(t_region *region, size_t size)
 	unsigned int	**prev;
 	unsigned int	**next;
 	unsigned int	block_size;
-	void			*ptr;
+	void			*mem;
 
 	free_chunk = region->freelist;
 	while (free_chunk) {
 		block_size = *(unsigned int *)free_chunk;
 		if (block_size > size) {
-			ptr = free_chunk + BYTE;
-			prev = (unsigned int **)ptr;
+			mem = free_chunk + BYTE;
+			prev = (unsigned int **)mem;
 			next = prev + BYTE;
 			unsigned int **prev_ptr = prev + WORD;
 			*prev_ptr = *next;
 			unsigned int **next_ptr = next + WORD;
 			*next_ptr = *prev;
-			return (ptr);
+			return (mem);
 		}
 		free_chunk = (void *)*((unsigned int**)free_chunk + BYTE);
 	}
-	ptr = region->tail + BYTE;
+	mem = region->tail + BYTE;
 	*(unsigned int *)(region->tail) = size;
 	region->tail += size + WORD;
-	return (ptr);
+	return (mem);
 }
 
 void	*find_block(size_t size)
