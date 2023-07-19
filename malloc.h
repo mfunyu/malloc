@@ -8,6 +8,8 @@
 #define MALLOC_ABSOLUTE_SIZE_MAX (SIZE_MAX - (2 * APPROX_PAGE_SIZE))
 
 #define MALLOC_ALIGNMENT 16
+#define BYTE 8
+#define WORD 16
 
 #define TINY_MAX 1008
 #define SMALL_MAX 127 * 8192
