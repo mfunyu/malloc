@@ -116,8 +116,9 @@ void	*find_block_from_region(t_region *region, size_t size)
 		}
 		free_chunk = (void *)*((unsigned int**)free_chunk + BYTE);
 	}
-	mem = region->tail + BYTE;
-	*(unsigned int *)(region->tail) = size;
+	free_chunk = region->tail;
+	mem = free_chunk + WORD;
+	*(unsigned int *)free_chunk = size;
 	region->tail += size + WORD;
 	return (mem);
 }

@@ -4,5 +4,6 @@
 
 int main()
 {
-	ft_printf("%p\n", malloc(-11));
+	ft_printf("%p\n", malloc(18));
+	//printf("%lu\n", SSIZE_MAX);
 }
