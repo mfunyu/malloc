@@ -15,9 +15,7 @@ void	print_line(size_t len)
 
 void	print_single_line(size_t len)
 {
-	print_line(12);
-	ft_putchar_fd('+', STDOUT_FILENO);
-	print_line(4);
+	print_line(16);
 	ft_putchar_fd('+', STDOUT_FILENO);
 	print_line(len + 2);
 	ft_putchar_fd('+', STDOUT_FILENO);
@@ -31,24 +29,21 @@ void	print_head_to_end(void* head, void* max)
 	void	*chunk_ptr;
 	unsigned int  size;
 	void	*mem;
-	ft_printf("head: %p\n", head);
-	ft_printf("end : %p\n", max);
 
+	ft_printf("%p ~ %p (%d bytes)\n", head, max, max - head);
 	chunk_ptr = head;
 	while (chunk_ptr < max)
 	{
-		mem = chunk_ptr + 16;
+		mem = chunk_ptr + WORD;
 		size = *((unsigned int *)chunk_ptr);
-		ft_printf("size: %d\n", size);
 		print_single_line(ft_strlen(mem));
 
-		ft_printf("  %p ", chunk_ptr);
+		ft_printf(" %p ", chunk_ptr);
 		ft_printf("| %s ", mem);
 		ft_printf("| %d ", ft_strlen(mem));
-		ft_printf("| \n");
-		//ft_printf("(%u -> %u : %p)\n", SIZE(chunk_ptr), SIZE(chunk_ptr) + DWORD, SIZE(chunk_ptr) + DWORD);
+		ft_printf("| (%u -> %p)\n", size, size);
 		print_single_line(ft_strlen(mem));
-		chunk_ptr += size + 16;
+		chunk_ptr += size + WORD;
 	}
 }
 
@@ -61,9 +56,9 @@ void	show_alloc_heap()
 	tiny = g_regions.tiny_region;
 	small = g_regions.small_region;
 	large = g_regions.large_region;
-	ft_printf("TINY: %p ~ %p (%d bytes)\n", tiny.head, tiny.tail, tiny.tail - tiny.head);
+	ft_printf("TINY: ");
 	print_head_to_end(tiny.head, tiny.tail);
-	ft_printf("SMALL: %p ~ %p (%d bytes)\n", small.head, small.tail, small.tail - small.head);
+	ft_printf("SMALL: ");
 	print_head_to_end(small.head, small.tail);
 	ft_printf("LARGE: %p ~ NA (NA)\n", large.head);
 	// print_head_to_end(g_large_head, NULL);
