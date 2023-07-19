@@ -43,9 +43,8 @@ void	print_head_to_end(void* head, void* max)
 		print_single_line(ft_strlen(mem));
 
 		ft_printf("  %p ", chunk_ptr);
-		//ft_printf("| %d ", *HEADER(chunk_ptr));
 		ft_printf("| %s ", mem);
-		//ft_printf("| %d ", *FOOTER(chunk_ptr));
+		ft_printf("| %d ", ft_strlen(mem));
 		ft_printf("| \n");
 		//ft_printf("(%u -> %u : %p)\n", SIZE(chunk_ptr), SIZE(chunk_ptr) + DWORD, SIZE(chunk_ptr) + DWORD);
 		print_single_line(ft_strlen(mem));
