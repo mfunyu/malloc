@@ -105,20 +105,20 @@ void	*find_block_from_region(t_region *region, size_t size)
 	while (free_chunk) {
 		block_size = *(unsigned int *)free_chunk;
 		if (block_size > size) {
-			ptr = free_chunk + 8;
+			ptr = free_chunk + BYTE;
 			prev = (unsigned int **)ptr;
-			next = prev + 8;
-			unsigned int **prev_ptr = prev + 16;
+			next = prev + BYTE;
+			unsigned int **prev_ptr = prev + WORD;
 			*prev_ptr = *next;
-			unsigned int **next_ptr = next + 16;
+			unsigned int **next_ptr = next + WORD;
 			*next_ptr = *prev;
 			return (ptr);
 		}
-		free_chunk = (void *)*((unsigned int**)free_chunk + 8);
+		free_chunk = (void *)*((unsigned int**)free_chunk + BYTE);
 	}
-	ptr = region->tail + 8;
+	ptr = region->tail + BYTE;
 	*(unsigned int *)(region->tail) = size;
-	region->tail += size + 16;
+	region->tail += size + WORD;
 	return (ptr);
 }
 
