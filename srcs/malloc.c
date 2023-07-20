@@ -106,17 +106,22 @@ void	*find_block_from_region(t_region *region, size_t size)
 	free_chunk = region->freelist;
 	while (free_chunk) {
 		block_size = *(unsigned int *)free_chunk;
-		if (block_size > size) {
-			mem = free_chunk + BYTE;
+		if (block_size >= size) {
+			mem = free_chunk + WORD;
 			prev = (unsigned int **)mem;
 			next = prev + BYTE;
-			unsigned int **prev_ptr = prev + WORD;
-			*prev_ptr = *next;
-			unsigned int **next_ptr = next + WORD;
-			*next_ptr = *prev;
+			unsigned int *prev_ptr = *prev + WORD;
+			*prev_ptr = *(unsigned int *)next;
+			ft_printf("---\n");
+			if (*next) {
+				unsigned int *next_ptr = *next + WORD;
+				*next_ptr = *(unsigned int *)prev;
+			}
+			if (free_chunk == region->freelist)
+				region->freelist = *next;
 			return (mem);
 		}
-		free_chunk = (void *)*((unsigned int**)free_chunk + BYTE);
+		free_chunk = (void *)*((unsigned int**)free_chunk + WORD);
 	}
 	if (region->tail + size + WORD > region->mapped_till + 1) {
 		exit(1);
@@ -125,6 +130,7 @@ void	*find_block_from_region(t_region *region, size_t size)
 	free_chunk = region->tail;
 	mem = free_chunk + WORD;
 	*(unsigned int *)free_chunk = size;
+	*(unsigned int *)(free_chunk + BYTE) = ALLOCED;
 	region->tail += size + WORD;
 	return (mem);
 }
