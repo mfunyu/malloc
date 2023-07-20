@@ -118,9 +118,9 @@ void	*find_block_from_region(t_region *region, size_t size)
 		}
 		free_chunk = (void *)*((unsigned int**)free_chunk + BYTE);
 	}
-	if (region->tail + size + WORD > region->mapped_till) {
-		alloc_pages_by_size(region->map_size ,region->mapped_till);
-		region->mapped_till += region->map_size;
+	if (region->tail + size + WORD > region->mapped_till + 1) {
+		exit(1);
+		//ft_printf("%p\n", alloc_pages_by_size(region->map_size, region->mapped_till));
 	}
 	free_chunk = region->tail;
 	mem = free_chunk + WORD;
