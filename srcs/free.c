@@ -16,8 +16,13 @@ void	find_block_and_free(void *chunk)
 	}
 
 	ft_printf("%p\n", region->freelist);
-	if (!region->freelist)
+	if (!region->freelist) {
 		region->freelist = chunk;
+		unsigned int *chunk_next = chunk + WORD;
+		*chunk_next = 0;
+		unsigned int *chunk_prev = chunk + WORD + BYTE;
+		*chunk_prev = 0;
+	}
 	else {
 		ft_printf("here\n");
 		void *prev = region->freelist;
