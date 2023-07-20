@@ -3,9 +3,9 @@
 # ---------------------------------------------------------------------------- #
 
 SRCS	:= malloc.c \
-			show_alloc_heap.c 
-#			free.c \
-			realloc.c \
+			show_alloc_heap.c \
+			free.c
+#			realloc.c \
 			calloc.c \
 			valloc.c \
 			alloc_debug.c
