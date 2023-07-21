@@ -58,6 +58,7 @@ void	show_alloc_heap()
 	large = g_regions.large_region;
 	ft_printf("TINY: ");
 	print_head_to_end(tiny.head, tiny.tail);
+	show_free_list(tiny);
 	ft_printf("SMALL: ");
 	print_head_to_end(small.head, small.tail);
 	ft_printf("LARGE: %p ~ NA (NA)\n", large.head);
