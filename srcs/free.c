@@ -2,6 +2,7 @@
 #include "ft_printf.h"
 #include <stddef.h>
 #include <stdlib.h>
+#include <malloc/malloc.h>
 
 void	find_block_and_free(void *chunk)
 {
@@ -55,14 +56,21 @@ void	find_block_and_free(void *chunk)
 void	free(void *ptr)
 {
 	void	*chunk;
+	malloc_zone_t	*zone;
 
 	if (!ptr)
 		return ;
 	ft_printf("free called: %p\n", ptr);
-	chunk = ptr - WORD;
-	if (*(unsigned int *)(chunk + BYTE)) {
-		find_block_and_free(chunk);
+	
+	zone = malloc_zone_from_ptr(ptr);
+	if (zone) {
+		malloc_zone_free(zone, ptr);
 	} else {
-		exit(1);
+		chunk = ptr - WORD;
+		if (*(unsigned int *)(chunk + BYTE)) {
+			find_block_and_free(chunk);
+		} else {
+			exit(1);
+		}
 	}
 }
