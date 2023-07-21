@@ -21,9 +21,9 @@ void	find_block_and_free(void *chunk)
 	ft_printf("%p\n", region->freelist);
 	if (!region->freelist) {
 		region->freelist = chunk;
-		unsigned int *chunk_next = chunk + WORD;
+		unsigned int **chunk_next = (unsigned int **)chunk + WORD;
 		*chunk_next = 0;
-		unsigned int *chunk_prev = chunk + WORD + BYTE;
+		unsigned int **chunk_prev = (unsigned int **)chunk + WORD + BYTE;
 		*chunk_prev = 0;
 	}
 	else {
@@ -36,18 +36,18 @@ void	find_block_and_free(void *chunk)
 			prev = (void *)*((unsigned int**)prev + WORD);
 		}
 		ft_printf("here\n");
-		unsigned int **prev_next = prev + WORD;
+		unsigned int **prev_next = (unsigned int **)prev + WORD;
 		*prev_next = chunk;
 		if (next) {
-			unsigned int **next_prev = next + WORD + BYTE;
+			unsigned int **next_prev = (unsigned int **)next + WORD + BYTE;
 			*next_prev = chunk;
 		}
 		ft_printf("here\n");
-		unsigned int **chunk_next = chunk + WORD;
+		unsigned int **chunk_next = (unsigned int **)chunk + WORD;
 		*chunk_next = next;
-		unsigned int **chunk_prev = chunk + WORD + BYTE;
+		unsigned int **chunk_prev = (unsigned int **)chunk + WORD + BYTE;
 		*chunk_prev = prev;
-		unsigned int **chunk_alloc = chunk + BYTE;
+		unsigned int **chunk_alloc = (unsigned int **)chunk + BYTE;
 		*chunk_alloc = 0;
 	}
 	ft_printf("%p\n", region->freelist);
