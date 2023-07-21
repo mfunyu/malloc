@@ -13,6 +13,8 @@ void	find_block_and_free(void *chunk)
 		region = &g_regions.tiny_region;
 	} else if (size <= SMALL_MAX) {
 		region = &g_regions.small_region;
+	} else {
+		region = &g_regions.large_region;
 	}
 
 	ft_printf("%p\n", region->freelist);
