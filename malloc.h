@@ -18,6 +18,9 @@
 #define SMALL_MAX 127 * 8192
 #define MIN_BLOCKS 100
 
+# define NEXTPTR(ptr) (unsigned int **)(ptr + WORD)
+# define PREVPTR(ptr) (unsigned int **)(ptr + WORD + BYTE)
+
 typedef enum s_size
 {
 	TINY,

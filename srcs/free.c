@@ -23,26 +23,26 @@ void	find_block_and_free(void *chunk)
 	ft_printf("%p\n", region->freelist);
 	if (!region->freelist) {
 		region->freelist = chunk;
-		unsigned int **chunk_next = (unsigned int **)chunk + 2;
+		unsigned int **chunk_next = NEXTPTR(chunk);
 		*chunk_next = 0;
-		unsigned int **chunk_prev = (unsigned int **)chunk + 3;
+		unsigned int **chunk_prev = PREVPTR(chunk);
 		*chunk_prev = 0;
 	}
 	else {
 		unsigned int *now = region->freelist;
-		unsigned int *next = *((unsigned int **)now + 2); 
+		unsigned int *next = *NEXTPTR(region->freelist); 
 		while (next) {
 			now = next;
 			next = *((unsigned int **)now + 2); 
 		}
 		ft_printf("now: %p\n", now);
 		ft_printf("next: %p\n", next);
-		unsigned int **chunk_prev = (unsigned int **)chunk + 3;
+		unsigned int **chunk_prev = PREVPTR(chunk);
 		*chunk_prev = now;
-		unsigned int **chunk_next = (unsigned int **)chunk + 2;
+		unsigned int **chunk_next = NEXTPTR(chunk);
 		*chunk_next = next;
 		unsigned int **now_next = (unsigned int **)now + 2;
-		*now_next = chunk;
+		*now_next = (void *)chunk;
 	}
 	ft_printf("%p\n", region->freelist);
 }
