@@ -11,7 +11,7 @@ void	find_block_and_free(void *chunk)
 	size_t		size;
 	t_region	*region;
 
-	size = *(unsigned int *)chunk;
+	size = SIZE(chunk);
 	if (size <= TINY_MAX) {
 		region = &g_regions.tiny_region;
 	} else if (size <= SMALL_MAX) {
@@ -59,7 +59,7 @@ void	free(void *ptr)
 	ft_printf("free called: %p\n", ptr);
 	
 	chunk = ptr - WORD;
-	if (*(unsigned int *)(chunk + BYTE)) {
+	if (ALLOC(chunk)) {
 		find_block_and_free(chunk);
 	} else {
 		exit(1);
