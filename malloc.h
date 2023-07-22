@@ -20,7 +20,8 @@
 
 # define PUT(ptr, value) *ptr = value
 # define SIZE(ptr) *(unsigned int *)ptr;
-# define ALLOC(ptr) *(unsigned int *)(ptr + BYTE)
+# define IS_ALLOCED(ptr) *(unsigned int *)(ptr + BYTE)
+# define ALLOC(ptr, value) *(unsigned int *)(ptr + BYTE) = value
 
 # define NEXTPTR(ptr) (unsigned int **)(ptr + WORD)
 # define PREVPTR(ptr) (unsigned int **)(ptr + WORD + BYTE)

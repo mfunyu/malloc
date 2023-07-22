@@ -43,6 +43,7 @@ void	find_block_and_free(void *chunk)
 		region = &g_regions.large_region;
 	}
 	add_chunk_to_freelist(chunk, &(region->freelist));
+	ALLOC(chunk, 0);
 }
 
 void	free(void *ptr)
@@ -64,7 +65,7 @@ void	free(void *ptr)
 	ft_printf("free called: %p\n", ptr);
 	
 	chunk = ptr - WORD;
-	if (ALLOC(chunk)) {
+	if (IS_ALLOCED(chunk)) {
 		find_block_and_free(chunk);
 	} else {
 		exit(1);

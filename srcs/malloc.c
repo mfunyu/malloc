@@ -130,7 +130,7 @@ void	*find_block_from_region(t_region *region, size_t size)
 	free_chunk = region->tail;
 	mem = free_chunk + WORD;
 	*(unsigned int *)free_chunk = size;
-	*(unsigned int *)(free_chunk + BYTE) = ALLOCED;
+	ALLOC(free_chunk, 1);
 	region->tail += size + WORD;
 	return (mem);
 }
