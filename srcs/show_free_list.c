@@ -36,9 +36,9 @@ void	show_free_list(t_region region)
 		size = *(unsigned int *)freelist;
         ft_printf(" %p | ", freelist);
         ft_printf("%3d (%5p) | ", size, size);
-        ptr = (unsigned int **)freelist + WORD;
+        ptr = (unsigned int **)freelist + 2;
         ft_printf("%14p | ", *ptr);
-        ft_printf("%14p | ", *(ptr + BYTE));
+        ft_printf("%14p | ", *(ptr + 1));
         ft_printf("\n");
 		print_single_line(10);
 		freelist = *ptr;
