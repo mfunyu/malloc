@@ -11,16 +11,17 @@ static void	print_line(size_t len)
 
 static void	print_single_line(size_t len)
 {
-	print_line(12);
+	print_line(16);
 	ft_putchar_fd('+', STDOUT_FILENO);
-	print_line(len + 2);
+	print_line(len + 3);
 	ft_putchar_fd('+', STDOUT_FILENO);
-	print_line(13);
+	print_line(16);
 	ft_putchar_fd('+', STDOUT_FILENO);
-	print_line(13);
+	print_line(16);
 	ft_putchar_fd('+', STDOUT_FILENO);
 	ft_putchar_fd('\n', STDOUT_FILENO);
 }
+
 
 void	show_free_list(t_region region)
 {
@@ -33,11 +34,11 @@ void	show_free_list(t_region region)
 		print_single_line(10);
     while (freelist) {
 		size = *(unsigned int *)freelist;
-        ft_printf("%p | ", freelist);
-        ft_printf("%3d (%p) | ", size, size);
+        ft_printf(" %p | ", freelist);
+        ft_printf("%3d (%5p) | ", size, size);
         ptr = (unsigned int **)freelist + WORD;
-        ft_printf("%11p | ", *ptr);
-        ft_printf("%11p | ", *(ptr + BYTE));
+        ft_printf("%14p | ", *ptr);
+        ft_printf("%14p | ", *(ptr + BYTE));
         ft_printf("\n");
 		print_single_line(10);
 		freelist = *ptr;
