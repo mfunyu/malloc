@@ -44,4 +44,6 @@ typedef struct s_malloc
 
 extern t_malloc	g_regions;
 
+void	show_free_list(t_region region);
+
 #endif
