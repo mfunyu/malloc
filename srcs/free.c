@@ -29,11 +29,11 @@ void	find_block_and_free(void *chunk)
 		*chunk_prev = 0;
 	}
 	else {
-		unsigned int *now = region->freelist;
-		unsigned int *next = *NEXTPTR(region->freelist); 
+		void *now = region->freelist;
+		void *next = *NEXTPTR(region->freelist); 
 		while (next) {
 			now = next;
-			next = *((unsigned int **)now + 2); 
+			next = *NEXTPTR(now); 
 		}
 		ft_printf("now: %p\n", now);
 		ft_printf("next: %p\n", next);
@@ -41,8 +41,8 @@ void	find_block_and_free(void *chunk)
 		*chunk_prev = now;
 		unsigned int **chunk_next = NEXTPTR(chunk);
 		*chunk_next = next;
-		unsigned int **now_next = (unsigned int **)now + 2;
-		*now_next = (void *)chunk;
+		unsigned int **now_next = NEXTPTR(now);
+		*now_next = chunk;
 	}
 	ft_printf("%p\n", region->freelist);
 }
