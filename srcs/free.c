@@ -1,4 +1,4 @@
-#ifdef DARWIN
+#ifdef __APPLE__
 # include <malloc/malloc.h>
 #endif
 #include "malloc.h"
@@ -50,7 +50,7 @@ void	free(void *ptr)
 {
 	void	*chunk;
 
-#ifdef DARWIN
+#ifdef __APPLE__
 	malloc_zone_t	*zone;
 
 	zone = malloc_zone_from_ptr(ptr);
