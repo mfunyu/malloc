@@ -8,14 +8,11 @@
 
 void	add_chunk_to_freelist(void *chunk, void **freelist)
 {
-	if (!*freelist) {
-		*freelist = chunk;
-		PUT(NEXTPTR(chunk), 0);
-		PUT(PREVPTR(chunk), 0);
-	} else if (*freelist > chunk) {
+	if (!*freelist || *freelist > chunk) {
 		PUT(NEXTPTR(chunk), *freelist);
 		PUT(PREVPTR(chunk), 0);
-		PUT(PREVPTR(*freelist), chunk);
+		if (*freelist)
+			PUT(PREVPTR(*freelist), chunk);
 		*freelist = chunk;
 	} else {
 		void *now = *freelist;
