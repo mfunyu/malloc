@@ -2,7 +2,9 @@
 #include "ft_printf.h"
 #include <stddef.h>
 #include <stdlib.h>
+#ifdef HOST_ARCH
 #include <malloc/malloc.h>
+#endif
 
 void	find_block_and_free(void *chunk)
 {
@@ -56,21 +58,25 @@ void	find_block_and_free(void *chunk)
 void	free(void *ptr)
 {
 	void	*chunk;
+
+#ifdef HOST_ARCH
 	malloc_zone_t	*zone;
+
+	zone = malloc_zone_from_ptr(ptr);
+	if (zone) {
+		malloc_zone_free(zone, ptr);
+		return ;
+	}
+#endif
 
 	if (!ptr)
 		return ;
 	ft_printf("free called: %p\n", ptr);
 	
-	zone = malloc_zone_from_ptr(ptr);
-	if (zone) {
-		malloc_zone_free(zone, ptr);
+	chunk = ptr - WORD;
+	if (*(unsigned int *)(chunk + BYTE)) {
+		find_block_and_free(chunk);
 	} else {
-		chunk = ptr - WORD;
-		if (*(unsigned int *)(chunk + BYTE)) {
-			find_block_and_free(chunk);
-		} else {
-			exit(1);
-		}
+		exit(1);
 	}
 }
