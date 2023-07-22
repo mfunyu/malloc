@@ -6,6 +6,32 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+void	add_chunk_to_freelist(void *chunk, void **freelist)
+{
+	if (!*freelist) {
+		*freelist = chunk;
+		PUT(NEXTPTR(chunk), 0);
+		PUT(PREVPTR(chunk), 0);
+	} else if (*freelist > chunk) {
+		PUT(NEXTPTR(chunk), *freelist);
+		PUT(PREVPTR(chunk), 0);
+		PUT(PREVPTR(*freelist), chunk);
+		*freelist = chunk;
+	} else {
+		void *now = *freelist;
+		void *next = *NEXTPTR(now); 
+		while (next && next < chunk) {
+			now = next;
+			next = *NEXTPTR(now); 
+		}
+		PUT(PREVPTR(chunk), now);
+		PUT(NEXTPTR(chunk), next);
+		PUT(NEXTPTR(now), chunk);
+		if (next)
+			PUT(PREVPTR(next), chunk);
+	}
+}
+
 void	find_block_and_free(void *chunk)
 {
 	size_t		size;
@@ -19,31 +45,7 @@ void	find_block_and_free(void *chunk)
 	} else {
 		region = &g_regions.large_region;
 	}
-
-	ft_printf("%p\n", region->freelist);
-	if (!region->freelist) {
-		region->freelist = chunk;
-		PUT(NEXTPTR(chunk), 0);
-		PUT(PREVPTR(chunk), 0);
-	} else if (region->freelist > chunk) {
-		PUT(NEXTPTR(chunk), region->freelist);
-		PUT(PREVPTR(chunk), 0);
-		PUT(PREVPTR(region->freelist), chunk);
-		region->freelist = chunk;
-	} else {
-		void *now = region->freelist;
-		void *next = *NEXTPTR(now); 
-		while (next && next < chunk) {
-			now = next;
-			next = *NEXTPTR(now); 
-		}
-		PUT(PREVPTR(chunk), now);
-		PUT(NEXTPTR(chunk), next);
-		PUT(NEXTPTR(now), chunk);
-		if (next)
-			PUT(PREVPTR(next), chunk);
-	}
-	ft_printf("%p\n", region->freelist);
+	add_chunk_to_freelist(chunk, &(region->freelist));
 }
 
 void	free(void *ptr)
