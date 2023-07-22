@@ -1,10 +1,10 @@
+#ifdef DARWIN
+# include <malloc/malloc.h>
+#endif
 #include "malloc.h"
 #include "ft_printf.h"
 #include <stddef.h>
 #include <stdlib.h>
-#ifdef HOST_ARCH
-#include <malloc/malloc.h>
-#endif
 
 void	find_block_and_free(void *chunk)
 {
@@ -59,7 +59,7 @@ void	free(void *ptr)
 {
 	void	*chunk;
 
-#ifdef HOST_ARCH
+#ifdef DARWIN
 	malloc_zone_t	*zone;
 
 	zone = malloc_zone_from_ptr(ptr);
