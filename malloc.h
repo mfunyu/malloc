@@ -18,6 +18,8 @@
 #define SMALL_MAX 127 * 8192
 #define MIN_BLOCKS 100
 
+# define PUT(ptr, value) *ptr = value
+
 # define NEXTPTR(ptr) (unsigned int **)(ptr + WORD)
 # define PREVPTR(ptr) (unsigned int **)(ptr + WORD + BYTE)
 
