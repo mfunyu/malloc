@@ -19,6 +19,8 @@
 #define MIN_BLOCKS 100
 
 # define PUT(ptr, value) *ptr = value
+# define SIZE(ptr) *(unsigned int *)ptr;
+# define ALLOC(ptr) *(unsigned int *)(ptr + BYTE)
 
 # define NEXTPTR(ptr) (unsigned int **)(ptr + WORD)
 # define PREVPTR(ptr) (unsigned int **)(ptr + WORD + BYTE)

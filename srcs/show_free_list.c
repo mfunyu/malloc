@@ -25,23 +25,22 @@ static void	print_single_line(size_t len)
 
 void	show_free_list(t_region region)
 {
-    unsigned int    *freelist;
-    unsigned int    **ptr;
+    void    *freelist;
     size_t  size;
 
     ft_printf("Chunk Free\n");
+
     freelist = region.freelist;
-		print_single_line(10);
+	print_single_line(10);
     while (freelist) {
-		size = *(unsigned int *)freelist;
+		size = SIZE(freelist);
         ft_printf(" %p | ", freelist);
         ft_printf("%3d (%5p) | ", size, size);
-        ptr = (unsigned int **)freelist + 2;
-        ft_printf("%14p | ", *ptr);
-        ft_printf("%14p | ", *(ptr + 1));
+        ft_printf("%14p | ", *NEXTPTR(freelist));
+        ft_printf("%14p | ", *PREVPTR(freelist));
         ft_printf("\n");
 		print_single_line(10);
-		freelist = *ptr;
+		freelist = *NEXTPTR(freelist);
 	}
     ft_printf("\n");
 }
