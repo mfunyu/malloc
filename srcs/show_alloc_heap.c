@@ -35,7 +35,7 @@ void	print_head_to_end(void* head, void* tail)
 	while (chunk_ptr < tail)
 	{
 		mem = chunk_ptr + WORD;
-		size = *((unsigned int *)chunk_ptr);
+		size = SIZE(chunk_ptr);
 		print_single_line(ft_strlen(mem));
 
 		ft_printf(" %p ", chunk_ptr);
