@@ -23,6 +23,8 @@
 # define IS_ALLOCED(ptr) *(unsigned int *)(ptr + BYTE)
 # define ALLOC(ptr, value) *(unsigned int *)(ptr + BYTE) = value
 
+# define MEM(chunk) chunk + WORD
+# define CHUNK(mem) mem - WORD
 # define NEXTPTR(ptr) (unsigned int **)(ptr + WORD)
 # define PREVPTR(ptr) (unsigned int **)(ptr + WORD + BYTE)
 

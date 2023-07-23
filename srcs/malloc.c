@@ -114,7 +114,7 @@ void	*find_block_from_region(t_region *region, size_t size)
 				PUT(PREVPTR(next), prev);
 			if (free_chunk == region->freelist)
 				region->freelist = next;
-			return (free_chunk + WORD);
+			return (MEM(free_chunk));
 		}
 		free_chunk = *NEXTPTR(free_chunk);
 	}
@@ -126,7 +126,7 @@ void	*find_block_from_region(t_region *region, size_t size)
 	*(unsigned int *)free_chunk = size;
 	ALLOC(free_chunk, 1);
 	region->tail += size + WORD;
-	return (free_chunk + WORD);
+	return (MEM(free_chunk));
 }
 
 void	*find_block(size_t size)
