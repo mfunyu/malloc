@@ -6,39 +6,39 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-/*
-void	add_chunk_to_freelist(void *chunk, t_malloc_chunk **freelist)
+void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist)
 {
-	if (!*freelist || *freelist > chunk) {
-		PUT(NEXTPTR(chunk), *freelist);
-		PUT(PREVPTR(chunk), 0);
-		if (*freelist)
-			PUT(PREVPTR(*freelist), chunk);
+	t_malloc_chunk	*head;
+
+	head = *freelist;
+	if (!head || head->size >= chunk->size) {
+		chunk->fd = head;
+		chunk->bk = NULL;
+		if (head)
+			head->bk = chunk;
 		*freelist = chunk;
 	} else {
-		void *now = *freelist;
-		void *next = *NEXTPTR(now); 
-		while (next && next < chunk) {
-			now = next;
-			next = *NEXTPTR(now); 
+		t_malloc_chunk	*now;
+		
+		now = *freelist;
+		while (now->fd && now->fd->size < chunk->size) {
+			now = now->fd;
 		}
-		PUT(PREVPTR(chunk), now);
-		PUT(NEXTPTR(chunk), next);
-		PUT(NEXTPTR(now), chunk);
-		if (next)
-			PUT(PREVPTR(next), chunk);
+		chunk->bk = now;
+		chunk->fd = now->fd;
+		now->fd = chunk;
+		if (now->fd) {
+			now->fd->bk = chunk;
+		}
 	}
 }
-*/
 
-void	find_block_and_free(void *chunk)
+void	find_block_and_free(t_malloc_chunk *chunk)
 {
-	(void) chunk;
-	/*
 	size_t		size;
 	t_region	*region;
 
-	size = SIZE(chunk);
+	size = chunk->size;
 	if (size <= TINY_MAX) {
 		region = &g_regions.tiny_region;
 	} else if (size <= SMALL_MAX) {
@@ -47,13 +47,11 @@ void	find_block_and_free(void *chunk)
 		region = &g_regions.large_region;
 	}
 	add_chunk_to_freelist(chunk, &(region->freelist));
-	ALLOC(chunk, 0);
-	*/
 }
 
 void	free(void *ptr)
 {
-	void	*chunk;
+	t_malloc_chunk	*chunk;
 
 #ifdef __APPLE__
 	malloc_zone_t	*zone;
@@ -70,9 +68,5 @@ void	free(void *ptr)
 	ft_printf("free called: %p\n", ptr);
 	
 	chunk = ptr - WORD;
-	if (IS_ALLOCED(chunk)) {
-		find_block_and_free(chunk);
-	} else {
-		exit(1);
-	}
+	find_block_and_free(chunk);
 }
