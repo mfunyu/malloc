@@ -3,11 +3,12 @@
 # ---------------------------------------------------------------------------- #
 
 SRCS	:= malloc.c \
-			free.c \
-			realloc.c \
+			show_alloc_heap.c \
+			show_free_list.c \
+			free.c
+#			realloc.c \
 			calloc.c \
 			valloc.c \
-			print_malloc.c \
 			alloc_debug.c
 
 # ---------------------------------------------------------------------------- #
@@ -35,6 +36,8 @@ HOSTTYPE ?= $(shell uname -m)_$(shell uname -s)
 ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), amd64)
 	CFLAGS += -fPIC
 	HOST_ARCH = .amd64
+else ifeq ($(shell uname), Darwin)
+	DARWIN = 1
 endif
 
 # ---------------------------------------------------------------------------- #
@@ -46,7 +49,7 @@ all		: $(NAME)
 
 -include $(DEPS)
 
-$(NAME)	: $(DIR_OBJS) $(OBJS)
+$(NAME)	: $(DIR_OBJS) $(OBJS) $(DEPS)
 	$(MAKE) -C $(LIBFT) CFLAGS="$(CFLAGS)"
 	$(MAKE) -C $(PRINTF) LIBFT=../$(LIBFT) CFLAGS="$(CFLAGS)"
 	$(CC) $(CFLAGS) -shared -o $@ $(OBJS) $(LIBS)
@@ -80,9 +83,25 @@ re		: fclean all
 .PHONY	: setup
 setup	:
 	cp .env.example$(HOST_ARCH) .env
-	@echo run source .env
+	@echo RUN source .env
 
 .PHONY	: test
 test	: all setup
-	$(CC) $(CFLAGS) $(INCLUDES) ./test/main.c $(LIBS)
-	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./a.out 
+	$(CC) $(CFLAGS) $(INCLUDES) ./test/test.c $(LIBS)
+
+ifdef DARWIN
+	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./a.out
+else
+	LD_PRELOAD=./libft_malloc.so ./a.out
+endif
+
+.PHONY	: test2
+test2	: all setup
+	$(CC) $(INCLUDES) ./test/test2.c $(LIBS)
+
+ifdef DARWIN
+	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./a.out
+else
+	LD_PRELOAD=./libft_malloc.so ./a.out
+endif
+
