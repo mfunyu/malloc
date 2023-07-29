@@ -115,19 +115,17 @@ void	*find_block_from_region(t_region *region, size_t size)
 	}
 	*/
 	next = free_chunk->fd;
-	ft_printf("freec %d\n", free_chunk->size);
 	if (free_chunk->size > size + MINSIZE) {
 		next = (void *)free_chunk + size;
 		next->size = (free_chunk->size - size) | 1;
 		next->fd = free_chunk->fd;
 		next->bk = free_chunk->bk;
+		
+		free_chunk->size = size;
 	}
 	if (free_chunk == region->freelist) {
 		region->freelist = next;
-		ft_printf("aaa %p\n", region->freelist);
 	}
-	free_chunk->size = size;
-	ft_printf("here: %p\n", free_chunk);
 	return (MEM(free_chunk));
 }
 
