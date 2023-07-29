@@ -18,6 +18,8 @@
 #define SMALL_MAX 127 * 8192
 #define MIN_BLOCKS 100
 
+# define MINSIZE 16
+
 # define PUT(ptr, value) *ptr = value
 # define SIZE(ptr) *(unsigned int *)ptr;
 # define IS_ALLOCED(ptr) *(unsigned int *)(ptr + BYTE)
@@ -35,13 +37,19 @@ typedef enum s_size
 	LARGE
 }			e_size;
 
+typedef struct s_malloc_chunk
+{
+	size_t					prev_size;
+	size_t					size;
+	struct s_malloc_chunk 	*fd; 
+	struct s_malloc_chunk 	*bk; 
+}				t_malloc_chunk;
+
 typedef struct s_region
 {
-	size_t	map_size;
-	void	*head;
-	void	*tail;
-	void	*mapped_till;
-	void	*freelist;
+	size_t			map_size;
+	t_malloc_chunk	*blocks;
+	t_malloc_chunk	*freelist;
 }				t_region;
 
 typedef struct s_malloc

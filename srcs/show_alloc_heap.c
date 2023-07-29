@@ -2,7 +2,7 @@
 #include "malloc.h"
 #include "ft_printf.h"
 
-void show_alloc_heap(void)__attribute__((destructor));
+//void show_alloc_heap(void)__attribute__((destructor));
 
 void	print_line(size_t len)
 {
@@ -57,10 +57,10 @@ void	show_alloc_heap()
 	small = g_regions.small_region;
 	large = g_regions.large_region;
 	ft_printf("TINY: ");
-	print_head_to_end(tiny.head, tiny.tail);
+	print_head_to_end(tiny.blocks, (void *)tiny.blocks + tiny.map_size);
 	show_free_list(tiny);
 	ft_printf("SMALL: ");
-	print_head_to_end(small.head, small.tail);
-	ft_printf("LARGE: %p ~ NA (NA)\n", large.head);
+	print_head_to_end(small.blocks, (void *)small.blocks + tiny.map_size);
+	ft_printf("LARGE: %p ~ NA (NA)\n", large.blocks);
 	// print_head_to_end(g_large_head, NULL);
 }
