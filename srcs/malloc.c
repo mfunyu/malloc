@@ -119,8 +119,11 @@ void	*find_block_from_region(t_region *region, size_t size)
 		next = (void *)free_chunk + size;
 		next->size = (free_chunk->size - size) | 1;
 		next->fd = free_chunk->fd;
-		next->bk = free_chunk->bk;
-		
+		next->bk = free_chunk->bk;	
+		if (free_chunk->bk)
+			free_chunk->bk->fd = next;
+		if (free_chunk->fd)
+			free_chunk->fd->bk = next;
 		free_chunk->size = size;
 	}
 	if (free_chunk == region->freelist) {
