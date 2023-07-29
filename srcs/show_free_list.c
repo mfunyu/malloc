@@ -25,22 +25,20 @@ static void	print_single_line(size_t len)
 
 void	show_free_list(t_region region)
 {
-    void    *freelist;
-    size_t  size;
+    t_malloc_chunk    *freelist;
 
     ft_printf("Chunk Free\n");
 
     freelist = region.freelist;
 	print_single_line(10);
     while (freelist) {
-		size = SIZE(freelist);
         ft_printf(" %p | ", freelist);
-        ft_printf("%3d (%5p) | ", size, size);
-        ft_printf("%14p | ", *NEXTPTR(freelist));
-        ft_printf("%14p | ", *PREVPTR(freelist));
+        ft_printf("%3d (%5p) | ", freelist->size, freelist->size);
+        ft_printf("%14p | ", freelist->fd);
+        ft_printf("%14p | ", freelist->bk);
         ft_printf("\n");
 		print_single_line(10);
-		freelist = *NEXTPTR(freelist);
+		freelist = freelist->fd;
 	}
     ft_printf("\n");
 }

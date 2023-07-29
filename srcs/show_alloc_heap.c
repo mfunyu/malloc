@@ -2,7 +2,7 @@
 #include "malloc.h"
 #include "ft_printf.h"
 
-//void show_alloc_heap(void)__attribute__((destructor));
+void show_alloc_heap(void)__attribute__((destructor));
 
 void	print_line(size_t len)
 {
@@ -24,26 +24,26 @@ void	print_single_line(size_t len)
 	ft_putchar_fd('\n', STDOUT_FILENO);
 }
 
-void	print_head_to_end(void* head, void* tail)
+void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
 {
-	void	*chunk_ptr;
-	unsigned int  size;
+	t_malloc_chunk	*chunk;
 	void	*mem;
 
 	ft_printf("%p ~ %p (%d bytes)\n", head, tail, tail - head);
-	chunk_ptr = head;
-	while (chunk_ptr < tail)
+	chunk = head;
+	int i = 0;
+	while (chunk < tail && i < 4)
 	{
-		mem = chunk_ptr + WORD;
-		size = SIZE(chunk_ptr);
+		i++;
+		mem = MEM(chunk);
 		print_single_line(ft_strlen(mem));
 
-		ft_printf(" %p ", chunk_ptr);
+		ft_printf(" %p ", chunk);
 		ft_printf("| %s ", mem);
 		ft_printf("| %d ", ft_strlen(mem));
-		ft_printf("| (%u -> %p)\n", size, size);
+		ft_printf("| (%u -> %p)\n", chunk->size, chunk->size);
 		print_single_line(ft_strlen(mem));
-		chunk_ptr += size + WORD;
+		chunk = (void *)chunk + chunk->size;
 	}
 }
 

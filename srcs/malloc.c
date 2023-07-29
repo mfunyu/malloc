@@ -128,7 +128,7 @@ void	*find_block_from_region(t_region *region, size_t size)
 	}
 	free_chunk->size = size;
 	ft_printf("here: %p\n", free_chunk);
-	return ((void *)free_chunk + BYTE);
+	return (MEM(free_chunk));
 }
 
 void	*find_block(size_t size)

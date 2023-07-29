@@ -18,14 +18,14 @@
 #define SMALL_MAX 127 * 8192
 #define MIN_BLOCKS 100
 
-# define MINSIZE 16
+# define MINSIZE 24
 
 # define PUT(ptr, value) *ptr = value
 # define SIZE(ptr) *(unsigned int *)ptr;
 # define IS_ALLOCED(ptr) *(unsigned int *)(ptr + BYTE)
 # define ALLOC(ptr, value) *(unsigned int *)(ptr + BYTE) = value
 
-# define MEM(chunk) chunk + WORD
+# define MEM(chunk) (void *)chunk + WORD
 # define CHUNK(mem) mem - WORD
 # define NEXTPTR(ptr) (unsigned int **)(ptr + WORD)
 # define PREVPTR(ptr) (unsigned int **)(ptr + WORD + BYTE)
