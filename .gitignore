@@ -1,7 +1,9 @@
 *
 !*/
-!**/*.c
-!**/*.h
+!srcs/*.c
+!test/*.c
+!includes/*.h
 !Makefile
 !.env.example*
 !.gitignore
+!.github/*
