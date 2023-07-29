@@ -8,7 +8,7 @@ t_malloc	g_regions;
 
 size_t	align_size(size_t size)
 {
-	return ((size + (MALLOC_ALIGNMENT - 1)) & ~(MALLOC_ALIGNMENT - 1));
+	return ((size + 4 + (MALLOC_ALIGNMENT - 1)) & ~(MALLOC_ALIGNMENT - 1));
 }
 
 void	*alloc_pages_by_size(size_t map_size, void *start)
@@ -51,9 +51,13 @@ void	init_region(t_region *region, e_size size_type)
 			map_size = 0;
 	}
 	region->map_size = map_size;
-	region->head = alloc_pages_by_size(map_size, NULL);
-	region->tail = region->head;
-	region->mapped_till = region->head + region->map_size;
+	region->blocks = (t_malloc_chunk *)alloc_pages_by_size(map_size, NULL);
+	region->blocks->prev_size = 0;
+	region->blocks->size = map_size | 1;
+	region->blocks->fd = NULL;
+	region->blocks->bk = NULL;
+	
+	region->freelist = region->blocks;
 }
 
 void	init_malloc()
@@ -61,8 +65,6 @@ void	init_malloc()
 	g_regions.initialized = true;
 	init_region(&(g_regions.tiny_region), TINY);
 	init_region(&(g_regions.small_region), SMALL);
-
-	ft_printf("%p %p\n", g_regions.tiny_region.head, g_regions.small_region.head);
 }
 
 /*
@@ -99,36 +101,34 @@ nxtchunk-> + ----------------------+ -------
 
 void	*find_block_from_region(t_region *region, size_t size)
 {
-	void			*free_chunk;
-	void		 	*prev;
-	void		 	*next;
-	unsigned int	block_size;
+	t_malloc_chunk	*free_chunk;
+	t_malloc_chunk 	*next;
 
 	free_chunk = region->freelist;
-	while (free_chunk) {
-		block_size = SIZE(free_chunk);
-		if (block_size >= size) {
-			prev = *PREVPTR(free_chunk);
-			next = *NEXTPTR(free_chunk);
-			if (prev)
-				PUT(NEXTPTR(prev), next);
-			if (next)
-				PUT(PREVPTR(next), prev);
-			if (free_chunk == region->freelist)
-				region->freelist = next;
-			return (MEM(free_chunk));
-		}
-		free_chunk = *NEXTPTR(free_chunk);
+	while (free_chunk->fd && free_chunk->size < size) {
+		free_chunk = free_chunk->fd; 
 	}
+	/*
 	if (region->tail + size + WORD > region->mapped_till + 1) {
 		exit(1);
 		//ft_printf("%p\n", alloc_pages_by_size(region->map_size, region->mapped_till));
 	}
-	free_chunk = region->tail;
-	*(unsigned int *)free_chunk = size;
-	ALLOC(free_chunk, 1);
-	region->tail += size + WORD;
-	return (MEM(free_chunk));
+	*/
+	next = free_chunk->fd;
+	ft_printf("freec %d\n", free_chunk->size);
+	if (free_chunk->size > size + MINSIZE) {
+		next = (void *)free_chunk + size;
+		next->size = (free_chunk->size - size) | 1;
+		next->fd = free_chunk->fd;
+		next->bk = free_chunk->bk;
+	}
+	if (free_chunk == region->freelist) {
+		region->freelist = next;
+		ft_printf("aaa %p\n", region->freelist);
+	}
+	free_chunk->size = size;
+	ft_printf("here: %p\n", free_chunk);
+	return ((void *)free_chunk + BYTE);
 }
 
 void	*find_block(size_t size)
@@ -150,7 +150,7 @@ void	*find_block(size_t size)
 	} else if (aligned_size < SMALL_MAX) {
 		ptr = find_block_from_region(&(g_regions.small_region), aligned_size);
 	} else {
-		ptr = g_regions.large_region.head;
+		ptr = g_regions.large_region.blocks;
 	}
 
 	return (ptr);

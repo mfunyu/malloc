@@ -6,7 +6,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-void	add_chunk_to_freelist(void *chunk, void **freelist)
+/*
+void	add_chunk_to_freelist(void *chunk, t_malloc_chunk **freelist)
 {
 	if (!*freelist || *freelist > chunk) {
 		PUT(NEXTPTR(chunk), *freelist);
@@ -28,9 +29,12 @@ void	add_chunk_to_freelist(void *chunk, void **freelist)
 			PUT(PREVPTR(next), chunk);
 	}
 }
+*/
 
 void	find_block_and_free(void *chunk)
 {
+	(void) chunk;
+	/*
 	size_t		size;
 	t_region	*region;
 
@@ -44,6 +48,7 @@ void	find_block_and_free(void *chunk)
 	}
 	add_chunk_to_freelist(chunk, &(region->freelist));
 	ALLOC(chunk, 0);
+	*/
 }
 
 void	free(void *ptr)
