@@ -50,7 +50,10 @@ void	print_mem(t_malloc_chunk *chunk)
 		i = 0;
 		while (i < SIZE(chunk) && i < WORD) {
 			print_first_column(MEM(chunk) + i);
-			ft_printf(" %-20.8s |\n", MEM(chunk) + i);
+			ft_printf(" %-20.8s |", MEM(chunk) + i);
+			if (!i)
+				ft_printf(" mem");
+			ft_printf("\n");
 			i += BYTE;
 		}
 		if (i <= SIZE(chunk) - WORD) {
@@ -82,7 +85,7 @@ void	print_region(t_malloc_chunk* head, t_malloc_chunk* tail)
 	int i = 0;
 	chunk = head;
 	ft_printf("%p ~ %p (%d bytes)\n", head, tail, tail - head);
-	while (chunk < tail && ++i < 6)
+	while (chunk < tail && ++i < 8)
 	{
 		print_single_line(true);
 		print_first_column(chunk);
@@ -95,7 +98,7 @@ void	print_region(t_malloc_chunk* head, t_malloc_chunk* tail)
 			print_single_line(false);
 		}
 		print_first_column(&(chunk->size));
-		ft_printf(" %6d (%7p) | %d | \n", SIZE(chunk), SIZE(chunk), IS_PREV_IN_USE(chunk));
+		ft_printf(" %6d (%7p) | %d | size\n", SIZE(chunk), SIZE(chunk), IS_PREV_IN_USE(chunk));
 		print_mem(chunk);
 		chunk = NEXTCHUNK(chunk);
 	}
