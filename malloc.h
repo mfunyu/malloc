@@ -29,6 +29,7 @@
 # define CHUNK(mem) mem - WORD
 # define NEXTPTR(ptr) (unsigned int **)(ptr + WORD)
 # define PREVPTR(ptr) (unsigned int **)(ptr + WORD + BYTE)
+# define PREV_IN_USE 1
 
 typedef enum s_size
 {
@@ -63,5 +64,6 @@ typedef struct s_malloc
 extern t_malloc	g_regions;
 
 void	show_free_list(t_region region);
+void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist);
 
 #endif
