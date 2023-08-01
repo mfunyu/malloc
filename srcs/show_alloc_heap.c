@@ -44,8 +44,8 @@ void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
 	{
 		i++;
 		next = NEXTCHUNK(chunk);
-		is_current_inuse = IS_ALLOCED(next->size);
-		if (!IS_ALLOCED(chunk->size)) {
+		is_current_inuse = IS_PREV_IN_USE(next);
+		if (!IS_PREV_IN_USE(chunk)) {
 			print_head(chunk, true);
 			ft_printf(" %20p |", chunk->prev_size);
 			ft_printf(" %d\n", sizeof(chunk->prev_size));
@@ -53,7 +53,7 @@ void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
 		} else {
 			print_head(&(chunk->size), true);
 		}
-		ft_printf(" %16p | %d | (%d)\n", SIZE(chunk), IS_ALLOCED(chunk->size), SIZE(chunk));
+		ft_printf(" %16p | %d | (%d)\n", SIZE(chunk), IS_PREV_IN_USE(chunk), SIZE(chunk));
 		if (is_current_inuse) {
 			size_t i = 0;
 			while (i < ft_strlen(MEM(chunk))) {

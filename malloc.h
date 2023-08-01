@@ -22,7 +22,7 @@
 
 # define PUT(ptr, value) *ptr = value
 # define SIZE(chunk) (chunk->size & ~0x1)
-# define IS_ALLOCED(size) (size & 0x1)
+# define IS_PREV_IN_USE(chunk) (chunk->size & 0x1)
 # define ALLOC(ptr, value) *(unsigned int *)(ptr + BYTE) = value
 
 # define MEM(chunk) (void *)chunk + WORD
