@@ -63,6 +63,7 @@ typedef struct s_malloc
 
 extern t_malloc	g_regions;
 
+void	show_alloc_heap();
 void	show_free_list(t_region region);
 void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist);
 

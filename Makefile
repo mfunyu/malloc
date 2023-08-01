@@ -27,7 +27,7 @@ VPATH	:= srcs
 NAME	= libft_malloc_$(HOSTTYPE).so
 CC		:= gcc
 CFLAGS	=  -Wall -Wextra -Werror
-INCLUDES:= -I $(LIBFT) -I $(PRINTF) -I .
+INCLUDES:= -I includes -I $(LIBFT) -I $(PRINTF) -I .
 LIBS	:= -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
 OBJS	:= $(addprefix $(DIR_OBJS)/, $(SRCS:.c=.o))
 DEPS	:= $(OBJS:.o=.d)
