@@ -102,7 +102,7 @@ void	*find_block_from_region(t_region *region, size_t size)
 	t_malloc_chunk 	*next;
 
 	free_chunk = region->freelist;
-	while (free_chunk->fd && free_chunk->size < size) {
+	while (free_chunk->fd && SIZE(free_chunk->size) < size) {
 		free_chunk = free_chunk->fd; 
 	}
 	/*
@@ -112,16 +112,16 @@ void	*find_block_from_region(t_region *region, size_t size)
 	}
 	*/
 	next = free_chunk->fd;
-	if (free_chunk->size > size + MINSIZE) {
+	if (SIZE(free_chunk->size) > size + MINSIZE) {
 		next = (void *)free_chunk + size;
-		next->size = (free_chunk->size - size) | 1;
+		next->size = free_chunk->size - size;
 		next->fd = free_chunk->fd;
-		next->bk = free_chunk->bk;	
+		next->bk = free_chunk->bk;
 		if (free_chunk->bk)
 			free_chunk->bk->fd = next;
 		if (free_chunk->fd)
 			free_chunk->fd->bk = next;
-		free_chunk->size = size;
+		free_chunk->size = size | IS_ALLOCED(free_chunk->size);
 	}
 	if (free_chunk == region->freelist) {
 		region->freelist = next;

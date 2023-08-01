@@ -35,7 +35,8 @@ void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
 {
 	t_malloc_chunk	*chunk;
 	t_malloc_chunk	*next;
-	bool		is_prev_inuse;
+	size_t		size;
+	bool		is_current_inuse;
 
 	ft_printf("%p ~ %p (%d bytes)\n", head, tail, tail - head);
 	chunk = head;
@@ -43,9 +44,9 @@ void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
 	while (chunk < tail && i < 4)
 	{
 		i++;
-		next = (void *)chunk + chunk->size;
-		is_prev_inuse = IS_ALLOCED(next->size);
-
+		size = SIZE(chunk->size);
+		next = (void *)chunk + size;
+		is_current_inuse = IS_ALLOCED(next->size);
 		if (!IS_ALLOCED(chunk->size)) {
 			print_head(chunk, true);
 			ft_printf(" %20p |", chunk->prev_size);
@@ -54,8 +55,8 @@ void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
 		} else {
 			print_head(&(chunk->size), true);
 		}
-		ft_printf(" %16p | %d |\n", SIZE(chunk->size), IS_ALLOCED(chunk->size));
-		if (is_prev_inuse) {
+		ft_printf(" %16p | %d |\n", size, IS_ALLOCED(chunk->size));
+		if (is_current_inuse) {
 			size_t i = 0;
 			while (i < ft_strlen(MEM(chunk))) {
 				print_head(MEM(chunk) + i, false);
