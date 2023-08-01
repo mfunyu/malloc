@@ -114,7 +114,7 @@ void	*find_block_from_region(t_region *region, size_t size)
 	next = free_chunk->fd;
 	if (SIZE(free_chunk->size) > size + MINSIZE) {
 		next = (void *)free_chunk + size;
-		next->size = free_chunk->size - size;
+		next->size = (free_chunk->size - size) | PREV_IN_USE;
 		next->fd = free_chunk->fd;
 		next->bk = free_chunk->bk;
 		if (free_chunk->bk)
