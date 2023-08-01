@@ -5,24 +5,20 @@
 
 void show_alloc_heap(void)__attribute__((destructor));
 
-void	print_line(size_t len, bool sep)
+void	print_chars(size_t len, char c)
 {
 	size_t	i;
-	char	c;
 
-	c = '-';
-	if (sep)
-		c = '=';
 	i = 0;
 	while (i++ < len)
 		ft_putchar_fd(c, STDOUT_FILENO);
 }
 
-void	print_single_line(bool line)
+void	print_line(char c)
 {
-	print_line(18, line);
+	print_chars(18, c);
 	ft_putstr_fd("++", STDOUT_FILENO);
-	print_line(22, line);
+	print_chars(22, c);
 	ft_putstr_fd("+\n", STDOUT_FILENO);
 }
 
@@ -46,14 +42,14 @@ void	print_mem(t_malloc_chunk *chunk)
 
 	if (is_used) {
 		ft_printf("%s", CYAN);
-		print_single_line(false);
+		print_line('-');
 		i = 0;
 		while (i < SIZE(chunk) && i < WORD) {
 			print_first_column(MEM(chunk) + i);
-			ft_printf(" %-20.8s |", MEM(chunk) + i);
 			if (!i)
-				ft_printf(" mem");
-			ft_printf("\n");
+				ft_printf(" %-20.8s | mem\n", MEM(chunk) + i);
+			else
+				ft_printf(" %-20.8s |\n", MEM(chunk) + i);
 			i += BYTE;
 		}
 		if (i <= SIZE(chunk) - WORD) {
@@ -61,14 +57,14 @@ void	print_mem(t_malloc_chunk *chunk)
 			ft_printf(" %-20s |\n", "(( abbriviated ))");
 		}
 	} else {
-		print_single_line(false);
+		print_line('-');
 		print_first_column(&(chunk->fd));
 		ft_printf(" %20p | fd\n", chunk->fd);
-		print_single_line(false);
+		print_line('-');
 		print_first_column(&(chunk->bk));
 		ft_printf(" %20p | bk\n", chunk->bk);
 		if (WORD < SIZE(chunk) - WORD) {
-			print_single_line(false);
+			print_line('-');
 			print_first_column((void *)&(chunk->bk) + BYTE);
 			ft_printf(" %-20s |\n", "");
 			print_first_column(NULL);
@@ -82,27 +78,26 @@ void	print_region(t_malloc_chunk* head, t_malloc_chunk* tail)
 {
 	t_malloc_chunk	*chunk;
 
-	int i = 0;
 	chunk = head;
 	ft_printf("%p ~ %p (%d bytes)\n", head, tail, tail - head);
-	while (chunk < tail && ++i < 8)
+	while (chunk < tail)
 	{
-		print_single_line(true);
+		print_line('=');
 		print_first_column(chunk);
 		if (IS_PREV_IN_USE(chunk)) {
 			ft_printf(" %-20.8s |\n", chunk);
-			print_single_line(false);
+			print_line('-');
 			ft_printf("%s", RESET);
 		} else {
 			ft_printf(" %20p | prev_size\n", chunk->prev_size);
-			print_single_line(false);
+			print_line('-');
 		}
 		print_first_column(&(chunk->size));
 		ft_printf(" %6d (%7p) | %d | size\n", SIZE(chunk), SIZE(chunk), IS_PREV_IN_USE(chunk));
 		print_mem(chunk);
 		chunk = NEXTCHUNK(chunk);
 	}
-	print_single_line(true);
+	print_line('=');
 	ft_printf("%s", RESET);
 }
 
