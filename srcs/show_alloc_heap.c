@@ -17,20 +17,18 @@ void	print_line(size_t len, bool sep)
 		ft_putchar_fd(c, STDOUT_FILENO);
 }
 
-void	print_single_line()
+void	print_single_line(bool line)
 {
-	print_line(22, false);
+	print_line(18, line);
 	ft_putstr_fd("++", STDOUT_FILENO);
-	print_line(24, false);
+	print_line(22, line);
 	ft_putstr_fd("+\n", STDOUT_FILENO);
 }
 
-void	print_double_line()
+void	print_head(void *ptr, bool line)
 {
-	print_line(22, true);
-	ft_putstr_fd("++", STDOUT_FILENO);
-	print_line(24, true);
-	ft_putstr_fd("+\n", STDOUT_FILENO);
+	print_single_line(line);
+	ft_printf("%15p   ||", ptr);
 }
 
 void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
@@ -40,7 +38,6 @@ void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
 	bool		is_prev_inuse;
 
 	ft_printf("%p ~ %p (%d bytes)\n", head, tail, tail - head);
-	print_double_line();
 	chunk = head;
 	int i = 0;
 	while (chunk < tail && i < 4)
@@ -50,30 +47,31 @@ void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
 		is_prev_inuse = IS_ALLOCED(next->size);
 
 		if (!IS_ALLOCED(chunk->size)) {
-			ft_printf(" %20p ||", chunk->prev_size);
-			ft_printf(" (%20p) | %d\n", chunk, sizeof(chunk->prev_size));
-			print_single_line();
+			print_head(chunk, true);
+			ft_printf(" %20p |", chunk->prev_size);
+			ft_printf(" %d\n", sizeof(chunk->prev_size));
+			print_head(&(chunk->size), false);
+		} else {
+			print_head(&(chunk->size), true);
 		}
-		ft_printf(" %16p | %d ||", SIZE(chunk->size), IS_ALLOCED(chunk->size));
-		ft_printf(" (%20p) |\n", &(chunk->size));
-		print_single_line();
+		ft_printf(" %16p | %d |\n", SIZE(chunk->size), IS_ALLOCED(chunk->size));
 		if (is_prev_inuse) {
 			size_t i = 0;
 			while (i < ft_strlen(MEM(chunk))) {
-				ft_printf(" %-20.8s ||\n", MEM(chunk) + i);
+				print_head(MEM(chunk) + i, false);
+				ft_printf(" %-20.8s |\n", MEM(chunk) + i);
 				i += 8;
 			}
 		} else {
-			ft_printf(" %20p ||", chunk->fd);
-			ft_printf(" (%20p) |\n", &(chunk->fd));
-			print_single_line();
-			ft_printf(" %20p ||", chunk->bk);
-			ft_printf(" (%20p) |\n", &(chunk->bk));
+			print_head(&(chunk->fd), false);
+			ft_printf(" %20p |\n", chunk->fd);
+			print_head(&(chunk->bk), false);
+			ft_printf(" %20p |\n", chunk->bk);
 		}
 
 		chunk = next;
-		print_double_line();
 	}
+	print_single_line(true);
 }
 
 void	show_alloc_heap()
