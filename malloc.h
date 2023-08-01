@@ -21,13 +21,13 @@
 # define MINSIZE 24
 
 # define PUT(ptr, value) *ptr = value
-# define SIZE(size) ((size) & ~0x1)
+# define SIZE(chunk) (chunk->size & ~0x1)
 # define IS_ALLOCED(size) (size & 0x1)
 # define ALLOC(ptr, value) *(unsigned int *)(ptr + BYTE) = value
 
 # define MEM(chunk) (void *)chunk + WORD
 # define CHUNK(mem) mem - WORD
-# define NEXTCHUNK(chunk) ((void *)chunk + SIZE(chunk->size))
+# define NEXTCHUNK(chunk) ((void *)chunk + SIZE(chunk))
 # define PREVPTR(ptr) (unsigned int **)(ptr + WORD + BYTE)
 # define PREV_IN_USE 1
 

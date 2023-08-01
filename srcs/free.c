@@ -11,7 +11,7 @@ void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist)
 	t_malloc_chunk	*head;
 
 	head = *freelist;
-	if (!head || SIZE(head->size) >= SIZE(chunk->size)) {
+	if (!head || SIZE(head) >= SIZE(chunk)) {
 		chunk->fd = head;
 		chunk->bk = NULL;
 		if (head)
@@ -21,7 +21,7 @@ void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist)
 		t_malloc_chunk	*now;
 		
 		now = *freelist;
-		while (now->fd && SIZE(now->fd->size) < SIZE(chunk->size)) {
+		while (now->fd && SIZE(now->fd) < SIZE(chunk)) {
 			now = now->fd;
 		}
 		chunk->bk = now;
@@ -38,7 +38,7 @@ void	find_block_and_free(t_malloc_chunk *chunk)
 	size_t		size;
 	t_region	*region;
 
-	size = SIZE(chunk->size);
+	size = SIZE(chunk);
 	if (size <= TINY_MAX) {
 		region = &g_regions.tiny_region;
 	} else if (size <= SMALL_MAX) {
@@ -48,7 +48,7 @@ void	find_block_and_free(t_malloc_chunk *chunk)
 	}
 	add_chunk_to_freelist(chunk, &(region->freelist));
 	t_malloc_chunk *next = NEXTCHUNK(chunk);
-	next->prev_size = SIZE(chunk->size);
+	next->prev_size = SIZE(chunk);
 	next->size &= ~PREV_IN_USE;
 }
 
