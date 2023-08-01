@@ -122,10 +122,17 @@ void	*find_block_from_region(t_region *region, size_t size)
 		if (free_chunk->fd)
 			free_chunk->fd->bk = next;
 		free_chunk->size = size | IS_PREV_IN_USE(free_chunk);
+	} else {
+		if (free_chunk->bk) 
+			free_chunk->bk->fd = free_chunk->fd;
+		if (free_chunk->fd)
+			free_chunk->fd->bk = free_chunk->bk;	
 	}
 	if (free_chunk == region->freelist) {
 		region->freelist = next;
 	}
+	next = NEXTCHUNK(free_chunk);
+	next->size |= PREV_IN_USE;
 	return (MEM(free_chunk));
 }
 
