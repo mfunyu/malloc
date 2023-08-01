@@ -13,13 +13,12 @@ void	print_line(size_t len)
 		ft_putchar_fd('-', STDOUT_FILENO);
 }
 
-void	print_single_line(size_t len)
+void	print_single_line()
 {
-	print_line(16);
+	print_line(22);
 	ft_putchar_fd('+', STDOUT_FILENO);
-	print_line(len + 2);
 	ft_putchar_fd('+', STDOUT_FILENO);
-	print_line(4);
+	print_line(24);
 	ft_putchar_fd('+', STDOUT_FILENO);
 	ft_putchar_fd('\n', STDOUT_FILENO);
 }
@@ -27,7 +26,8 @@ void	print_single_line(size_t len)
 void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
 {
 	t_malloc_chunk	*chunk;
-	void	*mem;
+	t_malloc_chunk	*next;
+	bool		is_prev_inuse;
 
 	ft_printf("%p ~ %p (%d bytes)\n", head, tail, tail - head);
 	chunk = head;
@@ -35,15 +35,33 @@ void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
 	while (chunk < tail && i < 4)
 	{
 		i++;
-		mem = MEM(chunk);
-		print_single_line(ft_strlen(mem));
+		next = (void *)chunk + chunk->size;
+		is_prev_inuse = IS_ALLOCED(next->size);
 
-		ft_printf(" %p ", chunk);
-		ft_printf("| %s ", mem);
-		ft_printf("| %d ", ft_strlen(mem));
-		ft_printf("| (%u -> %p)\n", chunk->size, chunk->size);
-		print_single_line(ft_strlen(mem));
-		chunk = (void *)chunk + chunk->size;
+		print_single_line();
+		if (!IS_ALLOCED(chunk->size)) {
+			ft_printf(" %20p ||", chunk->prev_size);
+			ft_printf(" (%20p) | %d\n", chunk, sizeof(chunk->prev_size));
+			print_single_line();
+		}
+		ft_printf(" %16p | %d ||", SIZE(chunk->size), IS_ALLOCED(chunk->size));
+		ft_printf(" (%20p) |\n", &(chunk->size));
+		print_single_line();
+		if (is_prev_inuse) {
+			size_t i = 0;
+			while (i < ft_strlen(MEM(chunk))) {
+				ft_printf(" %-20.8s ||\n", MEM(chunk) + i);
+				i += 8;
+			}
+		} else {
+			ft_printf(" %20p ||", chunk->fd);
+			ft_printf(" (%20p) |\n", &(chunk->fd));
+			print_single_line();
+			ft_printf(" %20p ||", chunk->bk);
+			ft_printf(" (%20p) |\n", &(chunk->bk));
+		}
+
+		chunk = next;
 	}
 }
 
