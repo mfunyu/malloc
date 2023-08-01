@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include "malloc.h"
 #include "ft_printf.h"
+#include "print.h"
 
 void show_alloc_heap(void)__attribute__((destructor));
 
@@ -43,8 +44,9 @@ void	print_mem(t_malloc_chunk *chunk)
 	next = NEXTCHUNK(chunk);
 	is_used = IS_PREV_IN_USE(next);
 
-	print_single_line(false);
 	if (is_used) {
+		ft_printf("%s", CYAN);
+		print_single_line(false);
 		i = 0;
 		while (i < SIZE(chunk) && i < WORD) {
 			print_first_column(MEM(chunk) + i);
@@ -56,6 +58,7 @@ void	print_mem(t_malloc_chunk *chunk)
 			ft_printf(" %-20s |\n", "(( abbriviated ))");
 		}
 	} else {
+		print_single_line(false);
 		print_first_column(&(chunk->fd));
 		ft_printf(" %20p | fd\n", chunk->fd);
 		print_single_line(false);
@@ -79,22 +82,25 @@ void	print_region(t_malloc_chunk* head, t_malloc_chunk* tail)
 	int i = 0;
 	chunk = head;
 	ft_printf("%p ~ %p (%d bytes)\n", head, tail, tail - head);
-	while (chunk < tail && ++i < 4)
+	while (chunk < tail && ++i < 6)
 	{
 		print_single_line(true);
 		print_first_column(chunk);
 		if (IS_PREV_IN_USE(chunk)) {
 			ft_printf(" %-20.8s |\n", chunk);
+			print_single_line(false);
+			ft_printf("%s", RESET);
 		} else {
 			ft_printf(" %20p | prev_size\n", chunk->prev_size);
+			print_single_line(false);
 		}
-		print_single_line(false);
 		print_first_column(&(chunk->size));
 		ft_printf(" %6d (%7p) | %d | \n", SIZE(chunk), SIZE(chunk), IS_PREV_IN_USE(chunk));
 		print_mem(chunk);
 		chunk = NEXTCHUNK(chunk);
 	}
 	print_single_line(true);
+	ft_printf("%s", RESET);
 }
 
 void	show_alloc_heap()
