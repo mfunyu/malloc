@@ -27,7 +27,7 @@
 
 # define MEM(chunk) (void *)chunk + WORD
 # define CHUNK(mem) mem - WORD
-# define NEXTPTR(ptr) (unsigned int **)(ptr + WORD)
+# define NEXTCHUNK(chunk) ((void *)chunk + SIZE(chunk->size))
 # define PREVPTR(ptr) (unsigned int **)(ptr + WORD + BYTE)
 # define PREV_IN_USE 1
 

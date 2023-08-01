@@ -45,7 +45,7 @@ void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
 	{
 		i++;
 		size = SIZE(chunk->size);
-		next = (void *)chunk + size;
+		next = NEXTCHUNK(chunk);
 		is_current_inuse = IS_ALLOCED(next->size);
 		if (!IS_ALLOCED(chunk->size)) {
 			print_head(chunk, true);
