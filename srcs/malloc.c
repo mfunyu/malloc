@@ -53,11 +53,8 @@ void	init_region(t_region *region, e_size size_type)
 	region->map_size = map_size;
 	region->blocks = (t_malloc_chunk *)alloc_pages_by_size(map_size, NULL);
 	region->blocks->prev_size = 0;
-	region->blocks->size = map_size | 1;
-	region->blocks->fd = NULL;
-	region->blocks->bk = NULL;
-	
-	region->freelist = region->blocks;
+	region->blocks->size = map_size | PREV_IN_USE;
+	add_chunk_to_freelist(region->blocks, &region->freelist);
 }
 
 void	init_malloc()
