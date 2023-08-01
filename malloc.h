@@ -21,8 +21,8 @@
 # define MINSIZE 24
 
 # define PUT(ptr, value) *ptr = value
-# define SIZE(ptr) *(unsigned int *)ptr;
-# define IS_ALLOCED(ptr) *(unsigned int *)(ptr + BYTE)
+# define SIZE(size) ((size) & ~0x1)
+# define IS_ALLOCED(size) (size & 0x1)
 # define ALLOC(ptr, value) *(unsigned int *)(ptr + BYTE) = value
 
 # define MEM(chunk) (void *)chunk + WORD
