@@ -8,7 +8,7 @@ t_malloc	g_regions;
 
 size_t	align_size(size_t size)
 {
-	return ((size + 4 + (MALLOC_ALIGNMENT - 1)) & ~(MALLOC_ALIGNMENT - 1));
+	return ((size + 8 + (MALLOC_ALIGNMENT - 1)) & ~(MALLOC_ALIGNMENT - 1));
 }
 
 void	*alloc_pages_by_size(size_t map_size, void *start)
@@ -70,32 +70,32 @@ void	init_malloc()
 /*
 [chunk utilise]
    chunk-> + ----------------------+ -------
-           | size of prev chunk    | 4     ↑
+           | size of prev chunk    | 8     ↑
            + ----------------------+       |
-           | size              | P | 4     |chunk
+           | size              | P | 8     |chunk
      ptr-> + ----------------------+ ===== |
            |                       |     ↑ |
            | 〜〜〜 alloced 〜〜〜   |  ptr| |
    	       |                       |     | ↓ 
 nxtchunk-> + ----------------------+ ----|--       
-           |                       | 4   ↓ 
+           |                       | 8   ↓ 
            + ----------------------+ =====      
 
 [chunk free]
    chunk-> + ----------------------+ -------
-           | size of prev chunk    | 4     ↑
+           | size of prev chunk    | 8     ↑
            + ----------------------+       |
-           | size              | P | 4     |chunk
+           | size              | P | 8     |chunk
            + ----------------------+       |
-           | nextptr of free-lst   | 4     |
+           | nextptr of free-lst   | 8     |
            + ----------------------+       |
-		   | prevptr of free-lst   | 4     | 
+		   | prevptr of free-lst   | 8     | 
            + ----------------------+       |
            |                       |       |
            | 〜〜〜 alloced 〜〜〜   |       |
    	       |                       |       ↓ 
 nxtchunk-> + ----------------------+ -------       
-           | size of prev chunk    | 4     
+           | size of prev chunk    | 8     
            + ----------------------+
 */
 
