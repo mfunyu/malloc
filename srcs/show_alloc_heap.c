@@ -4,23 +4,33 @@
 
 void show_alloc_heap(void)__attribute__((destructor));
 
-void	print_line(size_t len)
+void	print_line(size_t len, bool sep)
 {
 	size_t	i;
+	char	c;
 
+	c = '-';
+	if (sep)
+		c = '=';
 	i = 0;
 	while (i++ < len)
-		ft_putchar_fd('-', STDOUT_FILENO);
+		ft_putchar_fd(c, STDOUT_FILENO);
 }
 
 void	print_single_line()
 {
-	print_line(22);
-	ft_putchar_fd('+', STDOUT_FILENO);
-	ft_putchar_fd('+', STDOUT_FILENO);
-	print_line(24);
-	ft_putchar_fd('+', STDOUT_FILENO);
-	ft_putchar_fd('\n', STDOUT_FILENO);
+	print_line(22, false);
+	ft_putstr_fd("++", STDOUT_FILENO);
+	print_line(24, false);
+	ft_putstr_fd("+\n", STDOUT_FILENO);
+}
+
+void	print_double_line()
+{
+	print_line(22, true);
+	ft_putstr_fd("++", STDOUT_FILENO);
+	print_line(24, true);
+	ft_putstr_fd("+\n", STDOUT_FILENO);
 }
 
 void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
@@ -30,6 +40,7 @@ void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
 	bool		is_prev_inuse;
 
 	ft_printf("%p ~ %p (%d bytes)\n", head, tail, tail - head);
+	print_double_line();
 	chunk = head;
 	int i = 0;
 	while (chunk < tail && i < 4)
@@ -38,7 +49,6 @@ void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
 		next = (void *)chunk + chunk->size;
 		is_prev_inuse = IS_ALLOCED(next->size);
 
-		print_single_line();
 		if (!IS_ALLOCED(chunk->size)) {
 			ft_printf(" %20p ||", chunk->prev_size);
 			ft_printf(" (%20p) | %d\n", chunk, sizeof(chunk->prev_size));
@@ -62,6 +72,7 @@ void	print_head_to_end(t_malloc_chunk* head, t_malloc_chunk* tail)
 		}
 
 		chunk = next;
+		print_double_line();
 	}
 }
 
