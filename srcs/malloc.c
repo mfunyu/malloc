@@ -121,7 +121,7 @@ void	*find_block_from_region(t_region *region, size_t size)
 			free_chunk->bk->fd = next;
 		if (free_chunk->fd)
 			free_chunk->fd->bk = next;
-		free_chunk->size = size | IS_ALLOCED(free_chunk->size);
+		free_chunk->size = size | IS_PREV_IN_USE(free_chunk);
 	}
 	if (free_chunk == region->freelist) {
 		region->freelist = next;
