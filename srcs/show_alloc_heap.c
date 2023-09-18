@@ -33,22 +33,18 @@ void	print_first_column(void *ptr)
 
 void	print_used(t_malloc_chunk *chunk)
 {
-	size_t	i;
 	size_t	malloced_size;
+	void	*address;
 
 	ft_printf("%s", CYAN);
 	print_line('-');
-	i = 0;
 	malloced_size = SIZE(chunk) - HEADER_SIZE;
-	while (i < malloced_size && i < WORD) {
-		print_first_column(MEM(chunk) + i);
-		if (!i)
-			ft_printf(" %-20.8s | mem\n", MEM(chunk) + i);
-		else
-			ft_printf(" %-20.8s |\n", MEM(chunk) + i);
-		i += BYTE;
-	}
-	if (i + WORD <= malloced_size) {
+	address = MEM(chunk);
+	print_first_column(address);
+	ft_printf(" %-20.8s | mem\n", address);
+	print_first_column(address + BYTE);
+	ft_printf(" %-20.8s |\n", address + BYTE);
+	if (MINSIZE < malloced_size) {
 		print_first_column(NULL);
 		ft_printf(" %-20s |\n", "(( abbriviated ))");
 	}	
