@@ -34,11 +34,13 @@ void	print_first_column(void *ptr)
 void	print_used(t_malloc_chunk *chunk)
 {
 	size_t	i;
+	size_t	malloced_size;
 
 	ft_printf("%s", CYAN);
 	print_line('-');
 	i = 0;
-	while (i < SIZE(chunk) && i < WORD) {
+	malloced_size = SIZE(chunk) - HEADER_SIZE;
+	while (i < malloced_size && i < WORD) {
 		print_first_column(MEM(chunk) + i);
 		if (!i)
 			ft_printf(" %-20.8s | mem\n", MEM(chunk) + i);
@@ -46,7 +48,7 @@ void	print_used(t_malloc_chunk *chunk)
 			ft_printf(" %-20.8s |\n", MEM(chunk) + i);
 		i += BYTE;
 	}
-	if (i <= SIZE(chunk) - WORD) {
+	if (i + WORD <= malloced_size) {
 		print_first_column(NULL);
 		ft_printf(" %-20s |\n", "(( abbriviated ))");
 	}	
