@@ -104,6 +104,23 @@ nxtchunk-> + ----------------------+ -------
            | size of prev chunk    | 8     
            + ----------------------+
 */
+void	freelst_replace(t_malloc_chunk *old, t_malloc_chunk *new)
+{
+	new->fd = old->fd;
+	new->bk = old->bk;
+	if (old->bk)
+		old->bk->fd = new;
+	if (old->fd)
+		old->fd->bk = new;
+}
+
+void	freelst_pop(t_malloc_chunk *lst)
+{
+	if (lst->bk)
+		lst->bk->fd = lst->fd;
+	if (lst->fd)
+		lst->fd->bk = lst->bk;
+}
 
 void	*find_block_from_region(t_region *region, size_t size)
 {
@@ -125,19 +142,11 @@ void	*find_block_from_region(t_region *region, size_t size)
 	next = free_chunk->fd;
 	if (SIZE(free_chunk) > chunk_size) {
 		next = (void *)free_chunk + chunk_size;
+		freelst_replace(free_chunk, next);
 		next->size = (free_chunk->size - chunk_size) | PREV_IN_USE;
-		next->fd = free_chunk->fd;
-		next->bk = free_chunk->bk;
-		if (free_chunk->bk)
-			free_chunk->bk->fd = next;
-		if (free_chunk->fd)
-			free_chunk->fd->bk = next;
 		free_chunk->size = chunk_size | IS_PREV_IN_USE(free_chunk);
 	} else {
-		if (free_chunk->bk) 
-			free_chunk->bk->fd = free_chunk->fd;
-		if (free_chunk->fd)
-			free_chunk->fd->bk = free_chunk->bk;	
+		freelst_pop(free_chunk);
 	}
 	if (free_chunk == region->freelist) {
 		region->freelist = next;
