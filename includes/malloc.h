@@ -18,6 +18,7 @@
 #define SMALL_MAX 127 * 8192
 #define MIN_BLOCKS 100
 
+#define HEADER_SIZE BYTE
 # define MINSIZE 24
 
 # define PUT(ptr, value) *ptr = value
