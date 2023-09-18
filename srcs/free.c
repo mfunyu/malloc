@@ -26,17 +26,23 @@ void	freelst_insert(t_malloc_chunk *prev, t_malloc_chunk *new)
 
 void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist)
 {
+	t_malloc_chunk	*lst;
+	
 	if (!*freelist || SIZE((*freelist)) >= SIZE(chunk)) {
 		freelst_add_front(freelist, chunk);
 	} else {
-		t_malloc_chunk	*lst;
-		
 		lst = *freelist;
 		while (lst->fd && SIZE(lst->fd) < SIZE(chunk)) {
 			lst = lst->fd;
 		}
 		freelst_insert(lst, chunk);
 	}
+}
+
+void	merge_free_blocks(t_malloc_chunk *chunk)	
+{
+	(void)chunk;
+	//TODO: impl #4
 }
 
 void	find_block_and_free(t_malloc_chunk *chunk)
@@ -52,6 +58,8 @@ void	find_block_and_free(t_malloc_chunk *chunk)
 	} else {
 		region = &g_regions.large_region;
 	}
+	if (!IS_PREV_IN_USE(chunk))
+		merge_free_blocks(chunk);
 	add_chunk_to_freelist(chunk, &(region->freelist));
 	t_malloc_chunk *next = NEXTCHUNK(chunk);
 	next->prev_size = SIZE(chunk);
