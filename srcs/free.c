@@ -26,10 +26,10 @@ void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist)
 		}
 		chunk->bk = now;
 		chunk->fd = now->fd;
-		now->fd = chunk;
 		if (now->fd) {
 			now->fd->bk = chunk;
 		}
+		now->fd = chunk;
 	}
 }
 
