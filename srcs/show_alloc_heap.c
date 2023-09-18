@@ -31,52 +31,51 @@ void	print_first_column(void *ptr)
 	}
 }
 
-void	print_mem(t_malloc_chunk *chunk)
+void	print_used(t_malloc_chunk *chunk)
 {
-	t_malloc_chunk	*next;
-	bool			is_used;
+	size_t	i;
+
+	ft_printf("%s", CYAN);
+	print_line('-');
+	i = 0;
+	while (i < SIZE(chunk) && i < WORD) {
+		print_first_column(MEM(chunk) + i);
+		if (!i)
+			ft_printf(" %-20.8s | mem\n", MEM(chunk) + i);
+		else
+			ft_printf(" %-20.8s |\n", MEM(chunk) + i);
+		i += BYTE;
+	}
+	if (i <= SIZE(chunk) - WORD) {
+		print_first_column(NULL);
+		ft_printf(" %-20s |\n", "(( abbriviated ))");
+	}	
+}
+
+void	print_unused(t_malloc_chunk *chunk)
+{
 	size_t			i;
 
-	next = NEXTCHUNK(chunk);
-	is_used = IS_PREV_IN_USE(next);
-
-	if (is_used) {
-		ft_printf("%s", CYAN);
+	print_line('-');
+	print_first_column(&(chunk->fd));
+	ft_printf(" %20p | fd\n", chunk->fd);
+	print_line('-');
+	print_first_column(&(chunk->bk));
+	ft_printf(" %20p | bk\n", chunk->bk);
+	if (WORD < SIZE(chunk) - WORD) {
 		print_line('-');
-		i = 0;
-		while (i < SIZE(chunk) && i < WORD) {
-			print_first_column(MEM(chunk) + i);
-			if (!i)
-				ft_printf(" %-20.8s | mem\n", MEM(chunk) + i);
-			else
-				ft_printf(" %-20.8s |\n", MEM(chunk) + i);
-			i += BYTE;
-		}
-		if (i <= SIZE(chunk) - WORD) {
-			print_first_column(NULL);
-			ft_printf(" %-20s |\n", "(( abbriviated ))");
-		}
-	} else {
-		print_line('-');
-		print_first_column(&(chunk->fd));
-		ft_printf(" %20p | fd\n", chunk->fd);
-		print_line('-');
-		print_first_column(&(chunk->bk));
-		ft_printf(" %20p | bk\n", chunk->bk);
-		if (WORD < SIZE(chunk) - WORD) {
-			print_line('-');
-			print_first_column((void *)&(chunk->bk) + BYTE);
-			ft_printf(" %-20s |\n", "");
-			print_first_column(NULL);
-			i = SIZE(chunk) - WORD - WORD;
-			ft_printf(" [%8d (%7p)] |\n", i, i);
-		}
+		print_first_column((void *)&(chunk->bk) + BYTE);
+		ft_printf(" %-20s |\n", "");
+		print_first_column(NULL);
+		i = SIZE(chunk) - WORD - WORD;
+		ft_printf(" [%8d (%7p)] |\n", i, i);
 	}
 }
 
 void	print_region(t_malloc_chunk* head, t_malloc_chunk* tail)
 {
 	t_malloc_chunk	*chunk;
+	t_malloc_chunk	*next;
 
 	chunk = head;
 	ft_printf("%p ~ %p (%d bytes)\n", head, tail, tail - head);
@@ -94,11 +93,14 @@ void	print_region(t_malloc_chunk* head, t_malloc_chunk* tail)
 		}
 		print_first_column(&(chunk->size));
 		ft_printf(" %6d (%7p) | %d | size\n", SIZE(chunk), SIZE(chunk), IS_PREV_IN_USE(chunk));
-		print_mem(chunk);
-		chunk = NEXTCHUNK(chunk);
+		next = NEXTCHUNK(chunk);
+		if (next == tail || !IS_PREV_IN_USE(next))
+			print_unused(chunk);
+		else
+			print_used(chunk);
+		chunk = next;
 	}
 	print_line('=');
-	ft_printf("%s", RESET);
 }
 
 void	show_alloc_heap()
@@ -115,6 +117,7 @@ void	show_alloc_heap()
 	show_free_list(tiny);
 	ft_printf("SMALL: ");
 	print_region(small.blocks, (void *)small.tail);
+	show_free_list(small);
 	ft_printf("LARGE: %p ~ NA (NA)\n", large.blocks);
 	// print_head_to_end(g_large_head, NULL);
 }
