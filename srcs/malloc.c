@@ -52,6 +52,7 @@ void	init_region(t_region *region, e_size size_type)
 	}
 	region->map_size = map_size;
 	region->blocks = (t_malloc_chunk *)alloc_pages_by_size(map_size, NULL);
+	region->tail = (void *)region->blocks + map_size;
 	region->blocks->prev_size = 0;
 	region->blocks->size = map_size | PREV_IN_USE;
 	add_chunk_to_freelist(region->blocks, &region->freelist);
@@ -153,6 +154,7 @@ void	*find_block(size_t size)
 	if (aligned_size < TINY_MAX) {
 		ptr = find_block_from_region(&(g_regions.tiny_region), aligned_size);
 	} else if (aligned_size < SMALL_MAX) {
+		ft_printf("here\n");
 		ptr = find_block_from_region(&(g_regions.small_region), aligned_size);
 	} else {
 		ptr = g_regions.large_region.blocks;
