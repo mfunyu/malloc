@@ -8,19 +8,34 @@ char *set_data(size_t size, int chr)
 	ft_memset(ptr, chr, size);
 	ptr[size] = '\0';
 
+	ft_printf("%p: %c\n", ptr, chr);
 	return ptr;
+}
+
+void	check_free()
+{
+	char*	ptr1;
+	(void)ptr1;
+	ptr1 = set_data(21, '*');
+	ptr1 = set_data(43, 'b');
+	ptr1 = set_data(4, 'c');
+	free(ptr1);
+	ptr1 = set_data(43, '!');
+	free(ptr1);
+}
+
+void	check_small_alloc()
+{
+	set_data(1, '1');
+	set_data(2, '2');
+	set_data(3, '3');
+	set_data(4, '4');
 }
 
 int main()
 {
-	/* single free check
-	 */
-	{
-		char*	ptr1;
-		ptr1 = set_data(21, '*');
-		free(ptr1);
-    	set_data(41, 'b');
-	}	
+	check_small_alloc();
+	check_free();
 	/* basic check
 	{
 		set_data(21, 'b');
