@@ -6,30 +6,36 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+void	freelst_add_front(t_malloc_chunk **lst, t_malloc_chunk *new)
+{
+	new->fd = *lst;
+	new->bk = NULL;
+	if (*lst)
+		(*lst)->bk = new;
+	*lst = new;
+}
+
+void	freelst_insert(t_malloc_chunk *prev, t_malloc_chunk *new)
+{
+	new->bk = prev;
+	new->fd = prev->fd;
+	if (prev->fd)
+		prev->fd->bk = new;
+	prev->fd = new;
+}
+
 void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist)
 {
-	t_malloc_chunk	*head;
-
-	head = *freelist;
-	if (!head || SIZE(head) >= SIZE(chunk)) {
-		chunk->fd = head;
-		chunk->bk = NULL;
-		if (head)
-			head->bk = chunk;
-		*freelist = chunk;
+	if (!*freelist || SIZE((*freelist)) >= SIZE(chunk)) {
+		freelst_add_front(freelist, chunk);
 	} else {
-		t_malloc_chunk	*now;
+		t_malloc_chunk	*lst;
 		
-		now = *freelist;
-		while (now->fd && SIZE(now->fd) < SIZE(chunk)) {
-			now = now->fd;
+		lst = *freelist;
+		while (lst->fd && SIZE(lst->fd) < SIZE(chunk)) {
+			lst = lst->fd;
 		}
-		chunk->bk = now;
-		chunk->fd = now->fd;
-		if (now->fd) {
-			now->fd->bk = chunk;
-		}
-		now->fd = chunk;
+		freelst_insert(lst, chunk);
 	}
 }
 
@@ -70,6 +76,6 @@ void	free(void *ptr)
 		return ;
 	ft_printf("free called: %p\n", ptr);
 	
-	chunk = ptr - WORD;
+	chunk = CHUNK(ptr);
 	find_block_and_free(chunk);
 }
