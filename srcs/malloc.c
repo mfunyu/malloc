@@ -8,7 +8,15 @@ t_malloc	g_regions;
 
 size_t	align_size(size_t size)
 {
-	return ((size + 8 + (MALLOC_ALIGNMENT - 1)) & ~(MALLOC_ALIGNMENT - 1));
+	return ((size + (BYTE - 1)) & ~(BYTE - 1));
+}
+
+size_t align_chunk_size(size_t size)
+{
+	if (size < MINSIZE)
+		size = MINSIZE;
+	size += HEADER_SIZE;
+	return ((size + (MALLOC_ALIGNMENT - 1)) & ~(MALLOC_ALIGNMENT - 1));
 }
 
 void	*alloc_pages_by_size(size_t map_size, void *start)
@@ -101,9 +109,11 @@ void	*find_block_from_region(t_region *region, size_t size)
 {
 	t_malloc_chunk	*free_chunk;
 	t_malloc_chunk 	*next;
+	size_t			chunk_size;
 
 	free_chunk = region->freelist;
-	while (free_chunk->fd && SIZE(free_chunk) < size) {
+	chunk_size = align_chunk_size(size);	
+	while (free_chunk->fd && SIZE(free_chunk) < chunk_size) {
 		free_chunk = free_chunk->fd; 
 	}
 	/*
@@ -113,16 +123,16 @@ void	*find_block_from_region(t_region *region, size_t size)
 	}
 	*/
 	next = free_chunk->fd;
-	if (SIZE(free_chunk) > size + MINSIZE) {
-		next = (void *)free_chunk + size;
-		next->size = (free_chunk->size - size) | PREV_IN_USE;
+	if (SIZE(free_chunk) > chunk_size) {
+		next = (void *)free_chunk + chunk_size;
+		next->size = (free_chunk->size - chunk_size) | PREV_IN_USE;
 		next->fd = free_chunk->fd;
 		next->bk = free_chunk->bk;
 		if (free_chunk->bk)
 			free_chunk->bk->fd = next;
 		if (free_chunk->fd)
 			free_chunk->fd->bk = next;
-		free_chunk->size = size | IS_PREV_IN_USE(free_chunk);
+		free_chunk->size = chunk_size | IS_PREV_IN_USE(free_chunk);
 	} else {
 		if (free_chunk->bk) 
 			free_chunk->bk->fd = free_chunk->fd;
