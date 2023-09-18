@@ -49,7 +49,7 @@ all		: $(NAME)
 
 -include $(DEPS)
 
-$(NAME)	: $(DIR_OBJS) $(OBJS) $(DEPS)
+$(NAME)	: $(DIR_OBJS) $(OBJS)
 	$(MAKE) -C $(LIBFT) CFLAGS="$(CFLAGS)"
 	$(MAKE) -C $(PRINTF) LIBFT=../$(LIBFT) CFLAGS="$(CFLAGS)"
 	$(CC) $(CFLAGS) -shared -o $@ $(OBJS) $(LIBS)
