@@ -49,6 +49,7 @@ void	find_block_and_free(t_malloc_chunk *chunk)
 {
 	size_t		size;
 	t_region	*region;
+	t_malloc_chunk *next;
 
 	size = SIZE(chunk);
 	if (size <= TINY_MAX) {
@@ -59,10 +60,14 @@ void	find_block_and_free(t_malloc_chunk *chunk)
 		region = &g_regions.large_region;
 	}
 	chunk->size &= ~ALLOCED;
+	next = NEXTCHUNK(chunk);
+	if (next != region->tail && !IS_ALLOCED(next)) {
+		chunk->size += SIZE(next);
+		//freelst_pop(next);
+	}
 	if (!IS_PREV_IN_USE(chunk))
 		merge_free_blocks(chunk);
 	add_chunk_to_freelist(chunk, &(region->freelist));
-	t_malloc_chunk *next = NEXTCHUNK(chunk);
 	next->prev_size = SIZE(chunk);
 	next->size &= ~PREV_IN_USE;
 }
