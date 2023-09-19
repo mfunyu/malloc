@@ -104,23 +104,6 @@ nxtchunk-> + ----------------------+ -------
            | size of prev chunk    | 8     
            + ----------------------+
 */
-void	freelst_replace(t_malloc_chunk *old, t_malloc_chunk *new)
-{
-	new->fd = old->fd;
-	new->bk = old->bk;
-	if (old->bk)
-		old->bk->fd = new;
-	if (old->fd)
-		old->fd->bk = new;
-}
-
-void	freelst_pop(t_malloc_chunk *lst)
-{
-	if (lst->bk)
-		lst->bk->fd = lst->fd;
-	if (lst->fd)
-		lst->fd->bk = lst->bk;
-}
 
 void	*find_block_from_region(t_region *region, size_t size)
 {
