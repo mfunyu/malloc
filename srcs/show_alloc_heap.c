@@ -90,9 +90,9 @@ void	print_region(t_malloc_chunk* head, t_malloc_chunk* tail)
 			print_line('-');
 		}
 		print_first_column(&(chunk->size));
-		ft_printf(" %6d (%7p) | %d | %d | size\n", SIZE(chunk), SIZE(chunk), IS_PREV_IN_USE(chunk), IS_ALLOCED(chunk));
+		ft_printf(" %6d (%7p) | %d | %d | size\n", SIZE(chunk), SIZE(chunk), (bool)IS_PREV_IN_USE(chunk), IS_ALLOCED(chunk));
 		next = NEXTCHUNK(chunk);
-		if (next == tail || !IS_PREV_IN_USE(next))
+		if (next == tail || !IS_ALLOCED(chunk))
 			print_unused(chunk);
 		else
 			print_used(chunk);
