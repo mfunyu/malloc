@@ -28,10 +28,12 @@ void	freelst_replace(t_malloc_chunk *old, t_malloc_chunk *new)
 		old->fd->bk = new;
 }
 
-void	freelst_pop(t_malloc_chunk *lst)
+void	freelst_pop(t_malloc_chunk *lst, t_malloc_chunk **head)
 {
 	if (lst->bk)
 		lst->bk->fd = lst->fd;
 	if (lst->fd)
 		lst->fd->bk = lst->bk;
+	if (lst == *head)
+		*head = lst->fd;
 }

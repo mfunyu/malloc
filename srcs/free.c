@@ -40,7 +40,7 @@ void	find_block_and_free(t_malloc_chunk *chunk)
 	next = NEXTCHUNK(chunk);
 	if (next != region->tail && !IS_ALLOCED(next)) { //merge with one after
 		chunk->size += SIZE(next);
-		freelst_pop(next);
+		freelst_pop(next, &(region->freelist));
 		next = NEXTCHUNK(next);
 		size = SIZE(chunk);
 	}
@@ -48,8 +48,7 @@ void	find_block_and_free(t_malloc_chunk *chunk)
 		prev = (void *)chunk - chunk->prev_size;
 		prev->size += SIZE(chunk);
 		size = SIZE(prev);
-	}
-	else
+	} else
 		add_chunk_to_freelist(chunk, &(region->freelist));
 	next->prev_size = size;
 	next->size &= ~PREV_IN_USE;

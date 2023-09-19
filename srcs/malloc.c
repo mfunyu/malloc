@@ -129,7 +129,7 @@ void	*find_block_from_region(t_region *region, size_t size)
 		next->size = (free_chunk->size - chunk_size) | PREV_IN_USE;
 		free_chunk->size = chunk_size | IS_PREV_IN_USE(free_chunk);
 	} else {
-		freelst_pop(free_chunk);
+		freelst_pop(free_chunk, &(region->freelist));
 	}
 	if (free_chunk == region->freelist) {
 		region->freelist = next;
