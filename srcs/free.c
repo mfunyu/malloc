@@ -21,17 +21,12 @@ void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist)
 	}
 }
 
-void	merge_free_blocks(t_malloc_chunk *chunk)	
-{
-	(void)chunk;
-	//TODO: impl #4
-}
-
 void	find_block_and_free(t_malloc_chunk *chunk)
 {
 	size_t		size;
 	t_region	*region;
 	t_malloc_chunk *next;
+	t_malloc_chunk	*prev;
 
 	size = SIZE(chunk);
 	if (size <= TINY_MAX) {
@@ -43,14 +38,20 @@ void	find_block_and_free(t_malloc_chunk *chunk)
 	}
 	chunk->size &= ~ALLOCED;
 	next = NEXTCHUNK(chunk);
-	if (next != region->tail && !IS_ALLOCED(next)) {
+	if (next != region->tail && !IS_ALLOCED(next)) { //merge with one after
 		chunk->size += SIZE(next);
 		freelst_pop(next);
+		next = NEXTCHUNK(next);
+		size = SIZE(chunk);
 	}
-	if (!IS_PREV_IN_USE(chunk))
-		merge_free_blocks(chunk);
-	add_chunk_to_freelist(chunk, &(region->freelist));
-	next->prev_size = SIZE(chunk);
+	if (!IS_PREV_IN_USE(chunk)) { //merge with just before
+		prev = (void *)chunk - chunk->prev_size;
+		prev->size += SIZE(chunk);
+		size = SIZE(prev);
+	}
+	else
+		add_chunk_to_freelist(chunk, &(region->freelist));
+	next->prev_size = size;
 	next->size &= ~PREV_IN_USE;
 }
 
