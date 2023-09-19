@@ -73,7 +73,6 @@ void	print_unused(t_malloc_chunk *chunk)
 void	print_region(t_malloc_chunk* head, t_malloc_chunk* tail)
 {
 	t_malloc_chunk	*chunk;
-	t_malloc_chunk	*next;
 
 	chunk = head;
 	ft_printf("%p ~ %p (%d bytes)\n", head, tail, tail - head);
@@ -91,12 +90,11 @@ void	print_region(t_malloc_chunk* head, t_malloc_chunk* tail)
 		}
 		print_first_column(&(chunk->size));
 		ft_printf(" %6d (%7p) | %d | %d | size\n", SIZE(chunk), SIZE(chunk), (bool)IS_PREV_IN_USE(chunk), IS_ALLOCED(chunk));
-		next = NEXTCHUNK(chunk);
-		if (next == tail || !IS_ALLOCED(chunk))
+		if (!IS_ALLOCED(chunk))
 			print_unused(chunk);
 		else
 			print_used(chunk);
-		chunk = next;
+		chunk = NEXTCHUNK(chunk);
 	}
 	print_line('=');
 }
