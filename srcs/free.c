@@ -58,6 +58,7 @@ void	find_block_and_free(t_malloc_chunk *chunk)
 	} else {
 		region = &g_regions.large_region;
 	}
+	chunk->size &= ~ALLOCED;
 	if (!IS_PREV_IN_USE(chunk))
 		merge_free_blocks(chunk);
 	add_chunk_to_freelist(chunk, &(region->freelist));
