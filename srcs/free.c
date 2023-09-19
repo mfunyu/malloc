@@ -6,24 +6,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-void	freelst_add_front(t_malloc_chunk **lst, t_malloc_chunk *new)
-{
-	new->fd = *lst;
-	new->bk = NULL;
-	if (*lst)
-		(*lst)->bk = new;
-	*lst = new;
-}
-
-void	freelst_insert(t_malloc_chunk *prev, t_malloc_chunk *new)
-{
-	new->bk = prev;
-	new->fd = prev->fd;
-	if (prev->fd)
-		prev->fd->bk = new;
-	prev->fd = new;
-}
-
 void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist)
 {
 	t_malloc_chunk	*lst;
@@ -63,7 +45,7 @@ void	find_block_and_free(t_malloc_chunk *chunk)
 	next = NEXTCHUNK(chunk);
 	if (next != region->tail && !IS_ALLOCED(next)) {
 		chunk->size += SIZE(next);
-		//freelst_pop(next);
+		freelst_pop(next);
 	}
 	if (!IS_PREV_IN_USE(chunk))
 		merge_free_blocks(chunk);

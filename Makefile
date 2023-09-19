@@ -5,7 +5,8 @@
 SRCS	:= malloc.c \
 			show_alloc_heap.c \
 			show_free_list.c \
-			free.c
+			free.c \
+			freelst.c
 #			realloc.c \
 			calloc.c \
 			valloc.c \
