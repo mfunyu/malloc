@@ -18,7 +18,7 @@ void	print_line(char c)
 {
 	print_chars(18, c);
 	ft_putstr_fd("++", STDOUT_FILENO);
-	print_chars(22, c);
+	print_chars(26, c);
 	ft_putstr_fd("+\n", STDOUT_FILENO);
 }
 
@@ -41,12 +41,12 @@ void	print_used(t_malloc_chunk *chunk)
 	malloced_size = SIZE(chunk) - HEADER_SIZE;
 	address = MEM(chunk);
 	print_first_column(address);
-	ft_printf(" %-20.8s | mem\n", address);
+	ft_printf(" %-24.8s | mem\n", address);
 	print_first_column(address + BYTE);
-	ft_printf(" %-20.8s |\n", address + BYTE);
+	ft_printf(" %-24.8s |\n", address + BYTE);
 	if (MINSIZE < malloced_size) {
 		print_first_column(NULL);
-		ft_printf(" %-20s |\n", "(( abbriviated ))");
+		ft_printf(" %-24s |\n", "(( abbriviated ))");
 	}	
 }
 
@@ -56,17 +56,17 @@ void	print_unused(t_malloc_chunk *chunk)
 
 	print_line('-');
 	print_first_column(&(chunk->fd));
-	ft_printf(" %20p | fd\n", chunk->fd);
+	ft_printf(" %24p | fd\n", chunk->fd);
 	print_line('-');
 	print_first_column(&(chunk->bk));
-	ft_printf(" %20p | bk\n", chunk->bk);
+	ft_printf(" %24p | bk\n", chunk->bk);
 	if (WORD < SIZE(chunk) - WORD) {
 		print_line('-');
 		print_first_column((void *)&(chunk->bk) + BYTE);
-		ft_printf(" %-20s |\n", "");
+		ft_printf(" %-24s |\n", "");
 		print_first_column(NULL);
 		i = SIZE(chunk) - WORD - WORD;
-		ft_printf(" [%8d (%7p)] |\n", i, i);
+		ft_printf(" [%10d (%9p)] |\n", i, i);
 	}
 }
 
@@ -82,15 +82,15 @@ void	print_region(t_malloc_chunk* head, t_malloc_chunk* tail)
 		print_line('=');
 		print_first_column(chunk);
 		if (IS_PREV_IN_USE(chunk)) {
-			ft_printf(" %-20.8s |\n", chunk);
+			ft_printf(" %-24.8s |\n", chunk);
 			print_line('-');
 			ft_printf("%s", RESET);
 		} else {
-			ft_printf(" %20p | prev_size\n", chunk->prev_size);
+			ft_printf(" %24p | prev_size\n", chunk->prev_size);
 			print_line('-');
 		}
 		print_first_column(&(chunk->size));
-		ft_printf(" %6d (%7p) | %d | size\n", SIZE(chunk), SIZE(chunk), IS_PREV_IN_USE(chunk));
+		ft_printf(" %6d (%7p) | %d | %d | size\n", SIZE(chunk), SIZE(chunk), IS_PREV_IN_USE(chunk), IS_ALLOCED(chunk));
 		next = NEXTCHUNK(chunk);
 		if (next == tail || !IS_PREV_IN_USE(next))
 			print_unused(chunk);

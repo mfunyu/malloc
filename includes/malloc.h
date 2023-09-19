@@ -12,25 +12,25 @@
 #define BYTE 8
 #define WORD 16
 
-#define ALLOCED 1
-
 #define TINY_MAX 1008
 #define SMALL_MAX 127 * 8192
 #define MIN_BLOCKS 100
 
 #define HEADER_SIZE BYTE
 # define MINSIZE 24
+# define ALLOCED 1
+# define PREV_IN_USE 2
 
 # define PUT(ptr, value) *ptr = value
-# define SIZE(chunk) (chunk->size & ~0x1)
-# define IS_PREV_IN_USE(chunk) (chunk->size & 0x1)
+# define SIZE(chunk) (chunk->size & ~PREV_IN_USE & ~ALLOCED)
+# define IS_PREV_IN_USE(chunk) (bool)(chunk->size & PREV_IN_USE)
+# define IS_ALLOCED(chunk) (bool)(chunk->size & ALLOCED)
 # define ALLOC(ptr, value) *(unsigned int *)(ptr + BYTE) = value
 
 # define MEM(chunk) (void *)chunk + WORD
 # define CHUNK(mem) mem - WORD
 # define NEXTCHUNK(chunk) ((void *)chunk + SIZE(chunk))
 # define PREVPTR(ptr) (unsigned int **)(ptr + WORD + BYTE)
-# define PREV_IN_USE 1
 
 typedef enum s_size
 {
