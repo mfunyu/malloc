@@ -73,6 +73,6 @@ void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist);
 void	freelst_add_front(t_malloc_chunk **lst, t_malloc_chunk *new);
 void	freelst_insert(t_malloc_chunk *prev, t_malloc_chunk *new);
 void	freelst_replace(t_malloc_chunk *old, t_malloc_chunk *new);
-void	freelst_pop(t_malloc_chunk *lst);
+void	freelst_pop(t_malloc_chunk *lst, t_malloc_chunk **head);
 
 #endif
