@@ -1,5 +1,4 @@
 *
-!*/
 !srcs/*.c
 !test/*.c
 !includes/*.h
@@ -7,3 +6,4 @@
 !.env.example*
 !.gitignore
 !.github/*
+!CMakeLists.txt
