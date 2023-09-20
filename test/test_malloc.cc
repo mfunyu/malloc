@@ -39,16 +39,55 @@ void ft_free(void *ptr)
 }
 
 
-char *set_data(size_t size, int chr)
+char *set_data(void *(*func)(size_t), size_t size, int chr)
 {
-	char *ptr = (char *)ft_malloc(size + 1);
+	char *ptr;
+	
+	ptr = (char *)func(size + 1);
 	memset(ptr, chr, size);
 	ptr[size] = '\0';
 
 	return ptr;
 }
 
-TEST(MallocFreeTest, Simple) {
-  char *ptr = set_data(30, 'a');
-  ft_free(ptr);
+TEST(MallocTest, One) {
+	char	*ac;
+	char	*ex;
+	int		len = 42;
+	char	chr = 'a';
+
+	ac = set_data(ft_malloc, len, chr);
+	ex = set_data(malloc, len, chr);
+	EXPECT_EQ(strncmp(ac, ex, len), 0) << "malloc should reserve its contents";
+	free(ex);
+}
+
+TEST(MallocTest, SameMultiple) {
+	char	*ac;
+	char	*ex;
+	int		len = 42;
+	char	chr = 'a';
+
+	for (int i = 0; i < 5; i++) {
+		ac = set_data(ft_malloc, len, chr);
+		ex = set_data(malloc, len, chr);
+		EXPECT_EQ(strncmp(ac, ex, len), 0) << "malloc should reserve its contents";
+		free(ex);
+	}
+}
+
+TEST(MallocTest, DiffMultiple) {
+	char	*ac;
+	char	*ex;
+	int		len = 21;
+	char	chr = '*';
+
+	for (int i = 0; i < 7; i++) {
+		len += i;
+		chr += i;
+		ac = set_data(ft_malloc, len, chr);
+		ex = set_data(malloc, len, chr);
+		EXPECT_EQ(strncmp(ac, ex, len), 0) << "malloc should reserve its contents";
+		free(ex);
+	}
 }
