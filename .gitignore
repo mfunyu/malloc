@@ -1,9 +1,8 @@
 *
 !srcs/*.c
-!test/*.c
+!test/*
 !includes/*.h
 !Makefile
 !.env.example*
 !.gitignore
 !.github/*
-!CMakeLists.txt
