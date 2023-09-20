@@ -109,4 +109,5 @@ gtest	: all
 
 .PHONY	: test
 test	: 
+	cd test && cmake --build build 1> /dev/null
 	cd test/build && ./test_malloc 2> /dev/null
