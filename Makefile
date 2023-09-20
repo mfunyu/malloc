@@ -27,7 +27,7 @@ VPATH	:= srcs
 
 NAME	= libft_malloc_$(HOSTTYPE).so
 CC		:= gcc
-CFLAGS	=  -Wall -Wextra -Werror
+CFLAGS	= -Wall -Wextra -Werror -D DEBUG
 INCLUDES:= -I includes -I $(LIBFT) -I $(PRINTF) -I .
 LIBS	:= -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
 OBJS	:= $(addprefix $(DIR_OBJS)/, $(SRCS:.c=.o))
@@ -57,7 +57,7 @@ $(NAME)	: $(DIR_OBJS) $(OBJS)
 	ln -sf $(NAME) libft_malloc.so
 
 $(DIR_OBJS)/%.o: %.c
-	$(CC) $(CFLAGS) -MMD -MP $(INCLUDES) -o $@ -c $<
+	$(CC) $(CFLAGS) -MMD -MP $(INCLUDES) -o $@ -c $< 
 
 $(DIR_OBJS):
 	@mkdir $@
@@ -108,5 +108,5 @@ gtest	: all
 	cd test/build && ctest
 
 .PHONY	: test
-test	: all
-	cd test/build && ./test_malloc
+test	: 
+	cd test/build && ./test_malloc 2> /dev/null

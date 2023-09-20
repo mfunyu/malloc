@@ -1,25 +1,26 @@
 #include "malloc.h"
 #include "ft_printf.h"
+
 static void	print_line(size_t len)
 {
 	size_t	i;
 
 	i = 0;
 	while (i++ < len)
-		ft_putchar_fd('-', STDOUT_FILENO);
+		ft_putchar_fd('-', FILENO);
 }
 
 static void	print_single_line(size_t len)
 {
 	print_line(16);
-	ft_putchar_fd('+', STDOUT_FILENO);
+	ft_putchar_fd('+', FILENO);
 	print_line(len + 3);
-	ft_putchar_fd('+', STDOUT_FILENO);
+	ft_putchar_fd('+', FILENO);
 	print_line(16);
-	ft_putchar_fd('+', STDOUT_FILENO);
+	ft_putchar_fd('+', FILENO);
 	print_line(16);
-	ft_putchar_fd('+', STDOUT_FILENO);
-	ft_putchar_fd('\n', STDOUT_FILENO);
+	ft_putchar_fd('+', FILENO);
+	ft_putchar_fd('\n', FILENO);
 }
 
 
