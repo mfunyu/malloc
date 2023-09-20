@@ -17,29 +17,11 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-include_directories(${CMAKE_SOURCE_DIR}/ft_printf)
-include_directories(${CMAKE_SOURCE_DIR}/libft)
 add_executable(test_malloc
-  test/test_malloc.cc
-  ft_printf/ft_printf.h
-  libft/libft.h
-)
-
-add_library(ft STATIC IMPORTED)
-set_target_properties(ft PROPERTIES
-  IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/libft/libft.a"
-#  INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/libft"
-)
-
-add_library(ftprintf STATIC IMPORTED)
-set_target_properties(ftprintf PROPERTIES
-  IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/ft_printf/libftprintf.a"
- # INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/ft_printf"
+  test_malloc.cc
 )
 
 target_link_libraries(test_malloc
-  ft
-  ftprintf
   GTest::gtest_main
   ${CMAKE_DL_LIBS}
 )

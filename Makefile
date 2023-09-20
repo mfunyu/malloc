@@ -81,13 +81,8 @@ re		: fclean all
 #                                ADVANCED RULES                                #
 # ---------------------------------------------------------------------------- #
 
-.PHONY	: setup
-setup	:
-	cp .env.example$(HOST_ARCH) .env
-	@echo RUN source .env
-
-.PHONY	: test
-test	: all setup
+.PHONY	: test3
+test3	: all
 	$(CC) $(CFLAGS) $(INCLUDES) ./test/test.c $(LIBS)
 
 ifdef DARWIN
@@ -97,7 +92,7 @@ else
 endif
 
 .PHONY	: test2
-test2	: all setup
+test2	: all
 	$(CC) $(INCLUDES) ./test/test2.c $(LIBS)
 
 ifdef DARWIN
@@ -106,3 +101,12 @@ else
 	LD_PRELOAD=./libft_malloc.so ./a.out
 endif
 
+.PHONY	: gtest
+gtest	: all
+	cd test && cmake -S . -B build    
+	cd test && cmake --build build 1> /dev/null
+	cd test/build && ctest
+
+.PHONY	: test
+test	: all
+	cd test/build && ./test_malloc

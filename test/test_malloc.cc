@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <stdio.h>
 #include <dlfcn.h>
-#include "ft_printf.h"
 
 void* ft_malloc(size_t size)
 {	
@@ -10,7 +9,7 @@ void* ft_malloc(size_t size)
 
 	if (!my_malloc)
 	{
-		handle = dlopen("../libft_malloc.so", RTLD_LOCAL | RTLD_LAZY);
+		handle = dlopen("../../libft_malloc.so", RTLD_LOCAL | RTLD_LAZY);
 		if (!handle) {
 			exit(EXIT_FAILURE);
 		}
@@ -28,7 +27,7 @@ void ft_free(void *ptr)
 
 	if (!my_free)
 	{
-		handle = dlopen("../libft_malloc.so", RTLD_LOCAL | RTLD_LAZY);
+		handle = dlopen("../../libft_malloc.so", RTLD_LOCAL | RTLD_LAZY);
 		if (!handle) {
 			exit(EXIT_FAILURE);
 		}
@@ -46,7 +45,6 @@ char *set_data(size_t size, int chr)
 	memset(ptr, chr, size);
 	ptr[size] = '\0';
 
-	printf("%p: %c\n", ptr, chr);
 	return ptr;
 }
 
