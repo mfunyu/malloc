@@ -11,15 +11,15 @@ void	print_chars(size_t len, char c)
 
 	i = 0;
 	while (i++ < len)
-		ft_putchar_fd(c, STDOUT_FILENO);
+		ft_putchar_fd(c, FILENO);
 }
 
 void	print_line(char c)
 {
 	print_chars(18, c);
-	ft_putstr_fd("++", STDOUT_FILENO);
+	ft_putstr_fd("++", FILENO);
 	print_chars(26, c);
-	ft_putstr_fd("+\n", STDOUT_FILENO);
+	ft_putstr_fd("+\n", FILENO);
 }
 
 void	print_first_column(void *ptr)
