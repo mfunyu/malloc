@@ -30,6 +30,7 @@ void	*alloc_pages_by_size(size_t map_size, void *start)
 
 	ptr = mmap(start, map_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
 	if (ptr == MAP_FAILED) {
+		ft_printf("Error: mmap failed - size %d\n", map_size);
 		exit(1);
 	}
 	return (ptr);
@@ -76,6 +77,7 @@ void	init_malloc()
 	g_regions.initialized = true;
 	init_region(&(g_regions.tiny_region), TINY);
 	init_region(&(g_regions.small_region), SMALL);
+	g_regions.large_region.map_size = getpagesize();
 }
 
 /*
@@ -143,6 +145,17 @@ void	*find_block_from_region(t_region *region, size_t size)
 	return (MEM(free_chunk));
 }
 
+void	*lagre_block(t_region *region, size_t size)
+{
+	t_malloc_chunk	*chunk;
+
+	size = align(size, region->map_size);
+	chunk = alloc_pages_by_size(size, NULL);
+	chunk->size = size | MAPPED;
+
+	return (MEM(chunk));
+}
+
 void	*find_block(size_t size)
 {
 	size_t	aligned_size;
@@ -163,7 +176,7 @@ void	*find_block(size_t size)
 		ft_printf("here\n");
 		ptr = find_block_from_region(&(g_regions.small_region), aligned_size);
 	} else {
-		ptr = g_regions.large_region.blocks;
+		ptr = lagre_block(&(g_regions.large_region), size);
 	}
 
 	return (ptr);
