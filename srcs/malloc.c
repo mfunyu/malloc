@@ -116,12 +116,10 @@ void	*find_block_from_region(t_region *region, size_t size)
 	while (free_chunk->fd && SIZE(free_chunk) < chunk_size) {
 		free_chunk = free_chunk->fd; 
 	}
-	/*
-	if (region->tail + size + WORD > region->mapped_till + 1) {
-		exit(1);
-		//ft_printf("%p\n", alloc_pages_by_size(region->map_size, region->mapped_till));
+	if (SIZE(free_chunk) < chunk_size) {
+		ft_printf("error not enough space\n");
+		return NULL;
 	}
-	*/
 	next = free_chunk->fd;
 	if (SIZE(free_chunk) > chunk_size) {
 		next = (void *)free_chunk + chunk_size;
