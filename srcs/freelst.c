@@ -1,31 +1,31 @@
 #include "malloc.h"
 
-void	freelst_add_front(t_malloc_chunk **lst, t_malloc_chunk *new)
+void	freelst_add_front(t_malloc_chunk **lst, t_malloc_chunk *new_chunk)
 {
-	new->fd = *lst;
-	new->bk = NULL;
+	new_chunk->fd = *lst;
+	new_chunk->bk = NULL;
 	if (*lst)
-		(*lst)->bk = new;
-	*lst = new;
+		(*lst)->bk = new_chunk;
+	*lst = new_chunk;
 }
 
-void	freelst_insert(t_malloc_chunk *prev, t_malloc_chunk *new)
+void	freelst_insert(t_malloc_chunk *prev, t_malloc_chunk *new_chunk)
 {
-	new->bk = prev;
-	new->fd = prev->fd;
+	new_chunk->bk = prev;
+	new_chunk->fd = prev->fd;
 	if (prev->fd)
-		prev->fd->bk = new;
-	prev->fd = new;
+		prev->fd->bk = new_chunk;
+	prev->fd = new_chunk;
 }
 
-void	freelst_replace(t_malloc_chunk *old, t_malloc_chunk *new)
+void	freelst_replace(t_malloc_chunk *old, t_malloc_chunk *new_chunk)
 {
-	new->fd = old->fd;
-	new->bk = old->bk;
+	new_chunk->fd = old->fd;
+	new_chunk->bk = old->bk;
 	if (old->bk)
-		old->bk->fd = new;
+		old->bk->fd = new_chunk;
 	if (old->fd)
-		old->fd->bk = new;
+		old->fd->bk = new_chunk;
 }
 
 void	freelst_pop(t_malloc_chunk *lst, t_malloc_chunk **head)
