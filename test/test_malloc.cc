@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <stdio.h>
 #include <dlfcn.h>
+#include "../includes/malloc.h"
 
 void* ft_malloc(size_t size)
 {	
@@ -50,7 +51,7 @@ char *set_data(void *(*func)(size_t), size_t size, int chr)
 	return ptr;
 }
 
-void	TestOne(int len)
+void	TestOne(size_t len)
 {
 	char	*ac;
 	char	*ex;
@@ -142,7 +143,7 @@ TEST(MallocSmallTest, BigMultiple) {
 }
 
 /* -------------------------------------------------------------------------- */
-/*                              Mallo Free Tests                              */
+/*                              Malloc Free Tests                             */
 /* -------------------------------------------------------------------------- */
 
 TEST(MallocFreeTest, Zero) {
@@ -150,4 +151,12 @@ TEST(MallocFreeTest, Zero) {
 
 	ac = ft_malloc(0);
 	ft_free(ac);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                 Error Tests                                */
+/* -------------------------------------------------------------------------- */
+
+TEST(ErrorTest, Malloc) {
+	TestOne(MALLOC_ABSOLUTE_SIZE_MAX);
 }
