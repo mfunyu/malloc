@@ -53,7 +53,7 @@ typedef struct s_region
 {
 	size_t			map_size;
 	void			*tail;
-	t_malloc_chunk	*blocks;
+	t_malloc_chunk	*head;
 	t_malloc_chunk	*freelist;
 }				t_region;
 

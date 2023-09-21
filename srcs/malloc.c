@@ -52,7 +52,8 @@ size_t	get_map_size(size_t max_block_size)
 
 void	init_region(t_region *region, e_size size_type)
 {
-	size_t map_size;
+	size_t 			map_size;
+	t_malloc_chunk	*block;
 
 	switch (size_type) {
 		case TINY:
@@ -65,11 +66,13 @@ void	init_region(t_region *region, e_size size_type)
 			map_size = 0;
 	}
 	region->map_size = map_size;
-	region->blocks = (t_malloc_chunk *)alloc_pages_by_size(map_size, NULL);
-	region->tail = (void *)region->blocks + map_size;
-	region->blocks->prev_size = 0;
-	region->blocks->size = map_size | PREV_IN_USE;
-	add_chunk_to_freelist(region->blocks, &region->freelist);
+	
+	block = (t_malloc_chunk *)alloc_pages_by_size(map_size, NULL);
+	block->prev_size = 0;
+	block->size = map_size | PREV_IN_USE;
+	region->head = block;
+	region->tail = (void *)block + map_size;
+	add_chunk_to_freelist(block, &region->freelist);
 }
 
 void	init_malloc()
@@ -78,6 +81,7 @@ void	init_malloc()
 	init_region(&(g_regions.tiny_region), TINY);
 	init_region(&(g_regions.small_region), SMALL);
 	g_regions.large_region.map_size = getpagesize();
+	ft_printf("%d\n", g_regions.large_region.map_size);
 }
 
 /*
