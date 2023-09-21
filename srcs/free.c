@@ -5,6 +5,7 @@
 #include "ft_printf.h"
 #include <stddef.h>
 #include <stdlib.h>
+#include <sys/mman.h>
 
 void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist)
 {
@@ -29,12 +30,15 @@ void	find_block_and_free(t_malloc_chunk *chunk)
 	t_malloc_chunk	*prev;
 
 	size = SIZE(chunk);
-	if (size <= TINY_MAX) {
+	if (size < TINY_MAX) {
 		region = &g_regions.tiny_region;
-	} else if (size <= SMALL_MAX) {
+	} else if (size < SMALL_MAX) {
 		region = &g_regions.small_region;
 	} else {
-		region = &g_regions.large_region;
+		if (IS_MAPPED(chunk)) {
+			munmap(chunk, size);
+			return;
+		}
 	}
 	chunk->size &= ~ALLOCED;
 	next = NEXTCHUNK(chunk);

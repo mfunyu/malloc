@@ -20,11 +20,13 @@
 # define MINSIZE 24
 # define ALLOCED 1
 # define PREV_IN_USE 2
+# define MAPPED 4
 
 # define PUT(ptr, value) *ptr = value
-# define SIZE(chunk) (chunk->size & ~PREV_IN_USE & ~ALLOCED)
+# define SIZE(chunk) (chunk->size & ~MAPPED & ~PREV_IN_USE & ~ALLOCED)
 # define IS_PREV_IN_USE(chunk) (chunk->size & PREV_IN_USE)
 # define IS_ALLOCED(chunk) (chunk->size & ALLOCED)
+# define IS_MAPPED(chunk) (chunk->size & MAPPED)
 # define ALLOC(ptr, value) *(unsigned int *)(ptr + BYTE) = value
 
 # define MEM(chunk) (void *)chunk + WORD
