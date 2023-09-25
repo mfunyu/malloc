@@ -3,10 +3,9 @@
 #include "ft_printf.h"
 #include "alloc.h"
 
-static int	_init_region(t_region *region, e_size size_type)
+static size_t	_init_map_size(t_region *region, e_size size_type)
 {
 	size_t 			map_size;
-	t_heap_chunk	*block;
 
 	switch (size_type) {
 		case TINY:
@@ -18,18 +17,33 @@ static int	_init_region(t_region *region, e_size size_type)
 		default:
 			map_size = 0;
 	}
-	if (!map_size)
-		return (ERROR);
 	region->map_size = map_size;
-	
-	block = (t_heap_chunk *)alloc_pages_by_size(map_size);
+	return (map_size);
+}
+
+static int _init_block(t_region *region)
+{
+	t_heap_chunk	*block;
+
+	block = (t_heap_chunk *)alloc_pages_by_size(region->map_size);
 	if (!block)
 		return (ERROR);
 	block->prev_size = 0;
-	block->size = map_size | PREV_IN_USE;
+	block->size = region->map_size | PREV_IN_USE;
 	region->head = block;
-	region->tail = (void *)block + map_size;
-	add_chunk_to_freelist(block, &region->freelist);
+	region->tail = (void *)block + region->map_size;
+	return (SUCCESS);
+}
+
+static int	_init_region(t_region *region, e_size size_type)
+{
+	if (!_init_map_size(region, size_type))
+		return (ERROR);
+	
+	if (_init_block(region) == ERROR)
+		return (ERROR);
+
+	add_chunk_to_freelist(region->head, &region->freelist);
 	return (SUCCESS);
 }
 
