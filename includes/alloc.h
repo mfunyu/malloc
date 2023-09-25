@@ -3,6 +3,6 @@
 
 #include <stddef.h>
 
-void	*alloc_pages_by_size(size_t map_size, void *start);
+void	*alloc_pages_by_size(size_t map_size);
 
 #endif /* ALLOC_H */
