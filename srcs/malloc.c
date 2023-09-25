@@ -39,57 +39,57 @@ nxtchunk-> + ----------------------+ -------
 
 t_malloc	g_regions;
 
-void	resize_chunk(t_region *region, t_heap_chunk *free_chunk, size_t chunk_size)
+void	resize_chunk(t_region *region, t_heap_chunk *chunk, size_t chunk_size)
 {
 	t_heap_chunk	*next;
 
-	next = (void *)free_chunk + chunk_size;
-	next->size = (free_chunk->size - chunk_size) | PREV_IN_USE;
-	freelst_replace(free_chunk, next);
-	free_chunk->size = chunk_size | IS_PREV_IN_USE(free_chunk);
-	if (free_chunk == region->freelist)
+	next = (void *)chunk + chunk_size;
+	next->size = (chunk->size - chunk_size) | PREV_IN_USE;
+	freelst_replace(chunk, next);
+	chunk->size = chunk_size | IS_PREV_IN_USE(chunk);
+	if (chunk == region->freelist)
 		region->freelist = next;
 }
 
-void	*find_block_from_region(t_region *region, size_t chunk_size)
+void	*find_chunk_from_region(t_region *region, size_t chunk_size)
 {
-	t_heap_chunk	*free_chunk;
+	t_heap_chunk	*chunk;
 
-	free_chunk = region->freelist;
-	while (free_chunk->fd && SIZE(free_chunk) < chunk_size) {
-		free_chunk = free_chunk->fd;
+	chunk = region->freelist;
+	while (chunk->fd && SIZE(chunk) < chunk_size) {
+		chunk = chunk->fd;
 	}
-	if (SIZE(free_chunk) < chunk_size) {
+	if (SIZE(chunk) < chunk_size) {
 		ft_printf("error not enough space\n");
 		return NULL;
 	}
-	return (free_chunk);
+	return (chunk);
 }
 
-void	*allocate_block_from_region(t_region *region, size_t size)
+void	*allocate_chunk_from_region(t_region *region, size_t size)
 {
-	t_heap_chunk	*free_chunk;
+	t_heap_chunk	*chunk;
 	t_heap_chunk	*next;
 	size_t			chunk_size;
 
 	chunk_size = align_chunk_size(size);
-	free_chunk = find_block_from_region(region, chunk_size);
-	if (!free_chunk)
+	chunk = find_chunk_from_region(region, chunk_size);
+	if (!chunk)
 		return (NULL);
 
-	next = free_chunk->fd;
-	if (SIZE(free_chunk) > chunk_size) {
-		resize_chunk(region, free_chunk, chunk_size);
+	next = chunk->fd;
+	if (SIZE(chunk) > chunk_size) {
+		resize_chunk(region, chunk, chunk_size);
 	} else {
-		freelst_pop(free_chunk, &(region->freelist));
+		freelst_pop(chunk, &(region->freelist));
 	}
-	free_chunk->size |= ALLOCED;
-	next = NEXTCHUNK(free_chunk);
+	chunk->size |= ALLOCED;
+	next = NEXTCHUNK(chunk);
 	next->size |= PREV_IN_USE;
-	return (MEM(free_chunk));
+	return (MEM(chunk));
 }
 
-void	*allocate_block_from_heap(size_t size)
+void	*allocate_chunk_from_heap(size_t size)
 {
 	t_heap_chunk	*chunk;
 	int				page_size;
@@ -103,16 +103,16 @@ void	*allocate_block_from_heap(size_t size)
 	return (MEM(chunk));
 }
 
-void	*find_block(size_t size)
+void	*allocate_chunk(size_t size)
 {
 	size_t	aligned_size;
 
 	aligned_size = align_size(size);
 	if (aligned_size < TINY_MAX)
-		return (allocate_block_from_region(&(g_regions.tiny_region), aligned_size));
+		return (allocate_chunk_from_region(&(g_regions.tiny_region), aligned_size));
 	else if (aligned_size < SMALL_MAX)
-		return (allocate_block_from_region(&(g_regions.small_region), aligned_size));
-	return (allocate_block_from_heap(size));
+		return (allocate_chunk_from_region(&(g_regions.small_region), aligned_size));
+	return (allocate_chunk_from_heap(size));
 }
 
 void	*malloc(size_t size)
@@ -123,5 +123,5 @@ void	*malloc(size_t size)
 	if (!g_regions.initialized && init_malloc() == ERROR)
 		return (NULL);
 
-	return (find_block(size));
+	return (allocate_chunk(size));
 }
