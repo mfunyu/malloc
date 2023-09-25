@@ -6,6 +6,7 @@ SRCS	:= malloc.c \
 			show_alloc_heap.c \
 			show_free_list.c \
 			page_size.c \
+			align.c \
 			free.c \
 			freelst.c
 #			realloc.c \
