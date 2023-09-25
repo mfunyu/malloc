@@ -113,7 +113,8 @@ void	*malloc(size_t size)
 	if (!size || size > MALLOC_ABSOLUTE_SIZE_MAX)
 		return (NULL);
 	if (!g_regions.initialized) {
-		init_malloc();
+		if (init_malloc() == ERROR)
+			return (NULL);
 	}
 
 	ptr = find_block(align_size(size));

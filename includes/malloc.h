@@ -70,7 +70,7 @@ void	show_alloc_heap();
 void	show_free_list(t_region region);
 void	add_chunk_to_freelist(t_heap_chunk *chunk, t_heap_chunk **freelist);
 
-void	init_malloc();
+int		init_malloc();
 
 void	freelst_add_front(t_heap_chunk **lst, t_heap_chunk *new_chunk);
 void	freelst_insert(t_heap_chunk *prev, t_heap_chunk *new_chunk);
