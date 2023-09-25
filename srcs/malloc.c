@@ -39,14 +39,23 @@ nxtchunk-> + ----------------------+ -------
 
 t_malloc	g_regions;
 
-void	*find_block_from_region(t_region *region, size_t size)
+void	resize_chunk(t_region *region, t_heap_chunk *free_chunk, size_t chunk_size)
+{
+	t_heap_chunk	*next;
+
+	next = (void *)free_chunk + chunk_size;
+	next->size = (free_chunk->size - chunk_size) | PREV_IN_USE;
+	freelst_replace(free_chunk, next);
+	free_chunk->size = chunk_size | IS_PREV_IN_USE(free_chunk);
+	if (free_chunk == region->freelist)
+		region->freelist = next;
+}
+
+void	*find_block_from_region(t_region *region, size_t chunk_size)
 {
 	t_heap_chunk	*free_chunk;
-	t_heap_chunk 	*next;
-	size_t			chunk_size;
 
 	free_chunk = region->freelist;
-	chunk_size = align_chunk_size(size);
 	while (free_chunk->fd && SIZE(free_chunk) < chunk_size) {
 		free_chunk = free_chunk->fd;
 	}
@@ -54,17 +63,25 @@ void	*find_block_from_region(t_region *region, size_t size)
 		ft_printf("error not enough space\n");
 		return NULL;
 	}
+	return (free_chunk);
+}
+
+void	*allocate_block_from_region(t_region *region, size_t size)
+{
+	t_heap_chunk	*free_chunk;
+	t_heap_chunk	*next;
+	size_t			chunk_size;
+
+	chunk_size = align_chunk_size(size);
+	free_chunk = find_block_from_region(region, chunk_size);
+	if (!free_chunk)
+		return (NULL);
+
 	next = free_chunk->fd;
 	if (SIZE(free_chunk) > chunk_size) {
-		next = (void *)free_chunk + chunk_size;
-		freelst_replace(free_chunk, next);
-		next->size = (free_chunk->size - chunk_size) | PREV_IN_USE;
-		free_chunk->size = chunk_size | IS_PREV_IN_USE(free_chunk);
+		resize_chunk(region, free_chunk, chunk_size);
 	} else {
 		freelst_pop(free_chunk, &(region->freelist));
-	}
-	if (free_chunk == region->freelist) {
-		region->freelist = next;
 	}
 	free_chunk->size |= ALLOCED;
 	next = NEXTCHUNK(free_chunk);
@@ -92,9 +109,9 @@ void	*find_block(size_t size)
 
 	aligned_size = align_size(size);
 	if (aligned_size < TINY_MAX)
-		return (find_block_from_region(&(g_regions.tiny_region), aligned_size));
+		return (allocate_block_from_region(&(g_regions.tiny_region), aligned_size));
 	else if (aligned_size < SMALL_MAX)
-		return (find_block_from_region(&(g_regions.small_region), aligned_size));
+		return (allocate_block_from_region(&(g_regions.small_region), aligned_size));
 	return (allocate_block_from_heap(size));
 }
 
