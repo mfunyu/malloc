@@ -5,6 +5,7 @@
 SRCS	:= malloc.c \
 			show_alloc_heap.c \
 			show_free_list.c \
+			page_size.c \
 			free.c \
 			freelst.c
 #			realloc.c \
@@ -101,6 +102,11 @@ else
 	LD_PRELOAD=./libft_malloc.so ./a.out
 endif
 
+.PHONY	: normal
+normal	: all
+	$(CC) $(INCLUDES) ./test/test2.c $(LIBS)
+	./a.out
+
 .PHONY	: gtest
 gtest	: all
 	cd test && cmake -S . -B build    
@@ -110,4 +116,4 @@ gtest	: all
 .PHONY	: test
 test	: 
 	cd test && cmake --build build 1> /dev/null
-	cd test/build && ./test_malloc 2> /dev/null
+	cd test/build && ./test_malloc 2> ../log

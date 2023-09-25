@@ -1,5 +1,6 @@
 #include "ft_printf.h"
 #include "malloc.h"
+#include "page_size.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/mman.h>
@@ -36,19 +37,6 @@ void	*alloc_pages_by_size(size_t map_size, void *start)
 	return (ptr);
 }
 
-size_t	get_map_size(size_t max_block_size)
-{
-	size_t		map_size;
-	static int	page_size;
-
-	if (!page_size) {
-		page_size = getpagesize();
-		ft_printf("pagesize: %d\n", page_size);
-	}
-	map_size = page_size * ((max_block_size + MALLOC_ALIGNMENT) * MIN_BLOCKS / page_size);
-	ft_printf("mapsize: %d\n", map_size);
-	return (map_size);
-}
 
 void	init_region(t_region *region, e_size size_type)
 {
@@ -57,10 +45,10 @@ void	init_region(t_region *region, e_size size_type)
 
 	switch (size_type) {
 		case TINY:
-			map_size = get_map_size(TINY_MAX);
+			map_size = calc_map_size(TINY_MAX);
 			break;
 		case SMALL:
-			map_size = get_map_size(SMALL_MAX);
+			map_size = calc_map_size(SMALL_MAX);
 			break;
 		default:
 			map_size = 0;
