@@ -62,7 +62,6 @@ typedef struct s_malloc
 	bool		initialized;
 	t_region	tiny_region;
 	t_region	small_region;
-	t_region	large_region;
 }			t_malloc;
 
 extern t_malloc	g_regions;

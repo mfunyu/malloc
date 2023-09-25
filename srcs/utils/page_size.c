@@ -3,7 +3,7 @@
 #include "libft.h"
 #include "ft_printf.h"
 
-static int	_get_page_size()
+int	get_page_size()
 {
 	static int	page_size;
 
@@ -23,7 +23,7 @@ size_t	calc_map_size(size_t max_block_size)
 	static size_t	page_size;
 
 	if (!page_size) {
-		page_size = _get_page_size();
+		page_size = get_page_size();
         if (!page_size)
             return (-1);
     }

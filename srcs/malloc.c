@@ -72,11 +72,15 @@ void	*find_block_from_region(t_region *region, size_t size)
 	return (MEM(free_chunk));
 }
 
-void	*lagre_block(t_region *region, size_t size)
+void	*lagre_block(size_t size)
 {
 	t_heap_chunk	*chunk;
+	int				page_size;
 
-	size = align(size, region->map_size);
+	page_size = get_page_size();
+	if (page_size == -1)
+		return (NULL);
+	size = align(size, page_size);
 	chunk = alloc_pages_by_size(size, NULL);
 	chunk->size = size | MAPPED;
 
@@ -95,7 +99,7 @@ void	*find_block(size_t aligned_size)
 		ft_printf("here\n");
 		ptr = find_block_from_region(&(g_regions.small_region), aligned_size);
 	} else {
-		ptr = lagre_block(&(g_regions.large_region), aligned_size);
+		ptr = lagre_block(aligned_size);
 	}
 
 	return (ptr);
