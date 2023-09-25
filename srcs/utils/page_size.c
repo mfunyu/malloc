@@ -12,7 +12,7 @@ int	get_page_size()
 	page_size = getpagesize();
 	if (page_size == -1) {
 		ft_putendl_fd("Error: getpagesize", STDERR_FILENO);
-		return (-1);
+		return (ERROR);
 	}
 	return page_size;
 }
@@ -25,7 +25,7 @@ size_t	calc_map_size(size_t max_block_size)
 	if (!page_size) {
 		page_size = get_page_size();
         if (!page_size)
-            return (-1);
+            return (0);
     }
 	map_size = page_size * ((max_block_size + MALLOC_ALIGNMENT) * MIN_BLOCKS / page_size);
 	ft_printf("mapsize: %d\n", map_size);
