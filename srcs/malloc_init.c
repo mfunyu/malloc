@@ -18,6 +18,8 @@ static int	_init_region(t_region *region, e_size size_type)
 		default:
 			map_size = 0;
 	}
+	if (!map_size)
+		return (ERROR);
 	region->map_size = map_size;
 	
 	block = (t_heap_chunk *)alloc_pages_by_size(map_size);
