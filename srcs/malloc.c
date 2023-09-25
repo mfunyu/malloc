@@ -83,19 +83,11 @@ void	*lagre_block(t_region *region, size_t size)
 	return (MEM(chunk));
 }
 
-void	*find_block(size_t size)
+void	*find_block(size_t aligned_size)
 {
-	size_t	aligned_size;
 	void	*ptr = NULL;
 
-	if (!size || size > MALLOC_ABSOLUTE_SIZE_MAX)
-		return (NULL);
-	if (!g_regions.initialized) {
-		init_malloc();
-	}
-
-	aligned_size = align_size(size);
-	ft_printf("size: %d, aligned: %d\n", size, aligned_size);
+	ft_printf("aligned: %d\n", aligned_size);
 
 	if (aligned_size < TINY_MAX) {
 		ptr = find_block_from_region(&(g_regions.tiny_region), aligned_size);
@@ -103,7 +95,7 @@ void	*find_block(size_t size)
 		ft_printf("here\n");
 		ptr = find_block_from_region(&(g_regions.small_region), aligned_size);
 	} else {
-		ptr = lagre_block(&(g_regions.large_region), size);
+		ptr = lagre_block(&(g_regions.large_region), aligned_size);
 	}
 
 	return (ptr);
@@ -114,6 +106,12 @@ void	*malloc(size_t size)
 	void	*ptr;
 
 	ft_printf("malloc called %d\n", size);
-	ptr = find_block(size);
+	if (!size || size > MALLOC_ABSOLUTE_SIZE_MAX)
+		return (NULL);
+	if (!g_regions.initialized) {
+		init_malloc();
+	}
+
+	ptr = find_block(align_size(size));
 	return (ptr);
 }
