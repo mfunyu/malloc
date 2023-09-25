@@ -20,7 +20,7 @@ static void	_init_region(t_region *region, e_size size_type)
 	}
 	region->map_size = map_size;
 	
-	block = (t_heap_chunk *)alloc_pages_by_size(map_size, NULL);
+	block = (t_heap_chunk *)alloc_pages_by_size(map_size);
 	block->prev_size = 0;
 	block->size = map_size | PREV_IN_USE;
 	region->head = block;

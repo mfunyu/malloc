@@ -81,7 +81,7 @@ void	*lagre_block(size_t size)
 	if (page_size == -1)
 		return (NULL);
 	size = align(size, page_size);
-	chunk = alloc_pages_by_size(size, NULL);
+	chunk = alloc_pages_by_size(size);
 	chunk->size = size | MAPPED;
 
 	return (MEM(chunk));
