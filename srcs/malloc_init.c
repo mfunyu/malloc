@@ -33,6 +33,4 @@ void	init_malloc()
 	g_regions.initialized = true;
 	_init_region(&(g_regions.tiny_region), TINY);
 	_init_region(&(g_regions.small_region), SMALL);
-	g_regions.large_region.map_size = getpagesize();
-	ft_printf("%d\n", g_regions.large_region.map_size);
 }

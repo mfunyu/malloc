@@ -103,17 +103,14 @@ void	show_alloc_heap()
 {
 	t_region	tiny;
 	t_region	small;
-	t_region	large;
 
 	tiny = g_regions.tiny_region;
 	small = g_regions.small_region;
-	large = g_regions.large_region;
 	ft_printf("TINY: \n");
 	print_region(tiny.head, (void *)tiny.tail);
 	show_free_list(tiny);
 	ft_printf("SMALL: ");
 	print_region(small.head, (void *)small.tail);
 	show_free_list(small);
-	ft_printf("LARGE: %p ~ NA (NA)\n", large.head);
 	// print_head_to_end(g_large_head, NULL);
 }
