@@ -26,7 +26,7 @@ static void	print_single_line(size_t len)
 
 void	show_free_list(t_region region)
 {
-    t_malloc_chunk    *freelist;
+    t_heap_chunk    *freelist;
 
     ft_printf("Chunk Free\n");
 

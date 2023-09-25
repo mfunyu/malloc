@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include <sys/mman.h>
 
-void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist)
+void	add_chunk_to_freelist(t_heap_chunk *chunk, t_heap_chunk **freelist)
 {
-	t_malloc_chunk	*lst;
+	t_heap_chunk	*lst;
 	
 	if (!*freelist || SIZE((*freelist)) >= SIZE(chunk)) {
 		freelst_add_front(freelist, chunk);
@@ -22,12 +22,12 @@ void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist)
 	}
 }
 
-void	find_block_and_free(t_malloc_chunk *chunk)
+void	find_block_and_free(t_heap_chunk *chunk)
 {
 	size_t		size;
 	t_region	*region;
-	t_malloc_chunk *next;
-	t_malloc_chunk	*prev;
+	t_heap_chunk *next;
+	t_heap_chunk	*prev;
 
 	size = SIZE(chunk);
 	if (size < TINY_MAX) {
@@ -60,7 +60,7 @@ void	find_block_and_free(t_malloc_chunk *chunk)
 
 void	free(void *ptr)
 {
-	t_malloc_chunk	*chunk;
+	t_heap_chunk	*chunk;
 
 #ifdef __APPLE__
 	malloc_zone_t	*zone;
