@@ -31,7 +31,7 @@ void	print_first_column(void *ptr)
 	}
 }
 
-void	print_used(t_malloc_chunk *chunk)
+void	print_used(t_heap_chunk *chunk)
 {
 	size_t	malloced_size;
 	void	*address;
@@ -50,7 +50,7 @@ void	print_used(t_malloc_chunk *chunk)
 	}	
 }
 
-void	print_unused(t_malloc_chunk *chunk)
+void	print_unused(t_heap_chunk *chunk)
 {
 	size_t			i;
 
@@ -70,9 +70,9 @@ void	print_unused(t_malloc_chunk *chunk)
 	}
 }
 
-void	print_region(t_malloc_chunk* head, t_malloc_chunk* tail)
+void	print_region(t_heap_chunk* head, t_heap_chunk* tail)
 {
-	t_malloc_chunk	*chunk;
+	t_heap_chunk	*chunk;
 
 	chunk = head;
 	ft_printf("%p ~ %p (%d bytes)\n", head, tail, tail - head);

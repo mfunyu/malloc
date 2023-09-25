@@ -41,8 +41,8 @@ nxtchunk-> + ----------------------+ -------
 
 void	*find_block_from_region(t_region *region, size_t size)
 {
-	t_malloc_chunk	*free_chunk;
-	t_malloc_chunk 	*next;
+	t_heap_chunk	*free_chunk;
+	t_heap_chunk 	*next;
 	size_t			chunk_size;
 
 	free_chunk = region->freelist;
@@ -74,7 +74,7 @@ void	*find_block_from_region(t_region *region, size_t size)
 
 void	*lagre_block(t_region *region, size_t size)
 {
-	t_malloc_chunk	*chunk;
+	t_heap_chunk	*chunk;
 
 	size = align(size, region->map_size);
 	chunk = alloc_pages_by_size(size, NULL);

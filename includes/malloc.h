@@ -41,20 +41,20 @@ typedef enum s_size
 	LARGE
 }			e_size;
 
-typedef struct s_malloc_chunk
+typedef struct s_heap_chunk
 {
 	size_t					prev_size;
 	size_t					size;
-	struct s_malloc_chunk 	*fd; 
-	struct s_malloc_chunk 	*bk; 
-}				t_malloc_chunk;
+	struct s_heap_chunk 	*fd; 
+	struct s_heap_chunk 	*bk; 
+}				t_heap_chunk;
 
 typedef struct s_region
 {
 	size_t			map_size;
 	void			*tail;
-	t_malloc_chunk	*head;
-	t_malloc_chunk	*freelist;
+	t_heap_chunk	*head;
+	t_heap_chunk	*freelist;
 }				t_region;
 
 typedef struct s_malloc
@@ -69,13 +69,13 @@ extern t_malloc	g_regions;
 
 void	show_alloc_heap();
 void	show_free_list(t_region region);
-void	add_chunk_to_freelist(t_malloc_chunk *chunk, t_malloc_chunk **freelist);
+void	add_chunk_to_freelist(t_heap_chunk *chunk, t_heap_chunk **freelist);
 
 void	init_malloc();
 
-void	freelst_add_front(t_malloc_chunk **lst, t_malloc_chunk *new_chunk);
-void	freelst_insert(t_malloc_chunk *prev, t_malloc_chunk *new_chunk);
-void	freelst_replace(t_malloc_chunk *old, t_malloc_chunk *new_chunk);
-void	freelst_pop(t_malloc_chunk *lst, t_malloc_chunk **head);
+void	freelst_add_front(t_heap_chunk **lst, t_heap_chunk *new_chunk);
+void	freelst_insert(t_heap_chunk *prev, t_heap_chunk *new_chunk);
+void	freelst_replace(t_heap_chunk *old, t_heap_chunk *new_chunk);
+void	freelst_pop(t_heap_chunk *lst, t_heap_chunk **head);
 
 #endif
