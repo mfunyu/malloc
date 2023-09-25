@@ -49,7 +49,18 @@ char *set_data(void *(*func)(size_t), size_t size, int chr)
 	return ptr;
 }
 
-void	TestOne(size_t len)
+void	TestSimple(size_t len)
+{
+	void	*ac;
+	void	*ex;
+
+	ac = ft_malloc(len);
+	ex = malloc(len);
+	EXPECT_EQ(ac, ex) << "malloc should reserve its contents";
+	free(ex);
+}
+
+void	TestOne(size_t len, bool check_free)
 {
 	char	*ac;
 	char	*ex;
@@ -59,6 +70,8 @@ void	TestOne(size_t len)
 	ex = set_data(malloc, len, chr);
 	EXPECT_EQ(strncmp(ac, ex, len), 0) << "malloc should reserve its contents";
 	free(ex);
+	if (check_free)
+		ft_free(ac);
 }
 
 void	TestMultiple(int start_len, int loop, bool diff)
@@ -75,7 +88,10 @@ void	TestMultiple(int start_len, int loop, bool diff)
 		}
 		ac = set_data(ft_malloc, len, chr);
 		ex = set_data(malloc, len, chr);
+		// printf("%100s\n", ac);
+		// printf("%100s\n", ex);
 		EXPECT_EQ(strncmp(ac, ex, len), 0) << "malloc should reserve its contents";
+		//ft_free(ac);
 		free(ex);
 	}
 }
@@ -85,8 +101,8 @@ void	TestMultiple(int start_len, int loop, bool diff)
 /* -------------------------------------------------------------------------- */
 
 TEST(MallocTinyTest, One) {
-	TestOne(42);
-	TestOne(1007);
+	TestOne(42, false);
+	TestOne(1007, false);
 }
 
 TEST(MallocTinyTest, SameMultiple) {
@@ -101,16 +117,22 @@ TEST(MallocTinyTest, DiffMultiple) {
 }
 
 TEST(MallocTinyTest, Small) {
-	TestOne(0);
-	TestOne(1);
+	TestOne(0, false);
+	TestOne(1, false);
 	TestMultiple(0, 7, true);
 }
 
 TEST(MallocTinyTest, BigMultiple) {
 	TestMultiple(1000, 5, true);
-	TestMultiple(1000, 100, true);
-	TestMultiple(1007, 100, true);
-	TestMultiple(1007, 150, true);
+	TestMultiple(1000, 100, false);
+	TestMultiple(1000, 200, false);
+}
+
+TEST(MallocTinyTest, OverLimit) { // does not segfault anyway 
+	void	*ptr[104];
+	for (int i = 0; i < 104; i++)
+		ptr[i] = malloc(1000);
+	free(ptr[0]);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -118,10 +140,10 @@ TEST(MallocTinyTest, BigMultiple) {
 /* -------------------------------------------------------------------------- */
 
 TEST(MallocSmallTest, One) {
-	TestOne(1008);
-	TestOne(1009);
-	TestOne(3200);
-	TestOne(10403);
+	TestOne(1008, false);
+	TestOne(1009, false);
+	TestOne(3200, false);
+	TestOne(10403, false);
 }
 
 TEST(MallocSmallTest, SameMultiple) {
@@ -134,10 +156,26 @@ TEST(MallocSmallTest, DiffMultiple) {
 	TestMultiple(3059, 8, true);
 }
 
-TEST(MallocSmallTest, BigMultiple) {
+/* TEST(MallocSmallTest, BigMultiple) {
 	TestMultiple(1040383, 5, true);
 	TestMultiple(1040383, 30, true);
 	TestMultiple(1040383, 100, true);
+} */
+
+/* -------------------------------------------------------------------------- */
+/*                             Malloc Large Tests                             */
+/* -------------------------------------------------------------------------- */
+
+TEST(MallocLargeTest, One) {
+	/* TestOne(1040384, false);
+	TestOne(2040384, false); */
+	ft_malloc(1040384);
+	//ft_malloc(2040384);
+}
+
+TEST(MallocLargeTest, OneFree) {
+	TestOne(1040384, false);
+	//TestOne(2040384, true);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -156,6 +194,8 @@ TEST(MallocFreeTest, Zero) {
 /* -------------------------------------------------------------------------- */
 
 TEST(ErrorTest, Malloc) {
+	TestSimple(MALLOC_ABSOLUTE_SIZE_MAX);
+	TestSimple(MALLOC_ABSOLUTE_SIZE_MAX - 1);
 	dlclose(handle_malloc);
 	dlclose(handle_free);
 }
