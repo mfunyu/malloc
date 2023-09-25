@@ -32,10 +32,28 @@ void	check_small_alloc()
 	set_data(4, '4');
 }
 
+void	malloc_alot()
+{
+	void	*ptr[104];
+	for (int i = 0; i < 104; i++)
+		ptr[i] = malloc(1000);
+	ptr[2] = malloc(570);
+	free(ptr[0]);
+}
+
+void	malloc_large()
+{
+	void *ptr = malloc(SMALL_MAX);
+	ft_printf("%p\n", ptr);	
+	free(ptr);
+}
+
 int main()
 {
-	check_small_alloc();
-	check_free();
+	//malloc_alot();
+	malloc_large();
+	//check_small_alloc();
+	//check_free();
 	/* basic check
 	{
 		set_data(21, 'b');
