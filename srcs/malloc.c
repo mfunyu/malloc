@@ -5,8 +5,6 @@
 #include <unistd.h>
 #include <stdio.h>
 
-t_malloc	g_regions;
-
 /*
 [chunk utilise]
    chunk-> + ----------------------+ -------
@@ -16,10 +14,10 @@ t_malloc	g_regions;
      ptr-> + ----------------------+ ===== |
            |                       |     ↑ |
            | 〜〜〜 alloced 〜〜〜   |  ptr| |
-   	       |                       |     | ↓ 
-nxtchunk-> + ----------------------+ ----|--       
-           |                       | 8   ↓ 
-           + ----------------------+ =====      
+   	       |                       |     | ↓
+nxtchunk-> + ----------------------+ ----|--
+           |                       | 8   ↓
+           + ----------------------+ =====
 
 [chunk free]
    chunk-> + ----------------------+ -------
@@ -29,15 +27,17 @@ nxtchunk-> + ----------------------+ ----|--
            + ----------------------+       |
            | nextptr of free-lst   | 8     |
            + ----------------------+       |
-		   | prevptr of free-lst   | 8     | 
+		   | prevptr of free-lst   | 8     |
            + ----------------------+       |
            |                       |       |
            | 〜〜〜 alloced 〜〜〜   |       |
-   	       |                       |       ↓ 
-nxtchunk-> + ----------------------+ -------       
-           | size of prev chunk    | 8     
+   	       |                       |       ↓
+nxtchunk-> + ----------------------+ -------
+           | size of prev chunk    | 8
            + ----------------------+
 */
+
+t_malloc	g_regions;
 
 void	*find_block_from_region(t_region *region, size_t size)
 {
@@ -46,9 +46,9 @@ void	*find_block_from_region(t_region *region, size_t size)
 	size_t			chunk_size;
 
 	free_chunk = region->freelist;
-	chunk_size = align_chunk_size(size);	
+	chunk_size = align_chunk_size(size);
 	while (free_chunk->fd && SIZE(free_chunk) < chunk_size) {
-		free_chunk = free_chunk->fd; 
+		free_chunk = free_chunk->fd;
 	}
 	if (SIZE(free_chunk) < chunk_size) {
 		ft_printf("error not enough space\n");
@@ -72,13 +72,13 @@ void	*find_block_from_region(t_region *region, size_t size)
 	return (MEM(free_chunk));
 }
 
-void	*lagre_block(size_t size)
+void	*allocate_block_from_heap(size_t size)
 {
 	t_heap_chunk	*chunk;
 	int				page_size;
 
 	page_size = get_page_size();
-	if (page_size == -1)
+	if (page_size == ERROR)
 		return (NULL);
 	size = align(size, page_size);
 	chunk = alloc_pages_by_size(size);
@@ -96,10 +96,9 @@ void	*find_block(size_t aligned_size)
 	if (aligned_size < TINY_MAX) {
 		ptr = find_block_from_region(&(g_regions.tiny_region), aligned_size);
 	} else if (aligned_size < SMALL_MAX) {
-		ft_printf("here\n");
 		ptr = find_block_from_region(&(g_regions.small_region), aligned_size);
 	} else {
-		ptr = lagre_block(aligned_size);
+		ptr = allocate_block_from_heap(aligned_size);
 	}
 
 	return (ptr);
@@ -112,10 +111,8 @@ void	*malloc(size_t size)
 	ft_printf("malloc called %d\n", size);
 	if (!size || size > MALLOC_ABSOLUTE_SIZE_MAX)
 		return (NULL);
-	if (!g_regions.initialized) {
-		if (init_malloc() == ERROR)
-			return (NULL);
-	}
+	if (!g_regions.initialized && init_malloc() == ERROR)
+		return (NULL);
 
 	ptr = find_block(align_size(size));
 	return (ptr);
