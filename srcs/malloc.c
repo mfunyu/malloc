@@ -63,9 +63,6 @@ void	*find_block_from_region(t_region *region, size_t size)
 	} else {
 		freelst_pop(free_chunk, &(region->freelist));
 	}
-	if (free_chunk == region->freelist) {
-		region->freelist = next;
-	}
 	free_chunk->size |= ALLOCED;
 	next = NEXTCHUNK(free_chunk);
 	next->size |= PREV_IN_USE;
