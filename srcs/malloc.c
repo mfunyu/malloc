@@ -83,37 +83,28 @@ void	*allocate_block_from_heap(size_t size)
 	size = align(size, page_size);
 	chunk = alloc_pages_by_size(size);
 	chunk->size = size | MAPPED;
-
 	return (MEM(chunk));
 }
 
-void	*find_block(size_t aligned_size)
+void	*find_block(size_t size)
 {
-	void	*ptr = NULL;
+	size_t	aligned_size;
 
-	ft_printf("aligned: %d\n", aligned_size);
-
-	if (aligned_size < TINY_MAX) {
-		ptr = find_block_from_region(&(g_regions.tiny_region), aligned_size);
-	} else if (aligned_size < SMALL_MAX) {
-		ptr = find_block_from_region(&(g_regions.small_region), aligned_size);
-	} else {
-		ptr = allocate_block_from_heap(aligned_size);
-	}
-
-	return (ptr);
+	aligned_size = align_size(size);
+	if (aligned_size < TINY_MAX)
+		return (find_block_from_region(&(g_regions.tiny_region), aligned_size));
+	else if (aligned_size < SMALL_MAX)
+		return (find_block_from_region(&(g_regions.small_region), aligned_size));
+	return (allocate_block_from_heap(size));
 }
 
 void	*malloc(size_t size)
 {
-	void	*ptr;
-
 	ft_printf("malloc called %d\n", size);
 	if (!size || size > MALLOC_ABSOLUTE_SIZE_MAX)
 		return (NULL);
 	if (!g_regions.initialized && init_malloc() == ERROR)
 		return (NULL);
 
-	ptr = find_block(align_size(size));
-	return (ptr);
+	return (find_block(size));
 }
