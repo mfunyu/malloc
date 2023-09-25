@@ -1,7 +1,7 @@
 *
 !*/
 !includes/*.h
-!srcs/*.c
+!srcs/**/*.c
 !test/*.txt
 !test/*.c*
 !.github/*

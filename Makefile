@@ -20,7 +20,7 @@ SRCS	:= malloc.c \
 DIR_OBJS:= objs
 LIBFT	:= libft
 PRINTF	:= ft_printf
-VPATH	:= srcs
+VPATH	:= srcs srcs/utils
 
 # ---------------------------------------------------------------------------- #
 #                                   VARIABLES                                  #
