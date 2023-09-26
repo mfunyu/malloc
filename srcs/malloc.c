@@ -39,14 +39,14 @@ nxtchunk-> + ----------------------+ -------
 
 t_malloc	g_regions;
 
-void	resize_chunk(t_region *region, t_heap_chunk *chunk, size_t chunk_size)
+void	resize_chunk(t_heap_chunk *chunk, size_t chunk_size, t_heap_chunk **freelist)
 {
 	t_heap_chunk	*next;
 
 	next = (void *)chunk + chunk_size;
 	next->size = (chunk->size - chunk_size) | PREV_IN_USE;
 	chunk->size = chunk_size | IS_PREV_IN_USE(chunk);
-	freelst_replace(chunk, next, &(region->freelist));
+	freelst_replace(chunk, next, freelist);
 }
 
 void	*find_chunk_from_region(t_region *region, size_t chunk_size)
@@ -76,7 +76,7 @@ void	*allocate_chunk_from_region(t_region *region, size_t size)
 		return (NULL);
 
 	if (SIZE(chunk) > chunk_size) {
-		resize_chunk(region, chunk, chunk_size);
+		resize_chunk(chunk, chunk_size, &(region->freelist));
 	} else {
 		freelst_pop(chunk, &(region->freelist));
 	}
