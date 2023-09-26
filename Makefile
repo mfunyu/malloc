@@ -7,6 +7,7 @@ SRCS	:= malloc.c \
 			show_free_list.c \
 			malloc_init.c \
 			alloc.c \
+			map.c \
 			page_size.c align.c \
 			free.c \
 			freelst.c
@@ -60,7 +61,7 @@ $(NAME)	: $(DIR_OBJS) $(OBJS)
 	ln -sf $(NAME) libft_malloc.so
 
 $(DIR_OBJS)/%.o: %.c
-	$(CC) $(CFLAGS) -MMD -MP $(INCLUDES) -o $@ -c $< 
+	$(CC) $(CFLAGS) -MMD -MP $(INCLUDES) -o $@ -c $<
 
 $(DIR_OBJS):
 	@mkdir $@
@@ -111,11 +112,11 @@ normal	: all
 
 .PHONY	: gtest
 gtest	: all
-	cd test && cmake -S . -B build    
+	cd test && cmake -S . -B build
 	cd test && cmake --build build 1> /dev/null
 	cd test/build && ctest
 
 .PHONY	: test
-test	: 
+test	:
 	cd test && cmake --build build 1> /dev/null
 	cd test/build && ./test_malloc 2> ../log

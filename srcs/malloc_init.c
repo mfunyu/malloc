@@ -26,7 +26,7 @@ static int	_init_block(t_region *region)
 {
 	t_heap_chunk	*block;
 
-	block = (t_heap_chunk *)alloc_pages_by_size(region->map_size);
+	block = (t_heap_chunk *)map_pages_by_size(region->map_size);
 	if (!block)
 		return (ERROR);
 	block->prev_size = 0;
