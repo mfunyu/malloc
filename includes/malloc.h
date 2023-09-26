@@ -31,7 +31,7 @@
 
 # define MEM(chunk) (void *)chunk + WORD
 # define CHUNK(mem) mem - WORD
-# define NEXTCHUNK(chunk) ((void *)chunk + SIZE(chunk))
+# define NEXTCHUNK(chunk) ((t_heap_chunk *)((void *)chunk + SIZE(chunk)))
 # define PREVPTR(ptr) (unsigned int **)(ptr + WORD + BYTE)
 
 typedef enum s_size

@@ -44,7 +44,7 @@ void	split_chunk(t_heap_chunk *chunk, size_t chunk_size)
 	t_heap_chunk	*next;
 
 	next = (void *)chunk + chunk_size;
-	next->size = (chunk->size - chunk_size) | PREV_IN_USE;
+	next->size = chunk->size - chunk_size;
 	chunk->size = chunk_size | IS_PREV_IN_USE(chunk);
 }
 
@@ -65,9 +65,8 @@ void	*find_chunk_from_region(t_region *region, size_t chunk_size)
 
 void	*allocate_chunk_from_region(t_region *region, size_t size)
 {
-	t_heap_chunk	*chunk;
-	t_heap_chunk	*next;
 	size_t			chunk_size;
+	t_heap_chunk	*chunk;
 
 	chunk_size = align_chunk_size(size);
 	chunk = find_chunk_from_region(region, chunk_size);
@@ -81,8 +80,7 @@ void	*allocate_chunk_from_region(t_region *region, size_t size)
 		freelst_pop(chunk, &(region->freelist));
 	}
 	chunk->size |= ALLOCED;
-	next = NEXTCHUNK(chunk);
-	next->size |= PREV_IN_USE;
+	NEXTCHUNK(chunk)->size |= PREV_IN_USE;
 	return (MEM(chunk));
 }
 
