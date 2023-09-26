@@ -62,6 +62,8 @@ void	*allocate_chunk_from_heap(size_t size)
 		return (NULL);
 	size = align(size, page_size);
 	chunk = map_pages_by_size(size);
+	if (!chunk)
+		return (NULL);
 	chunk->size = size | MAPPED;
 	return (MEM(chunk));
 }
