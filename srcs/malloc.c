@@ -45,10 +45,8 @@ void	resize_chunk(t_region *region, t_heap_chunk *chunk, size_t chunk_size)
 
 	next = (void *)chunk + chunk_size;
 	next->size = (chunk->size - chunk_size) | PREV_IN_USE;
-	freelst_replace(chunk, next);
 	chunk->size = chunk_size | IS_PREV_IN_USE(chunk);
-	if (chunk == region->freelist)
-		region->freelist = next;
+	freelst_replace(chunk, next, &(region->freelist));
 }
 
 void	*find_chunk_from_region(t_region *region, size_t chunk_size)
@@ -77,7 +75,6 @@ void	*allocate_chunk_from_region(t_region *region, size_t size)
 	if (!chunk)
 		return (NULL);
 
-	next = chunk->fd;
 	if (SIZE(chunk) > chunk_size) {
 		resize_chunk(region, chunk, chunk_size);
 	} else {

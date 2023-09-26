@@ -45,8 +45,8 @@ typedef struct s_heap_chunk
 {
 	size_t					prev_size;
 	size_t					size;
-	struct s_heap_chunk 	*fd; 
-	struct s_heap_chunk 	*bk; 
+	struct s_heap_chunk 	*fd;
+	struct s_heap_chunk 	*bk;
 }				t_heap_chunk;
 
 typedef struct s_region
@@ -74,7 +74,7 @@ int		init_malloc();
 
 void	freelst_add_front(t_heap_chunk **lst, t_heap_chunk *new_chunk);
 void	freelst_insert(t_heap_chunk *prev, t_heap_chunk *new_chunk);
-void	freelst_replace(t_heap_chunk *old, t_heap_chunk *new_chunk);
+void	freelst_replace(t_heap_chunk *old, t_heap_chunk *new_chunk, t_heap_chunk **head);
 void	freelst_pop(t_heap_chunk *lst, t_heap_chunk **head);
 
 #endif

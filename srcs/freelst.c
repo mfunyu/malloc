@@ -18,7 +18,7 @@ void	freelst_insert(t_heap_chunk *prev, t_heap_chunk *new_chunk)
 	prev->fd = new_chunk;
 }
 
-void	freelst_replace(t_heap_chunk *old, t_heap_chunk *new_chunk)
+void	freelst_replace(t_heap_chunk *old, t_heap_chunk *new_chunk, t_heap_chunk **head)
 {
 	new_chunk->fd = old->fd;
 	new_chunk->bk = old->bk;
@@ -26,6 +26,8 @@ void	freelst_replace(t_heap_chunk *old, t_heap_chunk *new_chunk)
 		old->bk->fd = new_chunk;
 	if (old->fd)
 		old->fd->bk = new_chunk;
+	if (old == *head)
+		*head = new_chunk;
 }
 
 void	freelst_pop(t_heap_chunk *lst, t_heap_chunk **head)
