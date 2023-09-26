@@ -43,35 +43,33 @@ void	*merge_chunks(t_heap_chunk *chunk, t_region *region)
 	return (chunk);
 }
 
-void	find_block_and_free(t_heap_chunk *chunk)
+void	find_block_and_free(t_region *region, t_heap_chunk *chunk)
 {
-	size_t		size;
-	t_region	*region;
-	t_heap_chunk *next;
+	t_heap_chunk	*next;
 
-	size = SIZE(chunk);
-	if (size < TINY_MAX) {
-		region = &g_regions.tiny_region;
-	} else if (size < SMALL_MAX) {
-		region = &g_regions.small_region;
-	} else {
-		if (IS_MAPPED(chunk)) {
-			munmap(chunk, size);
-			return;
-		}
-	}
-	chunk->size &= ~ALLOCED;
 	chunk = merge_chunks(chunk, region);
 	add_chunk_to_freelist(chunk, &(region->freelist));
+	chunk->size &= ~ALLOCED;
 	next = NEXTCHUNK(chunk);
 	next->prev_size = SIZE(chunk);
 	next->size &= ~PREV_IN_USE;
 }
 
+void	free_chunk(t_heap_chunk *chunk)
+{
+	size_t	size;
+
+	size = SIZE(chunk);
+	if (IS_MAPPED(chunk))
+		munmap(chunk, size);
+	else if (size < TINY_MAX)
+		find_block_and_free(&(g_regions.tiny_region), chunk);
+	else if (size < SMALL_MAX)
+		find_block_and_free(&(g_regions.small_region), chunk);
+}
+
 void	free(void *ptr)
 {
-	t_heap_chunk	*chunk;
-
 #ifdef __APPLE__
 	malloc_zone_t	*zone;
 
@@ -82,10 +80,8 @@ void	free(void *ptr)
 	}
 #endif
 
+	ft_printf("free called: %p\n", ptr);
 	if (!ptr)
 		return ;
-	ft_printf("free called: %p\n", ptr);
-
-	chunk = CHUNK(ptr);
-	find_block_and_free(chunk);
+	free_chunk(CHUNK(ptr));
 }
