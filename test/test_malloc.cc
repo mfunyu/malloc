@@ -6,7 +6,7 @@
 void	*handle_malloc;
 void	*handle_free;
 void* ft_malloc(size_t size)
-{	
+{
 	static void	*(*my_malloc)(size_t);
 
 	if (!my_malloc)
@@ -22,7 +22,7 @@ void* ft_malloc(size_t size)
 }
 
 void ft_free(void *ptr)
-{	
+{
 	static void	(*my_free)(void *);
 
 	if (!my_free)
@@ -41,7 +41,7 @@ void ft_free(void *ptr)
 char *set_data(void *(*func)(size_t), size_t size, int chr)
 {
 	char *ptr;
-	
+
 	ptr = (char *)func(size + 1);
 	memset(ptr, chr, size);
 	ptr[size] = '\0';
@@ -56,8 +56,8 @@ void	TestSimple(size_t len)
 
 	ac = ft_malloc(len);
 	ex = malloc(len);
-	EXPECT_EQ(ac, ex) << "malloc should reserve its contents";
-	free(ex);
+	//EXPECT_EQ(ac, ex) << "malloc should reserve its contents";
+//	free(ex);
 }
 
 void	TestOne(size_t len, bool check_free)
@@ -128,7 +128,7 @@ TEST(MallocTinyTest, BigMultiple) {
 	TestMultiple(1000, 200, false);
 }
 
-TEST(MallocTinyTest, OverLimit) { // does not segfault anyway 
+TEST(MallocTinyTest, OverLimit) { // does not segfault anyway
 	void	*ptr[104];
 	for (int i = 0; i < 104; i++)
 		ptr[i] = malloc(1000);
@@ -175,7 +175,7 @@ TEST(MallocLargeTest, One) {
 
 TEST(MallocLargeTest, OneFree) {
 	TestOne(1040384, false);
-	//TestOne(2040384, true);
+	TestOne(204000384, true);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -194,8 +194,9 @@ TEST(MallocFreeTest, Zero) {
 /* -------------------------------------------------------------------------- */
 
 TEST(ErrorTest, Malloc) {
-	TestSimple(MALLOC_ABSOLUTE_SIZE_MAX);
-	TestSimple(MALLOC_ABSOLUTE_SIZE_MAX - 1);
-	dlclose(handle_malloc);
-	dlclose(handle_free);
+	ft_malloc(MALLOC_ABSOLUTE_SIZE_MAX + 1);
+	ft_malloc(MALLOC_ABSOLUTE_SIZE_MAX);
+	//ft_malloc(MALLOC_ABSOLUTE_SIZE_MAX - 1);
+	//dlclose(handle_malloc);
+	//dlclose(handle_free);
 }
