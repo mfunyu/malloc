@@ -47,7 +47,7 @@ void	print_used(t_heap_chunk *chunk)
 	if (MINSIZE < malloced_size) {
 		print_first_column(NULL);
 		ft_printf(" %-24s |\n", "(( abbriviated ))");
-	}	
+	}
 }
 
 void	print_unused(t_heap_chunk *chunk)
@@ -70,6 +70,20 @@ void	print_unused(t_heap_chunk *chunk)
 	}
 }
 
+void	print_header(t_heap_chunk *chunk)
+{
+	print_line('=');
+	print_first_column(chunk);
+	if (IS_PREV_IN_USE(chunk))
+		ft_printf(" %-24.8s |\n", chunk);
+	else
+		ft_printf(" %24p | prev_size\n", chunk->prev_size);
+	print_line('-');
+	ft_printf("%s", RESET);
+	print_first_column(&(chunk->size));
+	ft_printf(" %6d (%7p) | %d | %d | size\n", SIZE(chunk), SIZE(chunk), (bool)IS_PREV_IN_USE(chunk), IS_ALLOCED(chunk));
+}
+
 void	print_region(t_heap_chunk* head, t_heap_chunk* tail)
 {
 	t_heap_chunk	*chunk;
@@ -78,18 +92,7 @@ void	print_region(t_heap_chunk* head, t_heap_chunk* tail)
 	ft_printf("%p ~ %p (%d bytes)\n", head, tail, tail - head);
 	while (chunk < tail)
 	{
-		print_line('=');
-		print_first_column(chunk);
-		if (IS_PREV_IN_USE(chunk)) {
-			ft_printf(" %-24.8s |\n", chunk);
-			print_line('-');
-			ft_printf("%s", RESET);
-		} else {
-			ft_printf(" %24p | prev_size\n", chunk->prev_size);
-			print_line('-');
-		}
-		print_first_column(&(chunk->size));
-		ft_printf(" %6d (%7p) | %d | %d | size\n", SIZE(chunk), SIZE(chunk), (bool)IS_PREV_IN_USE(chunk), IS_ALLOCED(chunk));
+		print_header(chunk);
 		if (!IS_ALLOCED(chunk))
 			print_unused(chunk);
 		else
