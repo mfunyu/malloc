@@ -52,9 +52,10 @@ void	*allocate_chunk_from_region(t_region *region, size_t size)
 	return (MEM(chunk));
 }
 
-void	*allocate_chunk_from_heap(size_t size)
+void	*allocate_chunk_from_heap(t_mmap_chunk **head, size_t size)
 {
-	t_heap_chunk	*chunk;
+	t_mmap_chunk	*chunk;
+	t_mmap_chunk	*lst;
 	int				page_size;
 
 	page_size = get_page_size();
@@ -64,7 +65,17 @@ void	*allocate_chunk_from_heap(size_t size)
 	chunk = map_pages_by_size(size);
 	if (!chunk)
 		return (NULL);
+	chunk->fd = NULL;
 	chunk->size = size | MAPPED;
+	lst = *head;
+	if (!*head)
+		*head = chunk;
+	else
+	{
+		while (lst && lst->fd)
+			lst = lst->fd;
+		lst->fd = chunk;
+	}
 	return (MEM(chunk));
 }
 
@@ -77,5 +88,5 @@ void	*allocate_chunk(size_t size)
 		return (allocate_chunk_from_region(&(g_regions.tiny_region), aligned_size));
 	else if (aligned_size < SMALL_MAX)
 		return (allocate_chunk_from_region(&(g_regions.small_region), aligned_size));
-	return (allocate_chunk_from_heap(size));
+	return (allocate_chunk_from_heap(&(g_regions.large_lst), size));
 }

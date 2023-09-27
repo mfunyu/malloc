@@ -49,6 +49,12 @@ typedef struct s_heap_chunk
 	struct s_heap_chunk 	*bk;
 }				t_heap_chunk;
 
+typedef struct s_mmap_chunk
+{
+	struct s_mmap_chunk	*fd;
+	size_t				size;
+}				t_mmap_chunk;
+
 typedef struct s_region
 {
 	size_t			map_size;
@@ -62,6 +68,7 @@ typedef struct s_malloc
 	bool		initialized;
 	t_region	tiny_region;
 	t_region	small_region;
+	t_mmap_chunk	*large_lst;
 }			t_malloc;
 
 extern t_malloc	g_regions;

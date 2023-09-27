@@ -102,6 +102,24 @@ void	print_region(t_heap_chunk* head, t_heap_chunk* tail)
 	print_line('=');
 }
 
+void	print_mmapped(t_mmap_chunk *lst)
+{
+	while (lst && lst->fd)
+	{
+		print_line('=');
+		print_first_column(lst);
+		ft_printf(" %24p | fd\n", lst->fd);
+		print_line('-');
+		print_first_column(&(lst->size));
+		ft_printf(" %12d (%9p) | size\n", SIZE(lst), SIZE(lst));
+		print_line('-');
+		print_first_column(MEM(lst));
+		ft_printf(" %-24.8s | mem\n", MEM(lst));
+		print_line('=');
+		lst = lst->fd;
+	}
+}
+
 void	show_alloc_heap()
 {
 	t_region	tiny;
@@ -112,8 +130,9 @@ void	show_alloc_heap()
 	ft_printf("TINY: \n");
 	print_region(tiny.head, (void *)tiny.tail);
 	show_free_list(tiny);
-	ft_printf("SMALL: ");
+	ft_printf("SMALL: \n");
 	print_region(small.head, (void *)small.tail);
 	show_free_list(small);
-	// print_head_to_end(g_large_head, NULL);
+	ft_printf("LARGE: \n");
+	print_mmapped(g_regions.large_lst);
 }
