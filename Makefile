@@ -4,6 +4,7 @@
 
 SRCS	:= malloc.c \
 			show_alloc_heap.c \
+			show_alloc_mem.c \
 			show_free_list.c \
 			malloc_init.c \
 			alloc.c \
@@ -87,12 +88,12 @@ re		: fclean all
 
 .PHONY	: test3
 test3	: all
-	$(CC) $(CFLAGS) $(INCLUDES) ./test/test.c $(LIBS)
+	$(CC) $(CFLAGS) $(INCLUDES) ./test/test.c $(LIBS) $(NAME)
 
 ifdef DARWIN
 	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./a.out
 else
-	LD_PRELOAD=./libft_malloc.so ./a.out
+	LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=. ./a.out
 endif
 
 .PHONY	: test2
