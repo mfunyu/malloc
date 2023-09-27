@@ -55,13 +55,30 @@ void	find_block_and_free(t_region *region, t_heap_chunk *chunk)
 	next->size &= ~PREV_IN_USE;
 }
 
+void	free_mmapped_block(t_mmap_chunk **head, t_mmap_chunk *chunk)
+{
+	t_mmap_chunk	*lst;
+
+	if (*head == chunk)
+	{
+		*head = chunk->fd;
+		return ;
+	}
+	lst = *head;
+	while (lst && lst->fd != chunk)
+		lst = lst->fd;
+	if (lst->fd == chunk)
+		lst->fd = chunk->fd;
+	munmap(chunk, SIZE(chunk));
+}
+
 void	free_chunk(t_heap_chunk *chunk)
 {
 	size_t	size;
 
 	size = SIZE(chunk);
 	if (IS_MAPPED(chunk))
-		munmap(chunk, size);
+		free_mmapped_block(&(g_regions.large_lst), (t_mmap_chunk *)chunk);
 	else if (size < TINY_MAX)
 		find_block_and_free(&(g_regions.tiny_region), chunk);
 	else if (size < SMALL_MAX)
