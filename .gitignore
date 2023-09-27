@@ -4,6 +4,8 @@
 !srcs/**/*.c
 !test/*.txt
 !test/*.c*
+!test/*.sh
+!test/correction/*
 !.github/*
 
 !./Makefile

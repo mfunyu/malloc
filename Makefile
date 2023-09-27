@@ -86,14 +86,15 @@ re		: fclean all
 #                                ADVANCED RULES                                #
 # ---------------------------------------------------------------------------- #
 
-.PHONY	: test3
-test3	: all
-	$(CC) $(CFLAGS) $(INCLUDES) ./test/test.c $(LIBS) $(NAME)
+FILENAME = test.c
+.PHONY	: correction
+correction	: all
+	$(CC) $(INCLUDES) ./test/correction/$(FILENAME) $(LIBS) $(NAME) -o $@
 
 ifdef DARWIN
-	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./a.out
+	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./$@
 else
-	LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=. ./a.out
+	LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=. ./$@
 endif
 
 .PHONY	: test2
