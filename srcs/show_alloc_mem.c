@@ -1,35 +1,50 @@
 #include "malloc.h"
 #include "ft_printf.h"
 
-void	print_large(t_mmap_chunk *lst)
+size_t	print_large(t_mmap_chunk *lst)
 {
+	size_t	sum;
+
+	sum = 0;
 	while (lst)
 	{
-		ft_printf("LARGE: %p", lst);
+		ft_printf("LARGE: %p\n", lst);
 		ft_printf("%p ~ %p : %d bytes\n", MEM(lst), MEM(lst) + SIZE(lst), SIZE(lst));
+		sum += SIZE(lst);
 		lst = lst->fd;
 	}
+	return (sum);
 }
 
-void	print_simple(t_region region)
+size_t	print_simple(char *zone, t_region region)
 {
 	t_heap_chunk	*chunk;
+	size_t			sum;
+	size_t			size;
 
+	sum = 0;
 	chunk = region.head;
-	ft_printf("%p\n", region.head);
+	ft_printf("%s : %p\n", zone, region.head);
 	while ((void *)chunk < region.tail)
 	{
 		if (IS_ALLOCED(chunk))
-			ft_printf("%p ~ %p : %d bytes\n", MEM(chunk), MEM(chunk) + SIZE(chunk), SIZE(chunk));
+		{
+			size = SIZE(chunk) - HEADER_SIZE;
+			ft_printf("%p ~ %p : %d bytes\n", MEM(chunk), MEM(chunk) + size, size);
+			sum += size;
+		}
 		chunk = NEXTCHUNK(chunk);
 	}
+	return (sum);
 }
 
 void	show_alloc_mem()
 {
-	ft_printf("TINY: ");
-	print_simple(g_regions.tiny_region);
-	ft_printf("SMALL: ");
-	print_simple(g_regions.small_region);
-	print_large(g_regions.large_lst);
+	size_t	total;
+
+	total = 0;
+	total += print_simple("TINY", g_regions.tiny_region);
+	total += print_simple("SMALL", g_regions.small_region);
+	total += print_large(g_regions.large_lst);
+	ft_printf("TOTAL: %zu bytes\n", total);
 }
