@@ -25,14 +25,17 @@ static size_t	_init_map_size(t_region *region, e_size size_type)
 static int	_init_block(t_region *region)
 {
 	t_heap_chunk	*block;
+	t_footer_chunk	*footer;
 
 	block = (t_heap_chunk *)map_pages_by_size(region->map_size);
 	if (!block)
 		return (ERROR);
 	block->prev_size = 0;
-	block->size = region->map_size | PREV_IN_USE;
+	block->size = (region->map_size - FOOTER - HEADER_SIZE) | PREV_IN_USE;
 	region->head = block;
 	region->tail = (void *)block + region->map_size;
+	footer = region->tail - 24;
+	footer->size = 0 | ALLOCED;
 	return (SUCCESS);
 }
 

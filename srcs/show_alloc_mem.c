@@ -25,7 +25,7 @@ size_t	print_simple(char *zone, t_region region)
 	sum = 0;
 	chunk = region.head;
 	ft_printf("%s : %p\n", zone, region.head);
-	while ((void *)chunk < region.tail)
+	while (!IS_FOOTER(chunk))
 	{
 		if (IS_ALLOCED(chunk))
 		{
