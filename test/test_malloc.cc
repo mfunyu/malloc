@@ -43,6 +43,8 @@ char *set_data(void *(*func)(size_t), size_t size, int chr)
 	char *ptr;
 
 	ptr = (char *)func(size + 1);
+	if (!ptr)
+		return (NULL);
 	memset(ptr, chr, size);
 	ptr[size] = '\0';
 
@@ -88,8 +90,8 @@ void	TestMultiple(int start_len, int loop, bool diff)
 		}
 		ac = set_data(ft_malloc, len, chr);
 		ex = set_data(malloc, len, chr);
-		// printf("%100s\n", ac);
-		// printf("%100s\n", ex);
+		if (!ac)
+			break;
 		EXPECT_EQ(strncmp(ac, ex, len), 0) << "malloc should reserve its contents";
 		//ft_free(ac);
 		free(ex);
