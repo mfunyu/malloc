@@ -72,14 +72,14 @@ void	print_unused(t_heap_chunk *chunk)
 
 void	print_header(t_heap_chunk *chunk)
 {
-	print_line('=');
 	print_first_column(chunk);
 	if (IS_PREV_IN_USE(chunk))
 		ft_printf(" %-24.8s |\n", chunk);
 	else
 		ft_printf(" %24p | prev_size\n", chunk->prev_size);
 	print_line('-');
-	ft_printf("%s", RESET);
+	if (IS_PREV_IN_USE(chunk))
+		ft_printf("%s", RESET);
 	print_first_column(&(chunk->size));
 	ft_printf(" %6d (%7p) | %d | %d | size\n", ALLOCSIZE(chunk), CHUNKSIZE(chunk), (bool)IS_PREV_IN_USE(chunk), IS_ALLOCED(chunk));
 }
@@ -88,11 +88,14 @@ void	print_footer(t_heap_chunk *chunk)
 {
 	t_footer_chunk	*footer;
 
+	ft_printf("%s", GRAY);
 	print_header(chunk);
 	footer = (t_footer_chunk *)chunk;
 	print_line('-');
 	print_first_column(&(footer->next_chunk));
 	ft_printf(" %24p | fd\n", footer->next_chunk);
+	print_line('=');
+	ft_printf("%s", RESET);
 }
 
 void	print_region(t_heap_chunk* head, t_heap_chunk* tail)
@@ -100,7 +103,8 @@ void	print_region(t_heap_chunk* head, t_heap_chunk* tail)
 	t_heap_chunk	*chunk;
 
 	chunk = head;
-	ft_printf("%p ~ %p (%d bytes)\n", head, tail, tail - head);
+	ft_printf("%p ~ %p (%zu bytes)\n", head, tail, (size_t)tail - (size_t)head);
+	print_line('=');
 	while (!IS_FOOTER(chunk))
 	{
 		print_header(chunk);
@@ -109,9 +113,9 @@ void	print_region(t_heap_chunk* head, t_heap_chunk* tail)
 		else
 			print_used(chunk);
 		chunk = NEXTCHUNK(chunk);
+		print_line('=');
 	}
 	print_footer(chunk);
-	print_line('=');
 }
 
 void	print_mmapped(t_mmap_chunk *lst)
