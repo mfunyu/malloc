@@ -2,4 +2,4 @@
 
 echo run $1
 
-make correction FILENAME="$1"
+make correction FILENAME="test$1.c"
