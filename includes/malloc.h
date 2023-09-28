@@ -17,6 +17,7 @@
 #define MIN_BLOCKS 100
 
 #define HEADER_SIZE BYTE
+# define FOOTER WORD
 # define MINSIZE 24
 # define ALLOCED 1
 # define PREV_IN_USE 2

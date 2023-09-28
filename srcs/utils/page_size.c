@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include "malloc.h"
 #include "libft.h"
+#include "utils.h"
 #include "ft_printf.h"
 
 int	get_page_size()
@@ -24,10 +25,10 @@ size_t	calc_map_size(size_t max_block_size)
 
 	if (!page_size) {
 		page_size = get_page_size();
-        if (!page_size)
-            return (0);
-    }
-	map_size = page_size * ((max_block_size + MALLOC_ALIGNMENT) * MIN_BLOCKS / page_size);
+		if (!page_size)
+			return (0);
+	}
+	map_size = align((max_block_size + HEADER_SIZE) * MIN_BLOCKS + FOOTER, page_size);
 	ft_printf("mapsize: %d\n", map_size);
 	return (map_size);
 }
