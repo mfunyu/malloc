@@ -31,12 +31,12 @@ void	*find_chunk_from_region(t_region *region, size_t chunk_size)
 	return (chunk);
 }
 
-void	*allocate_chunk_from_region(t_region *region, size_t size)
+void	*allocate_chunk_from_region(t_region *region, size_t aligned_size)
 {
 	size_t			chunk_size;
 	t_heap_chunk	*chunk;
 
-	chunk_size = align_chunk_size(size);
+	chunk_size = aligned_size + HEADER_SIZE;
 	chunk = find_chunk_from_region(region, chunk_size);
 	if (!chunk)
 		return (NULL);
@@ -83,7 +83,7 @@ void	*allocate_chunk(size_t size)
 {
 	size_t	aligned_size;
 
-	aligned_size = align_size(size);
+	aligned_size = align(size, MALLOC_ALIGNMENT);
 	if (aligned_size < TINY_MAX)
 		return (allocate_chunk_from_region(&(g_regions.tiny_region), aligned_size));
 	else if (aligned_size < SMALL_MAX)

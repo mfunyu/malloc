@@ -6,7 +6,6 @@
 /* align.c */
 size_t	align(size_t size, size_t align);
 size_t	align_size(size_t size);
-size_t align_chunk_size(size_t size);
 
 /* page_size.c */
 int		get_page_size();
