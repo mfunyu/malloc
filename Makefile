@@ -9,6 +9,7 @@ SRCS	:= malloc.c \
 			malloc_init.c \
 			alloc.c \
 			map.c \
+			flags.c \
 			page_size.c align.c \
 			free.c \
 			freelst.c
