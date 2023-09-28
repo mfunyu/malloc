@@ -11,11 +11,11 @@ void	add_chunk_to_freelist(t_heap_chunk *chunk, t_heap_chunk **freelist)
 {
 	t_heap_chunk	*lst;
 
-	if (!*freelist || SIZE((*freelist)) >= SIZE(chunk)) {
+	if (!*freelist || CHUNKSIZE((*freelist)) >= CHUNKSIZE(chunk)) {
 		freelst_add_front(freelist, chunk);
 	} else {
 		lst = *freelist;
-		while (lst->fd && SIZE(lst->fd) < SIZE(chunk)) {
+		while (lst->fd && CHUNKSIZE(lst->fd) < CHUNKSIZE(chunk)) {
 			lst = lst->fd;
 		}
 		freelst_insert(lst, chunk);
@@ -30,13 +30,13 @@ void	*merge_chunks(t_heap_chunk *chunk, t_region *region)
 	next = NEXTCHUNK(chunk);
 	if (next != region->tail && !IS_ALLOCED(next))
 	{
-		chunk->size += SIZE(next);
+		chunk->size += CHUNKSIZE(next);
 		freelst_pop(next, &(region->freelist));
 	}
 	if (!IS_PREV_IN_USE(chunk))
 	{
 		prev = (void *)chunk - chunk->prev_size;
-		prev->size += SIZE(chunk);
+		prev->size += CHUNKSIZE(chunk);
 		freelst_pop(prev, &(region->freelist));
 		return (prev);
 	}
@@ -51,7 +51,7 @@ void	find_block_and_free(t_region *region, t_heap_chunk *chunk)
 	add_chunk_to_freelist(chunk, &(region->freelist));
 	chunk->size &= ~ALLOCED;
 	next = NEXTCHUNK(chunk);
-	next->prev_size = SIZE(chunk);
+	next->prev_size = CHUNKSIZE(chunk);
 	next->size &= ~PREV_IN_USE;
 }
 
@@ -69,19 +69,19 @@ void	free_mmapped_block(t_mmap_chunk **head, t_mmap_chunk *chunk)
 		lst = lst->fd;
 	if (lst->fd == chunk)
 		lst->fd = chunk->fd;
-	munmap(chunk, SIZE(chunk));
+	munmap(chunk, CHUNKSIZE(chunk));
 }
 
 void	free_chunk(t_heap_chunk *chunk)
 {
 	size_t	size;
 
-	size = SIZE(chunk);
+	size = ALLOCSIZE(chunk);
 	if (IS_MAPPED(chunk))
 		free_mmapped_block(&(g_regions.large_lst), (t_mmap_chunk *)chunk);
-	else if (size < TINY_MAX)
+	else if (size <= TINY_MAX)
 		find_block_and_free(&(g_regions.tiny_region), chunk);
-	else if (size < SMALL_MAX)
+	else if (size <= SMALL_MAX)
 		find_block_and_free(&(g_regions.small_region), chunk);
 }
 

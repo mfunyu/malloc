@@ -21,9 +21,9 @@ void	*find_chunk_from_region(t_region *region, size_t chunk_size)
 	t_heap_chunk	*chunk;
 
 	chunk = region->freelist;
-	while (chunk->fd && SIZE(chunk) < chunk_size)
+	while (chunk->fd && CHUNKSIZE(chunk) < chunk_size)
 		chunk = chunk->fd;
-	if (SIZE(chunk) < chunk_size)
+	if (CHUNKSIZE(chunk) < chunk_size)
 	{
 		ft_printf("error not enough space\n");
 		return (NULL);
@@ -40,7 +40,7 @@ void	*allocate_chunk_from_region(t_region *region, size_t aligned_size)
 	chunk = find_chunk_from_region(region, chunk_size);
 	if (!chunk)
 		return (NULL);
-	if (SIZE(chunk) > chunk_size)
+	if (CHUNKSIZE(chunk) > chunk_size)
 	{
 		split_chunk(chunk, chunk_size);
 		freelst_replace(chunk, NEXTCHUNK(chunk), &(region->freelist));
@@ -84,9 +84,9 @@ void	*allocate_chunk(size_t size)
 	size_t	aligned_size;
 
 	aligned_size = align(size, MALLOC_ALIGNMENT);
-	if (aligned_size < TINY_MAX)
+	if (aligned_size <= TINY_MAX)
 		return (allocate_chunk_from_region(&(g_regions.tiny_region), aligned_size));
-	else if (aligned_size < SMALL_MAX)
+	else if (aligned_size <= SMALL_MAX)
 		return (allocate_chunk_from_region(&(g_regions.small_region), aligned_size));
 	return (allocate_chunk_from_heap(&(g_regions.large_lst), size));
 }
