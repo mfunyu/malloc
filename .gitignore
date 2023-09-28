@@ -6,7 +6,7 @@
 !test/*.c*
 !test/*.sh
 !test/correction/*
-!.github/*
+!.github/**
 
 !./Makefile
 !./env.example*
