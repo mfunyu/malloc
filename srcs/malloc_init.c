@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "ft_printf.h"
 #include "alloc.h"
+#include "flags.h"
 
 static size_t	_init_map_size(t_region *region, e_size size_type)
 {
@@ -51,6 +52,7 @@ static int	_init_region(t_region *region, e_size size_type)
 
 int	init_malloc(void)
 {
+	set_flags_from_environment();
 	if (_init_region(&(g_regions.tiny_region), TINY) == ERROR)
 		return (ERROR);
 	if (_init_region(&(g_regions.small_region), SMALL) == ERROR)

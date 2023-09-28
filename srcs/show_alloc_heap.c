@@ -2,6 +2,7 @@
 #include "malloc.h"
 #include "ft_printf.h"
 #include "print.h"
+#include "flags.h"
 
 void show_alloc_heap(void)__attribute__((destructor));
 
@@ -141,6 +142,8 @@ void	show_alloc_heap()
 	t_region	tiny;
 	t_region	small;
 
+	if (!malloc_show_heap)
+		return ;
 	tiny = g_regions.tiny_region;
 	small = g_regions.small_region;
 	ft_printf("TINY: \n");
