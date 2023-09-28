@@ -23,7 +23,8 @@
 # define MAPPED 4
 
 # define PUT(ptr, value) *ptr = value
-# define SIZE(chunk) (chunk->size & ~MAPPED & ~PREV_IN_USE & ~ALLOCED)
+# define CHUNKSIZE(chunk) (chunk->size & ~MAPPED & ~PREV_IN_USE & ~ALLOCED)
+# define ALLOCSIZE(chunk) CHUNKSIZE(chunk) - HEADER_SIZE
 # define IS_PREV_IN_USE(chunk) (chunk->size & PREV_IN_USE)
 # define IS_ALLOCED(chunk) (chunk->size & ALLOCED)
 # define IS_MAPPED(chunk) (chunk->size & MAPPED)
@@ -31,7 +32,7 @@
 
 # define MEM(chunk) (void *)chunk + WORD
 # define CHUNK(mem) mem - WORD
-# define NEXTCHUNK(chunk) ((t_heap_chunk *)((void *)chunk + SIZE(chunk)))
+# define NEXTCHUNK(chunk) ((t_heap_chunk *)((void *)chunk + CHUNKSIZE(chunk)))
 # define PREVPTR(ptr) (unsigned int **)(ptr + WORD + BYTE)
 
 typedef enum s_size

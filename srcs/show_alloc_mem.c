@@ -9,8 +9,8 @@ size_t	print_large(t_mmap_chunk *lst)
 	while (lst)
 	{
 		ft_printf("LARGE: %p\n", lst);
-		ft_printf("%p ~ %p : %d bytes\n", MEM(lst), MEM(lst) + SIZE(lst), SIZE(lst));
-		sum += SIZE(lst);
+		ft_printf("%p ~ %p : %d bytes\n", MEM(lst), MEM(lst) + CHUNKSIZE(lst), CHUNKSIZE(lst));
+		sum += CHUNKSIZE(lst);
 		lst = lst->fd;
 	}
 	return (sum);
@@ -29,7 +29,7 @@ size_t	print_simple(char *zone, t_region region)
 	{
 		if (IS_ALLOCED(chunk))
 		{
-			size = SIZE(chunk) - HEADER_SIZE;
+			size = CHUNKSIZE(chunk) - HEADER_SIZE;
 			ft_printf("%p ~ %p : %d bytes\n", MEM(chunk), MEM(chunk) + size, size);
 			sum += size;
 		}

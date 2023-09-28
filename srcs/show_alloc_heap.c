@@ -38,7 +38,7 @@ void	print_used(t_heap_chunk *chunk)
 
 	ft_printf("%s", CYAN);
 	print_line('-');
-	malloced_size = SIZE(chunk) - HEADER_SIZE;
+	malloced_size = CHUNKSIZE(chunk) - HEADER_SIZE;
 	address = MEM(chunk);
 	print_first_column(address);
 	ft_printf(" %-24.8s | mem\n", address);
@@ -60,12 +60,12 @@ void	print_unused(t_heap_chunk *chunk)
 	print_line('-');
 	print_first_column(&(chunk->bk));
 	ft_printf(" %24p | bk\n", chunk->bk);
-	if (WORD < SIZE(chunk) - WORD) {
+	if (WORD < CHUNKSIZE(chunk) - WORD) {
 		print_line('-');
 		print_first_column((void *)&(chunk->bk) + BYTE);
 		ft_printf(" %-24s |\n", "");
 		print_first_column(NULL);
-		i = SIZE(chunk) - WORD - WORD;
+		i = CHUNKSIZE(chunk) - WORD - WORD;
 		ft_printf(" [%10d (%9p)] |\n", i, i);
 	}
 }
@@ -81,7 +81,7 @@ void	print_header(t_heap_chunk *chunk)
 	print_line('-');
 	ft_printf("%s", RESET);
 	print_first_column(&(chunk->size));
-	ft_printf(" %6d (%7p) | %d | %d | size\n", SIZE(chunk), SIZE(chunk), (bool)IS_PREV_IN_USE(chunk), IS_ALLOCED(chunk));
+	ft_printf(" %6d (%7p) | %d | %d | size\n", CHUNKSIZE(chunk), CHUNKSIZE(chunk), (bool)IS_PREV_IN_USE(chunk), IS_ALLOCED(chunk));
 }
 
 void	print_region(t_heap_chunk* head, t_heap_chunk* tail)
@@ -111,7 +111,7 @@ void	print_mmapped(t_mmap_chunk *lst)
 		ft_printf(" %24p | fd\n", lst->fd);
 		print_line('-');
 		print_first_column(&(lst->size));
-		ft_printf(" %12d (%9p) | size\n", SIZE(lst), SIZE(lst));
+		ft_printf(" %12d (%9p) | size\n", CHUNKSIZE(lst), CHUNKSIZE(lst));
 		print_line('-');
 		print_first_column(MEM(lst));
 		ft_printf(" %-24.8s | mem\n", MEM(lst));
