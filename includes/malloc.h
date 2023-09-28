@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "debug.h"
+
 #define APPROX_PAGE_SIZE 4096
 #define MALLOC_ABSOLUTE_SIZE_MAX (SIZE_MAX - (2 * APPROX_PAGE_SIZE))
 
@@ -25,10 +27,11 @@
 
 # define PUT(ptr, value) *ptr = value
 # define CHUNKSIZE(chunk) (chunk->size & ~MAPPED & ~PREV_IN_USE & ~ALLOCED)
-# define ALLOCSIZE(chunk) CHUNKSIZE(chunk) - HEADER_SIZE
+# define ALLOCSIZE(chunk) (CHUNKSIZE(chunk) - HEADER_SIZE)
 # define IS_PREV_IN_USE(chunk) (chunk->size & PREV_IN_USE)
 # define IS_ALLOCED(chunk) (chunk->size & ALLOCED)
 # define IS_MAPPED(chunk) (chunk->size & MAPPED)
+# define IS_FOOTER(chunk) (CHUNKSIZE(chunk) == 00 && IS_ALLOCED(chunk))
 # define ALLOC(ptr, value) *(unsigned int *)(ptr + BYTE) = value
 
 # define MEM(chunk) (void *)chunk + WORD
@@ -56,6 +59,13 @@ typedef struct s_mmap_chunk
 	struct s_mmap_chunk	*fd;
 	size_t				size;
 }				t_mmap_chunk;
+
+typedef struct s_footer_chunk
+{
+	size_t			prev_size;
+	size_t			size;
+	t_heap_chunk	*next_chunk;
+}				t_footer_chunk;
 
 typedef struct s_region
 {

@@ -28,7 +28,7 @@ void	*merge_chunks(t_heap_chunk *chunk, t_region *region)
 	t_heap_chunk	*prev;
 
 	next = NEXTCHUNK(chunk);
-	if (next != region->tail && !IS_ALLOCED(next))
+	if (!IS_FOOTER(chunk) && !IS_ALLOCED(next))
 	{
 		chunk->size += CHUNKSIZE(next);
 		freelst_pop(next, &(region->freelist));
