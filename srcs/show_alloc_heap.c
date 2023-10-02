@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include "malloc.h"
 #include "ft_printf.h"
+#include "libft.h"
 #include "print.h"
 #include "flags.h"
 

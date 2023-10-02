@@ -3,6 +3,7 @@
 #include "ft_printf.h"
 #include "alloc.h"
 #include "flags.h"
+#include "libft.h"
 
 static size_t	_init_map_size(t_region *region, e_size size_type)
 {

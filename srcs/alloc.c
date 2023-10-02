@@ -1,6 +1,7 @@
 #include "ft_printf.h"
 #include "malloc.h"
 #include "utils.h"
+#include "libft.h"
 #include "alloc.h"
 #include <unistd.h>
 #include <stdio.h>

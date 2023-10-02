@@ -1,5 +1,7 @@
 #include <stddef.h>
 #include "malloc.h"
+#include "libft.h"
+#include "ft_printf.h"
 /*
 ** The realloc() function returns a pointer to the newly allocated memory,
 ** which is suitably aligned for any kind of variable and may be different from ptr,or NULL if the request fails.
