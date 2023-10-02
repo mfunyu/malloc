@@ -16,13 +16,41 @@
 ** If the area pointed to was moved, a free(ptr) is done.
 */
 
+void	*check_chunk_next(t_heap_chunk *ptr, size_t size)
+{
+	(void)size;
+	return (ptr);
+}
+
+void	*handle_realloc(void *ptr, size_t size)
+{
+	t_heap_chunk	*chunk;
+	void			*new_ptr;
+
+	chunk = CHUNK(ptr);
+	if (ALLOCSIZE(chunk) >= size)
+		return (ptr);
+	/* if (!IS_ALLOCED(NEXTCHUNK(chunk)))
+		check_chunk_next(chunk, size); */
+	new_ptr = malloc(size);
+	if (!new_ptr)
+		return (NULL);
+	ft_strlcpy(new_ptr, ptr, size);
+	free(ptr);
+	return (new_ptr);
+}
+
 void	*realloc(void *ptr, size_t size)
 {
-	if (size == 0)
-		return (NULL);
+	void	*ret;
+
+	ft_printf("realloc called: %p, %zu\n", ptr, size);
 	if (ptr == NULL)
 		return (malloc(size));
-	if (ALLOCSIZE(CHUNK(ptr)) >= size)
-		return (ptr);
-	return (ptr);
+	if (size == 0) {
+		free(ptr);
+		return (NULL);
+	}
+	ret = handle_realloc(ptr, size);
+	return (ret);
 }

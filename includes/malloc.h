@@ -98,5 +98,6 @@ void	freelst_replace(t_heap_chunk *old, t_heap_chunk *new_chunk, t_heap_chunk **
 void	freelst_pop(t_heap_chunk *lst, t_heap_chunk **head);
 
 void	*malloc(size_t size);
+void	free(void *ptr);
 
 #endif
