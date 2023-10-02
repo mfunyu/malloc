@@ -4,8 +4,16 @@
 
 SRCS	:= malloc.c \
 			show_alloc_heap.c \
+			show_alloc_mem.c \
 			show_free_list.c \
-			free.c
+			malloc_init.c \
+			alloc.c \
+			realloc.c \
+			map.c \
+			flags.c \
+			page_size.c align.c \
+			free.c \
+			freelst.c
 #			realloc.c \
 			calloc.c \
 			valloc.c \
@@ -18,7 +26,7 @@ SRCS	:= malloc.c \
 DIR_OBJS:= objs
 LIBFT	:= libft
 PRINTF	:= ft_printf
-VPATH	:= srcs
+VPATH	:= srcs srcs/utils
 
 # ---------------------------------------------------------------------------- #
 #                                   VARIABLES                                  #
@@ -26,8 +34,8 @@ VPATH	:= srcs
 
 NAME	= libft_malloc_$(HOSTTYPE).so
 CC		:= gcc
-CFLAGS	=  -Wall -Wextra -Werror
-INCLUDES:= -I $(LIBFT) -I $(PRINTF) -I .
+CFLAGS	= -Wall -Wextra -Werror -D DEBUG
+INCLUDES:= -I includes -I $(LIBFT) -I $(PRINTF) -I .
 LIBS	:= -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
 OBJS	:= $(addprefix $(DIR_OBJS)/, $(SRCS:.c=.o))
 DEPS	:= $(OBJS:.o=.d)
@@ -49,7 +57,7 @@ all		: $(NAME)
 
 -include $(DEPS)
 
-$(NAME)	: $(DIR_OBJS) $(OBJS) $(DEPS)
+$(NAME)	: $(DIR_OBJS) $(OBJS)
 	$(MAKE) -C $(LIBFT) CFLAGS="$(CFLAGS)"
 	$(MAKE) -C $(PRINTF) LIBFT=../$(LIBFT) CFLAGS="$(CFLAGS)"
 	$(CC) $(CFLAGS) -shared -o $@ $(OBJS) $(LIBS)
@@ -80,23 +88,19 @@ re		: fclean all
 #                                ADVANCED RULES                                #
 # ---------------------------------------------------------------------------- #
 
-.PHONY	: setup
-setup	:
-	cp .env.example$(HOST_ARCH) .env
-	@echo RUN source .env
-
-.PHONY	: test
-test	: all setup
-	$(CC) $(CFLAGS) $(INCLUDES) ./test/test.c $(LIBS)
+FILENAME = test.c
+.PHONY	: correction
+correction	: all
+	$(CC) $(INCLUDES) ./test/correction/$(FILENAME) $(LIBS) $(NAME) -o $@
 
 ifdef DARWIN
-	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./a.out
+	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./$@
 else
-	LD_PRELOAD=./libft_malloc.so ./a.out
+	LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=. ./$@
 endif
 
 .PHONY	: test2
-test2	: all setup
+test2	: all
 	$(CC) $(INCLUDES) ./test/test2.c $(LIBS)
 
 ifdef DARWIN
@@ -105,3 +109,18 @@ else
 	LD_PRELOAD=./libft_malloc.so ./a.out
 endif
 
+.PHONY	: normal
+normal	: all
+	$(CC) $(INCLUDES) ./test/test2.c $(LIBS)
+	./a.out
+
+.PHONY	: gtest
+gtest	: all
+	cd test && cmake -S . -B build
+	cd test && cmake --build build 1> /dev/null
+	cd test/build && ctest
+
+.PHONY	: test
+test	:
+	cd test && cmake --build build 1> /dev/null
+	cd test/build && ./test_malloc 2> ../log

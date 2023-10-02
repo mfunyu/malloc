@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# colors
+THICK="\033[1m"
+CYAN="\033[1;36m"
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+RESET="\033[m"
+
+# define
+FAIL="${THICK}[ ${RED}FAIL${RESET}${THICK} ]${RESET}"
+PASS="${THICK}[ ${GREEN}PASS${RESET}${THICK} ]${RESET}"
+
+
+make gtest
+if [ "$?" != 0 ]; then
+	printf "$FAIL Test failed, and commit not allowed.\n"
+	printf "Quitting...\n"
+	exit 1
+fi
+
+printf "$PASS All tests passed. Committing...\n"
