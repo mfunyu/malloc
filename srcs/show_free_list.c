@@ -1,5 +1,6 @@
 #include "malloc.h"
 #include "ft_printf.h"
+#include "libft.h"
 
 static void	print_line(size_t len)
 {
