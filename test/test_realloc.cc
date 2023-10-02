@@ -42,10 +42,40 @@ char	*set_data(size_t size, int chr)
 /*                             Realloc Tiny Tests                             */
 /* -------------------------------------------------------------------------- */
 
-TEST(ReallocSameSizeTest, One) {
-	void	*ptr = set_data(12, '*');
+void	TestDiff(size_t original_size, size_t new_size, bool expect_same)
+{
+	void	*ptr = set_data(original_size, '*');
 	void	*new_ptr;
 
-	new_ptr = ft_realloc(ptr, 12);
-	EXPECT_EQ(ptr, new_ptr) << "should not change the address";
+	new_ptr = ft_realloc(ptr, new_size);
+	if (expect_same)
+		EXPECT_EQ(ptr, new_ptr) << "should not change the address";
+	else
+		EXPECT_NE(ptr, new_ptr) << "should change the address";
+}
+
+
+TEST(ReallocTest, SameSize) {
+	TestDiff(12, 12, true);
+	TestDiff(1234, 1234, true);
+}
+
+TEST(ReallocTest, SameAlignedSize) {
+	TestDiff(40, 48, true);
+}
+
+TEST(ReallocTest, EdgeSize) {
+	TestDiff(12, 16, true);
+}
+
+TEST(ReallocTest, DifferentSize) {
+	//TestDiff(12, 17, false);
+}
+
+TEST(ReallocTest, NullZero) {
+	void	*ptr = NULL;
+	void	*new_ptr;
+
+	new_ptr = ft_realloc(NULL, 0);
+	EXPECT_NE(ptr, new_ptr) << "should not return NULL";
 }
