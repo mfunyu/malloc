@@ -35,7 +35,7 @@
 # define ALLOC(ptr, value) *(unsigned int *)(ptr + BYTE) = value
 
 # define MEM(chunk) (void *)chunk + WORD
-# define CHUNK(mem) mem - WORD
+# define CHUNK(mem) ((t_heap_chunk *)(mem - WORD))
 # define NEXTCHUNK(chunk) ((t_heap_chunk *)((void *)chunk + CHUNKSIZE(chunk)))
 # define PREVPTR(ptr) (unsigned int **)(ptr + WORD + BYTE)
 
@@ -96,5 +96,7 @@ void	freelst_add_front(t_heap_chunk **lst, t_heap_chunk *new_chunk);
 void	freelst_insert(t_heap_chunk *prev, t_heap_chunk *new_chunk);
 void	freelst_replace(t_heap_chunk *old, t_heap_chunk *new_chunk, t_heap_chunk **head);
 void	freelst_pop(t_heap_chunk *lst, t_heap_chunk **head);
+
+void	*malloc(size_t size);
 
 #endif
