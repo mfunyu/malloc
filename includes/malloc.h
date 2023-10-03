@@ -97,7 +97,7 @@ void	freelst_insert(t_heap_chunk *prev, t_heap_chunk *new_chunk);
 void	freelst_replace(t_heap_chunk *old, t_heap_chunk *new_chunk, t_heap_chunk **head);
 void	freelst_pop(t_heap_chunk *lst, t_heap_chunk **head);
 
-void	*malloc(size_t size);
-void	free(void *ptr);
+void	*malloc_(size_t size);
+void	free_(void *ptr);
 
 #endif

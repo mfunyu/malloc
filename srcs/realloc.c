@@ -32,11 +32,11 @@ void	*handle_realloc(void *ptr, size_t size)
 		return (ptr);
 	/* if (!IS_ALLOCED(NEXTCHUNK(chunk)))
 		check_chunk_next(chunk, size); */
-	new_ptr = malloc(size);
+	new_ptr = malloc_(size);
 	if (!new_ptr)
 		return (NULL);
 	ft_strlcpy(new_ptr, ptr, size);
-	free(ptr);
+	free_(ptr);
 	return (new_ptr);
 }
 
@@ -46,9 +46,9 @@ void	*realloc(void *ptr, size_t size)
 
 	ft_printf("realloc called: %p, %zu\n", ptr, size);
 	if (ptr == NULL)
-		return (malloc(size));
+		return (malloc_(size));
 	if (size == 0) {
-		free(ptr);
+		free_(ptr);
 		return (NULL);
 	}
 	ret = handle_realloc(ptr, size);

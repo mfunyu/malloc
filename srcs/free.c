@@ -4,7 +4,6 @@
 #include "malloc.h"
 #include "ft_printf.h"
 #include <stddef.h>
-#include <stdlib.h>
 #include <sys/mman.h>
 
 void	add_chunk_to_freelist(t_heap_chunk *chunk, t_heap_chunk **freelist)
@@ -72,10 +71,12 @@ void	free_mmapped_block(t_mmap_chunk **head, t_mmap_chunk *chunk)
 	munmap(chunk, CHUNKSIZE(chunk));
 }
 
-void	free_chunk(t_heap_chunk *chunk)
+void	free_(void *ptr)
 {
-	size_t	size;
+	t_heap_chunk	*chunk;
+	size_t			size;
 
+	chunk = CHUNK(ptr);
 	size = ALLOCSIZE(chunk);
 	if (IS_MAPPED(chunk))
 		free_mmapped_block(&(g_regions.large_lst), (t_mmap_chunk *)chunk);
@@ -100,5 +101,5 @@ void	free(void *ptr)
 	ft_printf("free called: %p\n", ptr);
 	if (!ptr)
 		return ;
-	free_chunk(CHUNK(ptr));
+	free_(ptr);
 }
