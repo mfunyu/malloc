@@ -69,7 +69,7 @@ TEST(ReallocTest, EdgeSize) {
 }
 
 TEST(ReallocTest, DifferentSize) {
-	//TestDiff(12, 17, false);
+	TestDiff(12, 17, false);
 }
 
 TEST(ReallocTest, NullZero) {
@@ -77,5 +77,5 @@ TEST(ReallocTest, NullZero) {
 	void	*new_ptr;
 
 	new_ptr = ft_realloc(NULL, 0);
-	EXPECT_NE(ptr, new_ptr) << "should not return NULL";
+	EXPECT_EQ(ptr, new_ptr) << "should return NULL";
 }

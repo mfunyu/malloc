@@ -2,6 +2,7 @@
 #include "libft.h"
 #include "malloc.h"
 #include "alloc.h"
+#include <errno.h>
 
 /*
 [chunk utilise]
@@ -44,12 +45,22 @@
 			+ ----------------------+ -------
 */
 
-void	*malloc(size_t size)
+void	*malloc_(size_t size)
 {
-	ft_printf("malloc called %d\n", size);
+	ft_printf("malloc called %zu\n", size);
 	if (!size || size > MALLOC_ABSOLUTE_SIZE_MAX)
 		return (NULL);
 	if (!g_regions.initialized && init_malloc() == ERROR)
 		return (NULL);
 	return (allocate_chunk(size));
+}
+
+void	*malloc(size_t size)
+{
+	void	*ptr;
+
+	ptr = malloc_(size);
+	if (ptr == NULL)
+		errno = ENOMEM;
+	return (ptr);
 }
