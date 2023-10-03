@@ -1,6 +1,7 @@
 #include "ft_printf.h"
 #include "malloc.h"
 #include "utils.h"
+#include "libft.h"
 #include "alloc.h"
 #include <unistd.h>
 #include <stdio.h>
@@ -21,6 +22,11 @@ void	*find_chunk_from_region(t_region *region, size_t chunk_size)
 	t_heap_chunk	*chunk;
 
 	chunk = region->freelist;
+	if (!chunk)
+	{
+		ft_printf("error not enough space\n");
+		return (NULL);
+	}
 	while (chunk->fd && CHUNKSIZE(chunk) < chunk_size)
 		chunk = chunk->fd;
 	if (CHUNKSIZE(chunk) < chunk_size)
@@ -37,10 +43,12 @@ void	*allocate_chunk_from_region(t_region *region, size_t aligned_size)
 	t_heap_chunk	*chunk;
 
 	chunk_size = aligned_size + HEADER_SIZE;
+	if (chunk_size < MINSIZE)
+		chunk_size = MINSIZE;
 	chunk = find_chunk_from_region(region, chunk_size);
 	if (!chunk)
 		return (NULL);
-	if (CHUNKSIZE(chunk) > chunk_size)
+	if (CHUNKSIZE(chunk) - MINSIZE > chunk_size)
 	{
 		split_chunk(chunk, chunk_size);
 		freelst_replace(chunk, NEXTCHUNK(chunk), &(region->freelist));

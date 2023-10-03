@@ -19,6 +19,7 @@ enable_testing()
 include_directories(${CMAKE_SOURCE_DIR}/includes)
 add_executable(test_malloc
   test_malloc.cc
+  test_realloc.cc
   ../includes/malloc.h
 )
 
