@@ -31,7 +31,7 @@
 # define IS_PREV_IN_USE(chunk) (chunk->size & PREV_IN_USE)
 # define IS_ALLOCED(chunk) (chunk->size & ALLOCED)
 # define IS_MAPPED(chunk) (chunk->size & MAPPED)
-# define IS_FOOTER(chunk) (CHUNKSIZE(chunk) == 00 && IS_ALLOCED(chunk))
+# define IS_FOOTER(chunk) (CHUNKSIZE(chunk) == 0 && IS_ALLOCED(chunk))
 # define ALLOC(ptr, value) *(unsigned int *)(ptr + BYTE) = value
 
 # define MEM(chunk) (void *)chunk + WORD

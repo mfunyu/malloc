@@ -82,6 +82,8 @@ void	print_header(t_heap_chunk *chunk)
 	print_line('-');
 	if (IS_PREV_IN_USE(chunk))
 		ft_printf("%s", RESET);
+	if (IS_FOOTER(chunk))
+		ft_printf("%s", GRAY);
 	print_first_column(&(chunk->size));
 	ft_printf(" %6d (%7p) | %d | %d | size\n", ALLOCSIZE(chunk), CHUNKSIZE(chunk), (bool)IS_PREV_IN_USE(chunk), IS_ALLOCED(chunk));
 }
@@ -90,7 +92,8 @@ void	print_footer(t_heap_chunk *chunk)
 {
 	t_footer_chunk	*footer;
 
-	ft_printf("%s", GRAY);
+	if (!IS_PREV_IN_USE(chunk))
+		ft_printf("%s", GRAY);
 	print_header(chunk);
 	footer = (t_footer_chunk *)chunk;
 	print_line('-');

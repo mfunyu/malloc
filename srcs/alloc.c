@@ -22,6 +22,11 @@ void	*find_chunk_from_region(t_region *region, size_t chunk_size)
 	t_heap_chunk	*chunk;
 
 	chunk = region->freelist;
+	if (!chunk)
+	{
+		ft_printf("error not enough space\n");
+		return (NULL);
+	}
 	while (chunk->fd && CHUNKSIZE(chunk) < chunk_size)
 		chunk = chunk->fd;
 	if (CHUNKSIZE(chunk) < chunk_size)
