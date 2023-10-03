@@ -61,7 +61,8 @@ TEST(ReallocTest, SameSize) {
 }
 
 TEST(ReallocTest, SameAlignedSize) {
-	TestDiff(40, 48, true);
+	int		size = 4 * MALLOC_ALIGNMENT;
+	TestDiff(size + 2, size + MALLOC_ALIGNMENT, true);
 }
 
 TEST(ReallocTest, EdgeSize) {

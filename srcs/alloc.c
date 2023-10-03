@@ -43,6 +43,8 @@ void	*allocate_chunk_from_region(t_region *region, size_t aligned_size)
 	t_heap_chunk	*chunk;
 
 	chunk_size = aligned_size + HEADER_SIZE;
+	if (chunk_size < MINSIZE)
+		chunk_size = MINSIZE;
 	chunk = find_chunk_from_region(region, chunk_size);
 	if (!chunk)
 		return (NULL);
