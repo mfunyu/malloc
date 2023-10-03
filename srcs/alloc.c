@@ -46,7 +46,7 @@ void	*allocate_chunk_from_region(t_region *region, size_t aligned_size)
 	chunk = find_chunk_from_region(region, chunk_size);
 	if (!chunk)
 		return (NULL);
-	if (CHUNKSIZE(chunk) > chunk_size)
+	if (CHUNKSIZE(chunk) - MINSIZE > chunk_size)
 	{
 		split_chunk(chunk, chunk_size);
 		freelst_replace(chunk, NEXTCHUNK(chunk), &(region->freelist));
