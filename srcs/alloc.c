@@ -69,10 +69,11 @@ void	*allocate_chunk_from_heap(t_mmap_chunk **head, size_t size)
 	page_size = get_page_size();
 	if (page_size == ERROR)
 		return (NULL);
-	size = align(size, page_size);
+	size = align(size + sizeof(t_mmap_chunk), page_size);
 	chunk = map_pages_by_size(size);
 	if (!chunk)
 		return (NULL);
+	P(chunk);
 	chunk->fd = NULL;
 	chunk->size = size | MAPPED;
 	lst = *head;
@@ -80,10 +81,16 @@ void	*allocate_chunk_from_heap(t_mmap_chunk **head, size_t size)
 		*head = chunk;
 	else
 	{
-		while (lst && lst->fd)
+		S("while start");
+		while (lst && lst->fd) {
+			ft_printf("lst->fd: %p in %p\n", lst->fd, &(lst->fd));
 			lst = lst->fd;
+		}
+		S("while end");
 		lst->fd = chunk;
+		SP("lst->fd (chunk)", lst->fd);
 	}
+	SP("malloced memory", MEM(chunk));
 	return (MEM(chunk));
 }
 

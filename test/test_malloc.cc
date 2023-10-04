@@ -186,7 +186,7 @@ TEST(MallocLargeTest, OneFree) {
 }
 
 TEST(MallocLargeTest, BigMultiple) {
-	//TestMultiple(1040384, 100, true);
+	TestMultiple(1040384, 100, true);
 }
 
 /* -------------------------------------------------------------------------- */
