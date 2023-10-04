@@ -37,11 +37,13 @@ void	*find_chunk_from_region(t_region *region, size_t chunk_size)
 	return (chunk);
 }
 
-void	*allocate_chunk_from_region(t_region *region, size_t aligned_size)
+void	*allocate_chunk_from_region(t_region *region, size_t size)
 {
 	size_t			chunk_size;
 	t_heap_chunk	*chunk;
+	size_t			aligned_size;
 
+	aligned_size = align_chunk_size(size, TINY);
 	chunk_size = aligned_size + HEADER_SIZE;
 	if (chunk_size < MINSIZE)
 		chunk_size = MINSIZE;
@@ -64,17 +66,16 @@ void	*allocate_chunk_from_heap(t_mmap_chunk **head, size_t size)
 {
 	t_mmap_chunk	*chunk;
 	t_mmap_chunk	*lst;
-	int				page_size;
+	size_t			aligned_size;
 
-	page_size = get_page_size();
-	if (page_size == ERROR)
+	aligned_size = align_chunk_size(size, LARGE);
+	if (!aligned_size)
 		return (NULL);
-	size = align(size + sizeof(t_mmap_chunk), page_size);
-	chunk = map_pages_by_size(size);
+	chunk = map_pages_by_size(aligned_size);
 	if (!chunk)
 		return (NULL);
 	chunk->fd = NULL;
-	chunk->size = size | MAPPED;
+	chunk->size = aligned_size | MAPPED;
 	lst = *head;
 	if (!*head)
 		*head = chunk;
@@ -89,12 +90,9 @@ void	*allocate_chunk_from_heap(t_mmap_chunk **head, size_t size)
 
 void	*allocate_chunk(size_t size)
 {
-	size_t	aligned_size;
-
-	aligned_size = align(size, MALLOC_ALIGNMENT);
-	if (aligned_size <= TINY_MAX)
-		return (allocate_chunk_from_region(&(g_regions.tiny_region), aligned_size));
-	else if (aligned_size <= SMALL_MAX)
-		return (allocate_chunk_from_region(&(g_regions.small_region), aligned_size));
+	if (size <= TINY_MAX)
+		return (allocate_chunk_from_region(&(g_regions.tiny_region), size));
+	else if (size <= SMALL_MAX)
+		return (allocate_chunk_from_region(&(g_regions.small_region), size));
 	return (allocate_chunk_from_heap(&(g_regions.large_lst), size));
 }
