@@ -158,26 +158,35 @@ TEST(MallocSmallTest, DiffMultiple) {
 	TestMultiple(3059, 8, true);
 }
 
-/* TEST(MallocSmallTest, BigMultiple) {
+TEST(MallocSmallTest, BigMultiple) {
 	TestMultiple(1040383, 5, true);
-	TestMultiple(1040383, 30, true);
-	TestMultiple(1040383, 100, true);
-} */
+	TestMultiple(1000000, 100, true);
+}
+
+TEST(MallocSmallTest, FillUp) {
+	TestMultiple(100000, 110, true);
+	TestMultiple(10000, 110, true);
+	ft_malloc(8500);
+}
 
 /* -------------------------------------------------------------------------- */
 /*                             Malloc Large Tests                             */
 /* -------------------------------------------------------------------------- */
 
 TEST(MallocLargeTest, One) {
-	/* TestOne(1040384, false);
-	TestOne(2040384, false); */
+	TestOne(1040384, false);
+	TestOne(2040384, false);
 	ft_malloc(1040384);
-	//ft_malloc(2040384);
+	ft_malloc(2040384);
 }
 
 TEST(MallocLargeTest, OneFree) {
 	TestOne(1040384, false);
 	TestOne(204000384, true);
+}
+
+TEST(MallocLargeTest, BigMultiple) {
+	//TestMultiple(1040384, 100, true);
 }
 
 /* -------------------------------------------------------------------------- */
