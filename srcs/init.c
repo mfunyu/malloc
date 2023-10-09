@@ -1,5 +1,7 @@
 #include "malloc.h"
 
+t_malloc	g_malloc;
+
 t_malloc_chunk	*init_region(size_t	size)
 {
 	t_malloc_chunk	*head;
@@ -9,10 +11,10 @@ t_malloc_chunk	*init_region(size_t	size)
 	if (!head)
 		reutnr (NULL);
 	head->prev_size = 0;
-	head->size = size - FOOTERSIZE;
+	head->size = size - REGION_FOOTERSIZE;
 	head->size |= PREV_IN_USE;
 
-	footer = (void *)head + size - FOOTERSIZE;
+	footer = (void *)head + size - REGION_FOOTERSIZE;
 	footer->prev_size = 0;
 	footer->size = 0;
 	footer->size |= ALLOCED;

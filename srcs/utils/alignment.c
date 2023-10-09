@@ -12,7 +12,7 @@ size_t	align_malloc(size_t size)
 	size_t	total_size;
 
 	aligned_size = align(size, MALLOC_ALIGNMENT);
-	total_size = aligned_size + HEADERSIZE;
+	total_size = aligned_size + CHUNK_HEADERSIZE;
 	if (total_size < MIN_CHUNKSIZE)
 		total_size = MIN_CHUNKSIZE;
 	return (total_size);

@@ -15,10 +15,10 @@
 # define SMALL_MAX 127 * 8192
 
 # define MALLOC_ALIGNMENT 16
-# define MIN_CHUNKSIZE (MALLOC_ALIGNMENT + HEADERSIZE)
+# define MIN_CHUNKSIZE (MALLOC_ALIGNMENT + CHUNK_HEADERSIZE)
 
-# define HEADERSIZE 8
-# define FOOTERSIZE sizeof(t_malloc_footer *)
+# define CHUNK_HEADERSIZE 8
+# define REGION_FOOTERSIZE sizeof(t_malloc_footer *)
 # define LARGE_HEADERSIZE sizeof(t_mmap_chunk *)
 
 
