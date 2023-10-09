@@ -21,7 +21,6 @@ size_t	align_malloc(size_t size)
 size_t	align_large(size_t size)
 {
 	int		page_size;
-	size_t	aligned_size;
 
 	page_size = get_page_size();
 	if (page_size == -1)

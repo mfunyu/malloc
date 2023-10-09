@@ -3,21 +3,16 @@
 # ---------------------------------------------------------------------------- #
 
 SRCS	:= malloc.c \
-			show_alloc_heap.c \
-			show_alloc_mem.c \
-			show_free_list.c \
-			malloc_init.c \
-			alloc.c \
-			realloc.c \
-			map.c \
-			flags.c \
-			page_size.c align.c \
-			free.c \
-			freelst.c
-#			realloc.c \
-			calloc.c \
-			valloc.c \
-			alloc_debug.c
+			init.c \
+			allocate.c
+
+SRCS	+=	alignment.c \
+			get_page_size.c \
+			lst_malloc_chunk.c \
+			lst_mmap_chunk.c \
+			mmap_by_size.c \
+			split_chunk.c
+
 
 # ---------------------------------------------------------------------------- #
 #                                     PATHS                                    #
