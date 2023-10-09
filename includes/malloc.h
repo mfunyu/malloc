@@ -21,13 +21,28 @@
 # define REGION_FOOTERSIZE sizeof(t_malloc_footer *)
 # define LARGE_HEADERSIZE sizeof(t_mmap_chunk *)
 
+# define MEM(chunk) (void *)chunk + 16
+# define IS_PREV_IN_USE(chunk) (chunk->size & PREV_IN_USE)
+# define IS_ALLOCED(chunk) (chunk->size & ALLOCED)
+# define IS_MAPPED(chunk) (chunk->size & MAPPED)
+# define GET_FLAGS(chunk) (chunk->size & (ALL - 1))
+
+# define CHUNKSIZE(chunk) (chunk->size & ~(ALL - 1))
 
 typedef enum s_bitflag
 {
 	PREV_IN_USE = 1 << 0,	// 1
 	ALLOCED = 1 << 1,		// 2
 	MAPPED = 1 << 2,		// 4
+	ALL = 1 << 4			// 8
 }			e_bitflag;
+
+typedef enum s_size
+{
+	TINY,
+	SMALL,
+	LARGE
+}			e_size;
 
 typedef struct s_malloc_chunk
 {
@@ -66,5 +81,7 @@ typedef	struct s_malloc
 }			t_malloc;
 
 extern t_malloc	g_malloc;
+
+void	*allocate(size_t size);
 
 #endif /* MALLOC_H */
