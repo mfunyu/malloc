@@ -21,7 +21,7 @@ SRCS	+=	alignment.c \
 DIR_OBJS:= objs
 LIBFT	:= libft
 PRINTF	:= ft_printf
-VPATH	:= srcs srcs/utils
+VPATH	:= srcs srcs/utils srcs/lists
 
 # ---------------------------------------------------------------------------- #
 #                                   VARIABLES                                  #

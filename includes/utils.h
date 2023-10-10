@@ -14,16 +14,6 @@ size_t	align(size_t size, size_t align);
 size_t	align_malloc(size_t size);
 size_t	align_large(size_t size);
 
-void	lst_mmap_chunk_add(t_mmap_chunk **head, t_mmap_chunk *chunk);
-void	lst_mmap_chunk_pop(t_mmap_chunk **head, t_mmap_chunk *chunk);
-
 void	*split_chunk(t_malloc_chunk *chunk, size_t new_size);
-
-void	lst_malloc_chunk_add_front(t_malloc_chunk **lst, t_malloc_chunk *new_chunk);
-void	lst_malloc_chunk_insert(t_malloc_chunk *prev, t_malloc_chunk *insert);
-void	lst_malloc_chunk_replace(t_malloc_chunk **lst,
-			t_malloc_chunk *old, t_malloc_chunk *new_chunk);
-void	lst_malloc_chunk_pop(t_malloc_chunk **lst, t_malloc_chunk *pop);
-void	lst_malloc_chunk_sort_add(t_malloc_chunk **head, t_malloc_chunk *chunk);
 
 #endif /* UTILS_H */

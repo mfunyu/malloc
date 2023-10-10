@@ -1,5 +1,6 @@
 #include "malloc.h"
 #include "utils.h"
+#include "lists.h"
 
 t_malloc	g_malloc;
 

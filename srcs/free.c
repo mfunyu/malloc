@@ -1,5 +1,5 @@
 #include "malloc.h"
-#include "utils.h"
+#include "lists.h"
 
 static t_malloc_chunk	*_merge_chunks(t_magazine *magazine, t_malloc_chunk *chunk)
 {

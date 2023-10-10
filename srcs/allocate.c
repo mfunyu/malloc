@@ -1,5 +1,6 @@
 #include "malloc.h"
 #include "utils.h"
+#include "lists.h"
 #include "ft_printf.h"
 
 static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
