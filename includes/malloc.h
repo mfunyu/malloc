@@ -18,8 +18,8 @@
 # define MIN_CHUNKSIZE (MALLOC_ALIGNMENT + CHUNK_HEADERSIZE)
 
 # define CHUNK_HEADERSIZE 8
-# define REGION_FOOTERSIZE sizeof(t_malloc_footer *)
-# define LARGE_HEADERSIZE sizeof(t_mmap_chunk *)
+# define REGION_FOOTERSIZE sizeof(t_malloc_footer)
+# define LARGE_HEADERSIZE sizeof(t_mmap_chunk)
 
 # define MEM(chunk) (void *)chunk + 16
 # define IS_PREV_IN_USE(chunk) (chunk->size & PREV_IN_USE)
