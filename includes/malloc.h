@@ -5,6 +5,8 @@
 # include <stddef.h>
 # include <stdint.h>
 
+# include "debug.h"
+
 # ifdef BONUS
 #  include "bonus.h"
 # endif
