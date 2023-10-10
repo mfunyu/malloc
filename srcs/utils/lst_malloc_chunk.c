@@ -40,3 +40,20 @@ void	lst_malloc_chunk_pop(t_malloc_chunk **lst, t_malloc_chunk *pop)
 	if (pop == *lst)
 		*lst = pop->fd;
 }
+
+void	lst_malloc_chunk_sort_add(t_malloc_chunk **head, t_malloc_chunk *chunk)
+{
+	size_t			chunk_size;
+	t_malloc_chunk	*lst;
+
+	chunk_size = CHUNKSIZE(chunk);
+	if (!*head || CHUNKSIZE((*head)) >= chunk_size)
+		lst_malloc_chunk_add_front(head, chunk);
+	else
+	{
+		lst = *head;
+		while (lst->fd && CHUNKSIZE(lst->fd) < CHUNKSIZE(chunk))
+			lst = lst->fd;
+		lst_malloc_chunk_insert(lst, chunk);
+	}
+}
