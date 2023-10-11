@@ -6,13 +6,12 @@ SRCS	:= malloc.c \
 			init.c \
 			allocate.c
 
-SRCS	+=	alignment.c \
+SRCS	+= alignment.c \
 			get_page_size.c \
 			lst_malloc_chunk.c \
 			lst_mmap_chunk.c \
 			mmap_by_size.c \
 			split_chunk.c
-
 
 # ---------------------------------------------------------------------------- #
 #                                     PATHS                                    #
@@ -32,8 +31,9 @@ CC		:= gcc
 CFLAGS	= -Wall -Wextra -Werror -D DEBUG
 INCLUDES:= -I includes -I $(LIBFT) -I $(PRINTF) -I .
 LIBS	:= -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
-OBJS	:= $(addprefix $(DIR_OBJS)/, $(SRCS:.c=.o))
-DEPS	:= $(OBJS:.o=.d)
+
+OBJS	= $(addprefix $(DIR_OBJS)/, $(SRCS:.c=.o))
+DEPS	= $(OBJS:.o=.d)
 HOSTTYPE ?= $(shell uname -m)_$(shell uname -s)
 
 ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), amd64)
@@ -41,6 +41,18 @@ ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), amd64)
 	HOST_ARCH = .amd64
 else ifeq ($(shell uname), Darwin)
 	DARWIN = 1
+endif
+
+# ---------------------------------------------------------------------------- #
+#                                     BONUS                                    #
+# ---------------------------------------------------------------------------- #
+
+ifdef BONUS
+	SRCS	+= print.c \
+				set_flag.c \
+				show_alloc_heap.c
+	VPATH	+= srcs/bonus
+	CFLAGS	+= -D BONUS
 endif
 
 # ---------------------------------------------------------------------------- #
@@ -78,6 +90,10 @@ fclean	: clean
 
 .PHONY	: re
 re		: fclean all
+
+.PHONY	: bonus
+bonus	:
+	make re BONUS=1
 
 # ---------------------------------------------------------------------------- #
 #                                ADVANCED RULES                                #
