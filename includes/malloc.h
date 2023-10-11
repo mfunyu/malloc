@@ -29,7 +29,7 @@
 # define IS_ALLOCED(chunk) (chunk->size & ALLOCED)
 # define IS_MAPPED(chunk) (chunk->size & MAPPED)
 # define GET_FLAGS(chunk) (chunk->size & (ALL - 1))
-# define IS_FOOTER(chunk) (ALLOCSIZE(chunk) == 0 && IS_ALLOCED(chunk))
+# define IS_FOOTER(chunk) (CHUNKSIZE(chunk) == 0 && IS_ALLOCED(chunk))
 
 # define CHUNKSIZE(chunk) (chunk->size & ~(ALL - 1))
 # define ALLOCSIZE(chunk) (CHUNKSIZE(chunk) - CHUNK_HEADERSIZE)
@@ -41,7 +41,7 @@ typedef enum s_bitflag
 	PREV_IN_USE = 1 << 0,	// 1
 	ALLOCED = 1 << 1,		// 2
 	MAPPED = 1 << 2,		// 4
-	ALL = 1 << 4			// 8
+	ALL = 1 << 3			// 8
 }			e_bitflag;
 
 typedef enum s_size
