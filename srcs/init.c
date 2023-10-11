@@ -73,7 +73,7 @@ static int	_init_tiny_magazine(t_magazine *tiny_magazine)
 int		init_malloc()
 {
 # ifdef BONUS
-	set_flag_from_environment();
+	set_flags_from_environment();
 # endif
 	if (_init_tiny_magazine(&(g_malloc.tiny_magazine)) == -1)
 		return (-1);

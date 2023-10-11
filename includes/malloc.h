@@ -29,6 +29,7 @@
 # define IS_ALLOCED(chunk) (chunk->size & ALLOCED)
 # define IS_MAPPED(chunk) (chunk->size & MAPPED)
 # define GET_FLAGS(chunk) (chunk->size & (ALL - 1))
+# define IS_FOOTER(chunk) (ALLOCSIZE(chunk) == 0 && IS_ALLOCED(chunk))
 
 # define CHUNKSIZE(chunk) (chunk->size & ~(ALL - 1))
 # define ALLOCSIZE(chunk) (CHUNKSIZE(chunk) - CHUNK_HEADERSIZE)
