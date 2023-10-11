@@ -25,7 +25,7 @@ void	print_unused(t_malloc_chunk *chunk)
 	if (CHUNKSIZE(chunk) > 32) {
 		print_line('-');
 		print_row((void *)&(chunk->bk) + 8, NULL, NULL);
-		ft_printf("%18p||", "");
+		print_first_col(NULL);
 		i = CHUNKSIZE(chunk) - 32;
 		ft_printf(" [%10d (%9p)] |\n", i, i);
 	}
@@ -38,12 +38,12 @@ void	print_header(t_malloc_chunk *chunk)
 	else
 		print_row(chunk, NULL, "prev_size");
 	print_line('-');
-	if (IS_PREV_IN_USE(chunk))
-		ft_printf("%s", RESET);
+	ft_printf("%s", RESET);
 	if (IS_FOOTER(chunk))
 		ft_printf("%s", GRAY);
-	//print_first_column(&(chunk->size));
-	ft_printf(" %6d (%7p) | %d | %d | size\n", ALLOCSIZE(chunk), CHUNKSIZE(chunk), (bool)IS_PREV_IN_USE(chunk), IS_ALLOCED(chunk));
+	print_first_col(&(chunk->size));
+	ft_printf(" %8d (%9p) ", ALLOCSIZE(chunk), CHUNKSIZE(chunk));
+	ft_printf("|%c|%c| size\n", IS_ALLOCED(chunk) ? 'A' : '-', IS_PREV_IN_USE(chunk) ? 'P' : '-');
 }
 
 void	print_footer(t_malloc_chunk *footer)
@@ -54,7 +54,7 @@ void	print_footer(t_malloc_chunk *footer)
 	print_line('-');
 	print_row(&(footer->fd), NULL, "fd");
 	print_line('=');
-	ft_printf("%s", RESET);
+	ft_printf("%s\n", RESET);
 }
 
 void	print_magazine(t_magazine magazine)

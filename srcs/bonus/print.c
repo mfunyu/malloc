@@ -13,21 +13,28 @@ void	print_n_chars(char c, size_t len)
 
 void	print_line(char c)
 {
-	print_n_chars(18, c);
+	print_n_chars(c, 18);
 	ft_putstr_fd("++", FILENO);
-	print_n_chars(26, c);
+	print_n_chars(c, 26);
 	ft_putendl_fd("+", FILENO);
+}
+
+void	print_first_col(void *ptr)
+{
+	if (ptr)
+		ft_printf(" %-17p||", ptr);
+	else
+		ft_printf("%18s||", "");
 }
 
 void	print_row(void *ptr, char *content, char *name)
 {
-	if (ptr)
-		ft_printf("%18p||", ptr);
-	else
-		ft_printf("%18p||", "");
+	print_first_col(ptr);
 
 	if (!content)
-		ft_printf(" %-24.8s | ", ptr);
+		ft_printf(" %-24.8s | ", (char *)ptr);
+	else if (!*content)
+		ft_printf(" %-24.8s | ", "");
 	else
 		ft_printf(" %-24s | ", content);
 
