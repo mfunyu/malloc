@@ -33,6 +33,7 @@ static void	*_allocate_malloc(t_magazine *magazine, size_t size)
 	chunk = _find_unused_chunk(magazine, chunk_size);
 	if (!chunk)
 		return (NULL);
+	next = NEXTCHUNK(chunk);
 	if (CHUNKSIZE(chunk) - chunk_size > MIN_CHUNKSIZE)
 	{
 		next = split_chunk(chunk, chunk_size);
