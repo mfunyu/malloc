@@ -29,7 +29,7 @@ static void	*_allocate_malloc(t_magazine *magazine, size_t size)
 	t_malloc_chunk	*chunk;
 	t_malloc_chunk	*next;
 
-	chunk_size = align_malloc(size);
+	chunk_size = align_malloc_chunk(size);
 	chunk = _find_unused_chunk(magazine, chunk_size);
 	if (!chunk)
 		return (NULL);

@@ -8,10 +8,15 @@ size_t	align(size_t size, size_t align)
 
 size_t	align_malloc(size_t size)
 {
+	return (align(size, MALLOC_ALIGNMENT));
+}
+
+size_t	align_malloc_chunk(size_t size)
+{
 	size_t	aligned_size;
 	size_t	total_size;
 
-	aligned_size = align(size, MALLOC_ALIGNMENT);
+	aligned_size = align_malloc(size);
 	total_size = aligned_size + CHUNK_HEADERSIZE;
 	if (total_size < MIN_CHUNKSIZE)
 		total_size = MIN_CHUNKSIZE;
