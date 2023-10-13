@@ -91,4 +91,7 @@ extern t_malloc	g_malloc;
 
 void	*allocate(size_t size);
 
+void	*malloc_(size_t size);
+void	free_(void *ptr);
+
 #endif /* MALLOC_H */
