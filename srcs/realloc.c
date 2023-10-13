@@ -1,5 +1,7 @@
 #include <stddef.h>
 #include "malloc.h"
+#include "utils.h"
+#include "alloc.h"
 #include "libft.h"
 #include "ft_printf.h"
 /*
@@ -16,10 +18,34 @@
 ** If the area pointed to was moved, a free(ptr) is done.
 */
 
-void	*check_chunk_next(t_heap_chunk *ptr, size_t size)
+void	*extend_chunk(t_heap_chunk *chunk, size_t size)
 {
-	(void)size;
-	return (ptr);
+	size_t			extend_size;
+	t_heap_chunk	*next;
+
+	size = align(size, MALLOC_ALIGNMENT);
+	extend_size = size - ALLOCSIZE(chunk);
+	next = NEXTCHUNK(chunk);
+	split_chunk(next, extend_size - HEADER_SIZE);
+	chunk->size = size;
+	freelst_replace(next, NEXTCHUNK(chunk), &(g_regions.tiny_region.freelist));
+	next = NEXTCHUNK(chunk);
+	next->size |= PREV_IN_USE;
+	return (MEM(chunk));
+}
+
+bool	can_extend_chunk(t_heap_chunk *chunk, size_t size)
+{
+	t_heap_chunk	*next;
+
+	next = NEXTCHUNK(chunk);
+	if (IS_FOOTER(next))
+		return (false);
+	if (IS_ALLOCED(next))
+		return (false);
+	if (CHUNKSIZE(next) < align(size, MALLOC_ALIGNMENT) - ALLOCSIZE(chunk))
+		return (false);
+	return (true);
 }
 
 void	*handle_realloc(void *ptr, size_t size)
@@ -30,8 +56,8 @@ void	*handle_realloc(void *ptr, size_t size)
 	chunk = CHUNK(ptr);
 	if (ALLOCSIZE(chunk) >= size)
 		return (ptr);
-	/* if (!IS_ALLOCED(NEXTCHUNK(chunk)))
-		check_chunk_next(chunk, size); */
+	if (can_extend_chunk(chunk, size))
+		return(extend_chunk(chunk, size));
 	new_ptr = malloc_(size);
 	if (!new_ptr)
 		return (NULL);
