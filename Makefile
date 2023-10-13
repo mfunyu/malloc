@@ -6,7 +6,8 @@ SRCS	:= malloc.c \
 			realloc.c \
 			free.c \
 			init.c \
-			allocate.c
+			allocate.c \
+			show_alloc_mem.c
 
 SRCS	+= alignment.c \
 			get_page_size.c \
