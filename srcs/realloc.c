@@ -1,6 +1,7 @@
 #include "malloc.h"
 #include "libft.h"
 #include "utils.h"
+#include "lists.h"
 #include <errno.h>
 
 /*
@@ -14,27 +15,36 @@
 ** - success: If the area pointed to was moved, a free(ptr) is done.
 */
 
-/* void	extend_chunk(t_malloc_chunk *chunk, size_t size_diff)
+bool	extend_chunk(t_malloc_chunk *chunk, size_t size)
 {
 	t_malloc_chunk	*next;
 	t_malloc_chunk	*new;
+	size_t			size_diff;
+	t_magazine		*magazine;
 
 	next = NEXTCHUNK(chunk);
+	size_diff = align_malloc(size) - ALLOCSIZE(chunk);
+	if (IS_ALLOCED(next) || size_diff > CHUNKSIZE(next))
+		return (false);
+	if (size <= TINY_MAX)
+		magazine = &(g_malloc.tiny_magazine);
+	else
+		magazine = &(g_malloc.small_magazine);
 	if (CHUNKSIZE(next) - size_diff > MIN_CHUNKSIZE)
 	{
-		lst_malloc_chunk_pop(next);
-		next = split_chunk(next, size_diff);
-		lst_malloc_chunk_
+		new = split_chunk(next, size_diff);
+		lst_malloc_chunk_sort_add(&(magazine->freelist), new);
 	}
-	next->size |= IS_PREV_IN_USE;
-
+	lst_malloc_chunk_pop(&(magazine->freelist), next);
+	chunk->size = CHUNKSIZE(chunk) + CHUNKSIZE(next);
+	next = NEXTCHUNK(chunk);
+	next->size |= PREV_IN_USE;
+	return (true);
 }
- */
+
 void	*realloc_(void *ptr, size_t size)
 {
 	t_malloc_chunk	*chunk;
-	//t_malloc_chunk	*next;
-	//size_t			size_diff;
 	void			*retval;
 
 	if (size > MALLOC_ABSOLUTE_SIZE_MAX)
@@ -42,13 +52,11 @@ void	*realloc_(void *ptr, size_t size)
 	chunk = CHUNK(ptr);
 	if (ALLOCSIZE(chunk) >= size)
 		return (ptr);
-	//next = NEXTCHUNK(chunk);
-	//size_diff = align_malloc(size) - ALLOCSIZE(chunk);
-	/* if (!IS_ALLOCED(next) && size_diff >= CHUNKSIZE(next))
+	if (size <= SMALL_MAX)
 	{
-		extend_chunk(chunk, size_diff);
-		return (ptr);
-	} */
+		if (extend_chunk(chunk, size))
+			return (ptr);
+	}
 	retval = malloc_(size);
 	if (!retval)
 		return (NULL);

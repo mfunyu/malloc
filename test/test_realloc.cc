@@ -55,6 +55,16 @@ void	TestDiff(size_t original_size, size_t new_size, bool expect_same)
 		EXPECT_NE(ptr, new_ptr) << "should change the address";
 }
 
+void	TestBlocked(size_t original_size, size_t new_size)
+{
+	void	*ptr = set_data(original_size, '*');
+	void	*new_ptr;
+	ft_malloc(original_size);
+
+	new_ptr = ft_realloc(ptr, new_size);
+	EXPECT_NE(ptr, new_ptr) << "should change the address";
+}
+
 
 TEST(ReallocTest, SameSize) {
 	TestDiff(12, 12, true);
@@ -70,8 +80,12 @@ TEST(ReallocTest, EdgeSize) {
 	TestDiff(12, 16, true);
 }
 
-TEST(ReallocTest, DifferentSize) {
-	//TestDiff(12, 17, false);
+TEST(ReallocTest, Expanding) {
+	TestDiff(12, 17, true);
+}
+
+TEST(ReallocTest, Realloced) {
+	TestBlocked(12, 32);
 }
 
 TEST(ReallocTest, NullZero) {
