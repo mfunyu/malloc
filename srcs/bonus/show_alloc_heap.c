@@ -4,7 +4,7 @@
 
 void show_alloc_heap(void)__attribute__((destructor));
 
-void	print_used(t_malloc_chunk *chunk)
+static void	_print_used(t_malloc_chunk *chunk)
 {
 	ft_printf("%s", CYAN);
 	print_line('-');
@@ -14,7 +14,7 @@ void	print_used(t_malloc_chunk *chunk)
 		print_row(NULL, "(( abbriviated ))", NULL);
 }
 
-void	print_unused(t_malloc_chunk *chunk)
+static void	_print_unused(t_malloc_chunk *chunk)
 {
 	size_t			i;
 
@@ -31,7 +31,7 @@ void	print_unused(t_malloc_chunk *chunk)
 	}
 }
 
-void	print_header(t_malloc_chunk *chunk)
+static void	_print_header(t_malloc_chunk *chunk)
 {
 	if (IS_PREV_IN_USE(chunk))
 		print_row(chunk, NULL, NULL);
@@ -46,18 +46,18 @@ void	print_header(t_malloc_chunk *chunk)
 	ft_printf("|%c|%c| size\n", IS_ALLOCED(chunk) ? 'A' : '-', IS_PREV_IN_USE(chunk) ? 'P' : '-');
 }
 
-void	print_footer(t_malloc_chunk *footer)
+static void	_print_footer(t_malloc_chunk *footer)
 {
 	if (!IS_PREV_IN_USE(footer))
 		ft_printf("%s", GRAY);
-	print_header(footer);
+	_print_header(footer);
 	print_line('-');
 	print_row(&(footer->fd), NULL, "fd");
 	print_line('=');
 	ft_printf("%s\n", RESET);
 }
 
-void	print_magazine(t_magazine magazine)
+static void	_print_magazine(t_magazine magazine)
 {
 	void			*tail;
 	t_malloc_chunk	*chunk;
@@ -68,22 +68,31 @@ void	print_magazine(t_magazine magazine)
 	print_line('=');
 	while (!IS_FOOTER(chunk))
 	{
-		print_header(chunk);
+		_print_header(chunk);
 		if (!IS_ALLOCED(chunk))
-			print_unused(chunk);
+			_print_unused(chunk);
 		else
-			print_used(chunk);
+			_print_used(chunk);
 		chunk = NEXTCHUNK(chunk);
 		print_line('=');
 	}
-	print_footer(chunk);
+	_print_footer(chunk);
 }
 
-void	print_large(t_mmap_chunk *lst)
+static void	_print_large(t_mmap_chunk *lst)
 {
 	while (lst && lst->fd)
 	{
-
+		print_line('=');
+		print_first_col(lst);
+		ft_printf(" %24p | fd\n", lst->fd);
+		print_line('-');
+		print_first_col(&(lst->size));
+		ft_printf(" %12d (%9p) | size\n", ALLOCSIZE(lst), CHUNKSIZE(lst));
+		print_line('-');
+		print_row(MEM(lst), NULL, "mem");
+		print_line('=');
+		lst = lst->fd;
 	}
 }
 
@@ -92,11 +101,11 @@ void	show_alloc_heap()
 	if (!malloc_show_heap)
 		return ;
 	ft_printf("TINY: ");
-	print_magazine(g_malloc.tiny_magazine);
+	_print_magazine(g_malloc.tiny_magazine);
 	show_freelist(g_malloc.tiny_magazine);
 	ft_printf("SMALL: ");
-	print_magazine(g_malloc.small_magazine);
+	_print_magazine(g_malloc.small_magazine);
 	show_freelist(g_malloc.small_magazine);
 	ft_printf("LARGE: \n");
-	//print_large(g_malloc.large_allocations);
+	_print_large(g_malloc.large_allocations);
 }

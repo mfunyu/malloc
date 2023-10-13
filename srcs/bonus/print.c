@@ -33,8 +33,6 @@ void	print_row(void *ptr, char *content, char *name)
 
 	if (!content)
 		ft_printf(" %-24.8s | ", (char *)ptr);
-	else if (!*content)
-		ft_printf(" %-24.8s | ", "");
 	else
 		ft_printf(" %-24s | ", content);
 
