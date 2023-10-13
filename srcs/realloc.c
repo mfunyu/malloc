@@ -30,13 +30,13 @@ bool	extend_chunk(t_malloc_chunk *chunk, size_t size)
 		magazine = &(g_malloc.tiny_magazine);
 	else
 		magazine = &(g_malloc.small_magazine);
+	lst_malloc_chunk_pop(&(magazine->freelist), next);
 	if (CHUNKSIZE(next) - size_diff > MIN_CHUNKSIZE)
 	{
 		new = split_chunk(next, size_diff);
 		lst_malloc_chunk_sort_add(&(magazine->freelist), new);
 	}
-	lst_malloc_chunk_pop(&(magazine->freelist), next);
-	chunk->size = CHUNKSIZE(chunk) + CHUNKSIZE(next);
+	chunk->size += CHUNKSIZE(next);
 	next = NEXTCHUNK(chunk);
 	next->size |= PREV_IN_USE;
 	return (true);
