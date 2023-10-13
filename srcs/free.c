@@ -1,5 +1,6 @@
 #include "malloc.h"
 #include "lists.h"
+#include <sys/mman.h>
 
 static t_malloc_chunk	*_merge_chunks(t_magazine *magazine, t_malloc_chunk *chunk)
 {
@@ -34,7 +35,7 @@ static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
 	next->size &= ~PREV_IN_USE;
 }
 
-static void	_free_mmap(t_mmap_chunk *alloced_lst, t_mmap_chunk *chunk)
+static void	_free_mmap(t_mmap_chunk **alloced_lst, t_mmap_chunk *chunk)
 {
 	lst_mmap_chunk_pop(alloced_lst, chunk);
 	if (munmap(chunk, CHUNKSIZE(chunk)))
@@ -52,7 +53,7 @@ void	free_(void *ptr)
 	chunk = CHUNK(ptr);
 	size = ALLOCSIZE(chunk);
 	if (IS_MAPPED(chunk))
-		_free_mmap(&(g_malloc.large_allocations), chunk);
+		_free_mmap(&(g_malloc.large_allocations), (t_mmap_chunk *)chunk);
 	else if (size <= TINY_MAX)
 		_free_alloc(&(g_malloc.tiny_magazine), chunk);
 	else if (size <= SMALL_MAX)

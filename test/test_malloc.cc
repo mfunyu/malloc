@@ -181,7 +181,7 @@ TEST(MallocLargeTest, One) {
 }
 
 TEST(MallocLargeTest, OneFree) {
-	TestOne(1040384, false);
+	TestOne(1040384, true);
 	TestOne(204000384, true);
 }
 
