@@ -93,8 +93,10 @@ void	show_alloc_heap()
 		return ;
 	ft_printf("TINY: ");
 	print_magazine(g_malloc.tiny_magazine);
+	show_freelist(g_malloc.tiny_magazine);
 	ft_printf("SMALL: ");
 	print_magazine(g_malloc.small_magazine);
+	show_freelist(g_malloc.small_magazine);
 	ft_printf("LARGE: \n");
 	//print_large(g_malloc.large_allocations);
 }

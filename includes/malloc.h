@@ -7,10 +7,6 @@
 
 # include "debug.h"
 
-# ifdef BONUS
-#  include "bonus.h"
-# endif
-
 # define APPROX_PAGE_SIZE 4096
 # define MALLOC_ABSOLUTE_SIZE_MAX (SIZE_MAX - (2 * APPROX_PAGE_SIZE))
 # define TINY_MAX 1008
@@ -93,5 +89,9 @@ void	*allocate(size_t size);
 
 void	*malloc_(size_t size);
 void	free_(void *ptr);
+
+# ifdef BONUS
+#  include "bonus.h"
+# endif
 
 #endif /* MALLOC_H */

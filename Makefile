@@ -53,7 +53,8 @@ BONUS=1
 ifdef BONUS
 	SRCS	+= print.c \
 				set_flag.c \
-				show_alloc_heap.c
+				show_alloc_heap.c \
+				show_freelist.c
 	VPATH	+= srcs/bonus
 	CFLAGS	+= -D BONUS
 endif

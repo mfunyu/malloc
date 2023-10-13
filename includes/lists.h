@@ -1,9 +1,6 @@
 #ifndef LISTS_H
 #define LISTS_H
 
-struct t_malloc_chunk;
-struct t_mmap_chunk;
-
 /* lst_malloc_chunk.c */
 void	lst_malloc_chunk_add_front(t_malloc_chunk **lst, t_malloc_chunk *new_chunk);
 void	lst_malloc_chunk_insert(t_malloc_chunk *prev, t_malloc_chunk *insert);
