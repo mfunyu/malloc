@@ -15,14 +15,15 @@
 # define MALLOC_ABSOLUTE_SIZE_MAX (SIZE_MAX - (2 * APPROX_PAGE_SIZE))
 
 # define MALLOC_ALIGNMENT 16
-# define MIN_CHUNKSIZE (MALLOC_ALIGNMENT + CHUNK_HEADERSIZE)
+# define MIN_CHUNKSIZE (MALLOC_ALIGNMENT + CHUNK_OVERHEAD)
 
-# define CHUNK_HEADERSIZE 8
+# define CHUNK_OVERHEAD 8
+# define CHUNK_HEADERSIZE 16
 # define REGION_FOOTERSIZE sizeof(t_malloc_footer)
 # define LARGE_HEADERSIZE sizeof(t_mmap_chunk)
 
-# define CHUNK(ptr) ((void *)ptr - 16)
-# define MEM(chunk) ((void *)chunk + 16)
+# define CHUNK(ptr) ((void *)ptr - CHUNK_HEADERSIZE)
+# define MEM(chunk) ((void *)chunk + CHUNK_HEADERSIZE)
 # define IS_PREV_IN_USE(chunk) (chunk->size & PREV_IN_USE)
 # define IS_ALLOCED(chunk) (chunk->size & ALLOCED)
 # define IS_MAPPED(chunk) (chunk->size & MAPPED)
@@ -30,7 +31,7 @@
 # define IS_FOOTER(chunk) (CHUNKSIZE(chunk) == 0 && IS_ALLOCED(chunk))
 
 # define CHUNKSIZE(chunk) (chunk->size & ~(ALL - 1))
-# define ALLOCSIZE(chunk) (CHUNKSIZE(chunk) - CHUNK_HEADERSIZE)
+# define ALLOCSIZE(chunk) (CHUNKSIZE(chunk) - CHUNK_OVERHEAD)
 # define NEXTCHUNK(chunk) ((t_malloc_chunk *)((void *)chunk + CHUNKSIZE(chunk)))
 # define PREVCHUNK(chunk) ((t_malloc_chunk *)((void *)chunk - chunk->prev_size))
 

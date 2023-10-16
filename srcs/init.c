@@ -12,7 +12,7 @@ static size_t	calc_region_size(size_t max_block_size)
 	page_size = get_page_size();
 	if (!page_size)
 		return (0);
-	region_size = (max_block_size + CHUNK_HEADERSIZE) * MIN_ALLOCNUMS + REGION_FOOTERSIZE;
+	region_size = (max_block_size + CHUNK_OVERHEAD) * MIN_ALLOCNUMS + REGION_FOOTERSIZE;
 	return (align(region_size, page_size));
 }
 
