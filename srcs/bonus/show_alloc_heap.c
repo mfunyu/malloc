@@ -19,9 +19,9 @@ static void	_print_unused(t_malloc_chunk *chunk)
 	size_t			i;
 
 	print_line('-');
-	print_row(&(chunk->fd), NULL, "fd");
+	print_row_ptr(&(chunk->fd), "fd");
 	print_line('-');
-	print_row(&(chunk->bk), NULL, "bk");
+	print_row_ptr(&(chunk->bk), "bk");
 	if (CHUNKSIZE(chunk) > 32) {
 		print_line('-');
 		print_row((void *)&(chunk->bk) + 8, NULL, NULL);
@@ -36,7 +36,7 @@ static void	_print_header(t_malloc_chunk *chunk)
 	if (IS_PREV_IN_USE(chunk))
 		print_row(chunk, NULL, NULL);
 	else
-		print_row(chunk, NULL, "prev_size");
+		print_row_ptr(chunk, "prev_size");
 	print_line('-');
 	ft_printf("%s", RESET);
 	if (IS_FOOTER(chunk))
@@ -52,7 +52,7 @@ static void	_print_footer(t_malloc_chunk *footer)
 		ft_printf("%s", GRAY);
 	_print_header(footer);
 	print_line('-');
-	print_row(&(footer->fd), NULL, "fd");
+	print_row_ptr(&(footer->fd), "fd");
 	print_line('=');
 	ft_printf("%s\n", RESET);
 }

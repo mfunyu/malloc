@@ -27,6 +27,17 @@ void	print_first_col(void *ptr)
 		ft_printf("%18s||", "");
 }
 
+void	print_row_ptr(void *ptr, char *name)
+{
+	print_first_col(ptr);
+
+	ft_printf(" %24p | ", *(void **)ptr);
+
+	if (name)
+		ft_printf(name);
+	ft_printf("\n");
+}
+
 void	print_row(void *ptr, char *content, char *name)
 {
 	print_first_col(ptr);
