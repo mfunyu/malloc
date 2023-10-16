@@ -2,6 +2,7 @@
 # define BONUS_H
 
 extern unsigned	malloc_show_heap;
+extern unsigned	malloc_show_abbr;
 
 void	set_flags_from_environment();
 
