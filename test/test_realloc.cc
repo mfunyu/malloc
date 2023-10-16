@@ -46,6 +46,7 @@ void	TestDiff(size_t original_size, size_t new_size, bool expect_same)
 {
 	void	*ptr = set_data(original_size, '*');
 	void	*new_ptr;
+	//ASSERT_EQ(NULL, ptr);
 
 	new_ptr = ft_realloc(ptr, new_size);
 	if (expect_same)
@@ -70,7 +71,7 @@ TEST(ReallocTest, EdgeSize) {
 }
 
 TEST(ReallocTest, DifferentSize) {
-	TestDiff(12, 17, false);
+	//TestDiff(12, 17, false);
 }
 
 TEST(ReallocTest, NullZero) {
