@@ -3,23 +3,27 @@
 #include "lists.h"
 #include "ft_printf.h"
 
+static void	*_handle_not_enough_space(t_magazine *magazine)
+{
+# ifdef BONUS
+	return (extend_region(magazine));
+# else
+	ft_printf("error not enough space\n");
+	return (NULL);
+# endif
+}
+
 static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 {
 	t_malloc_chunk	*chunk;
 
 	chunk = magazine->freelist;
 	if (!chunk)
-	{
-		ft_printf("error not enough space\n");
-		return (NULL);
-	}
+		return (_handle_not_enough_space(magazine));
 	while (chunk->fd && CHUNKSIZE(chunk) < chunk_size)
 		chunk = chunk->fd;
 	if (CHUNKSIZE(chunk) < chunk_size)
-	{
-		ft_printf("error not enough space\n");
-		return (NULL);
-	}
+		return (_handle_not_enough_space(magazine));
 	return (chunk);
 }
 

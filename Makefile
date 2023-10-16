@@ -55,7 +55,8 @@ ifdef BONUS
 	SRCS	+= print.c \
 				set_flag.c \
 				show_alloc_heap.c \
-				show_freelist.c
+				show_freelist.c \
+				extend_region.c
 	VPATH	+= srcs/bonus
 	CFLAGS	+= -D BONUS
 endif
@@ -139,4 +140,4 @@ gtest	: all
 .PHONY	: test
 test	:
 	cd test && cmake --build build 1> /dev/null
-	cd test/build && ./test_malloc 2> ../log
+	cd test/build && MallocShowHeap=1 ./test_malloc 2> ../log

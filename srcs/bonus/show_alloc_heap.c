@@ -61,22 +61,28 @@ static void	_print_magazine(t_magazine magazine)
 {
 	void			*tail;
 	t_malloc_chunk	*chunk;
+	t_malloc_chunk	*region;
 
-	tail = (void *)magazine.regions + magazine.size;
-	ft_printf("%p ~ %p (%zu bytes)\n", magazine.regions, tail, magazine.size);
-	chunk = magazine.regions;
-	print_line('=');
-	while (!IS_FOOTER(chunk))
+	region = magazine.regions;
+	while (region)
 	{
-		_print_header(chunk);
-		if (!IS_ALLOCED(chunk))
-			_print_unused(chunk);
-		else
-			_print_used(chunk);
-		chunk = NEXTCHUNK(chunk);
+		tail = (void *)region + magazine.size;
+		ft_printf("TINY: %p ~ %p (%zu bytes)\n", region, tail, magazine.size);
+		chunk = region;
 		print_line('=');
+		while (!IS_FOOTER(chunk))
+		{
+			_print_header(chunk);
+			if (!IS_ALLOCED(chunk))
+				_print_unused(chunk);
+			else
+				_print_used(chunk);
+			chunk = NEXTCHUNK(chunk);
+			print_line('=');
+		}
+		_print_footer(chunk);
+		region = chunk->fd;
 	}
-	_print_footer(chunk);
 }
 
 static void	_print_large(t_mmap_chunk *lst)
