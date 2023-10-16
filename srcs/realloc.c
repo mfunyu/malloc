@@ -1,82 +1,85 @@
-#include <stddef.h>
 #include "malloc.h"
-#include "utils.h"
-#include "alloc.h"
 #include "libft.h"
-#include "ft_printf.h"
+#include "utils.h"
+#include "lists.h"
+#include <errno.h>
+
 /*
 ** The realloc() function returns a pointer to the newly allocated memory,
 ** which is suitably aligned for any kind of variable and may be different from ptr,or NULL if the request fails.
-** If size was equal to 0, either NULL or a pointer suitable to be passed to free() is returned.
-** If realloc() fails the original block is left untouched; it is not freed or moved.
+** - size == 0: either NULL or a pointer suitable to be passed to free() is returned.
+** - size == 0 && ptr: the call is equivalent to free(ptr).
+** - ptr == NULL: the call is equivalent to malloc(size), for all values of size.
+** - ptr != NULL: it must have been returned by an earlier call to malloc(), calloc(), or  realloc().
+** - fail: If realloc() fails the original block is left untouched; it is not freed or moved.
+** - success: If the area pointed to was moved, a free(ptr) is done.
 */
 
-/*
-** If ptr is NULL, then the call is equivalent to malloc(size), for all values of size;
-** if size is equal to zero, and ptr is not NULL, then the call is equivalent to free(ptr).
-** Unless ptr is NULL, it must have been returned by an earlier call to malloc(), calloc(), or  realloc().
-** If the area pointed to was moved, a free(ptr) is done.
-*/
-
-void	*extend_chunk(t_heap_chunk *chunk, size_t size)
+bool	extend_chunk(t_malloc_chunk *chunk, size_t size)
 {
-	size_t			extend_size;
-	t_heap_chunk	*next;
+	t_malloc_chunk	*next;
+	t_malloc_chunk	*new;
+	size_t			size_diff;
+	t_magazine		*magazine;
 
-	size = align(size, MALLOC_ALIGNMENT);
-	extend_size = size - ALLOCSIZE(chunk);
 	next = NEXTCHUNK(chunk);
-	split_chunk(next, extend_size - HEADER_SIZE);
-	chunk->size = size;
-	freelst_replace(next, NEXTCHUNK(chunk), &(g_regions.tiny_region.freelist));
+	size_diff = align_malloc(size) - ALLOCSIZE(chunk);
+	if (IS_ALLOCED(next) || size_diff > CHUNKSIZE(next))
+		return (false);
+	if (size <= TINY_MAX)
+		magazine = &(g_malloc.tiny_magazine);
+	else
+		magazine = &(g_malloc.small_magazine);
+	lst_malloc_chunk_pop(&(magazine->freelist), next);
+	if (CHUNKSIZE(next) - size_diff > MIN_CHUNKSIZE)
+	{
+		new = split_chunk(next, size_diff);
+		lst_malloc_chunk_sort_add(&(magazine->freelist), new);
+	}
+	chunk->size += CHUNKSIZE(next);
 	next = NEXTCHUNK(chunk);
 	next->size |= PREV_IN_USE;
-	return (MEM(chunk));
-}
-
-bool	can_extend_chunk(t_heap_chunk *chunk, size_t size)
-{
-	t_heap_chunk	*next;
-
-	next = NEXTCHUNK(chunk);
-	if (IS_FOOTER(next))
-		return (false);
-	if (IS_ALLOCED(next))
-		return (false);
-	if (CHUNKSIZE(next) < align(size, MALLOC_ALIGNMENT) - ALLOCSIZE(chunk))
-		return (false);
 	return (true);
 }
 
-void	*handle_realloc(void *ptr, size_t size)
+void	*realloc_(void *ptr, size_t size)
 {
-	t_heap_chunk	*chunk;
-	void			*new_ptr;
+	t_malloc_chunk	*chunk;
+	void			*retval;
 
+	if (size > MALLOC_ABSOLUTE_SIZE_MAX)
+		return (NULL);
 	chunk = CHUNK(ptr);
 	if (ALLOCSIZE(chunk) >= size)
 		return (ptr);
-	if (can_extend_chunk(chunk, size))
-		return(extend_chunk(chunk, size));
-	new_ptr = malloc_(size);
-	if (!new_ptr)
+	if (size <= SMALL_MAX)
+	{
+		if (extend_chunk(chunk, size))
+			return (ptr);
+	}
+	retval = malloc_(size);
+	if (!retval)
 		return (NULL);
-	ft_strlcpy(new_ptr, ptr, size);
+	ft_memmove(retval, ptr, ALLOCSIZE(chunk));
 	free_(ptr);
-	return (new_ptr);
+	return (retval);
 }
+
 
 void	*realloc(void *ptr, size_t size)
 {
-	void	*ret;
+	void	*retval;
 
-	ft_printf("realloc called: %p, %zu\n", ptr, size);
 	if (ptr == NULL)
-		return (malloc_(size));
-	if (size == 0) {
+		retval = malloc_(size);
+	else if (size == 0)
+	{
 		free_(ptr);
 		return (NULL);
 	}
-	ret = handle_realloc(ptr, size);
-	return (ret);
+	else
+		retval = realloc_(ptr, size);
+	if (retval == NULL)
+		errno = ENOMEM;
+	return (retval);
 }

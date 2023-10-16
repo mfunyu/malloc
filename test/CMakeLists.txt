@@ -16,11 +16,12 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 enable_testing()
-include_directories(${CMAKE_SOURCE_DIR}/includes)
+
+include_directories(ft_printf ../ft_printf)
+
 add_executable(test_malloc
   test_malloc.cc
   test_realloc.cc
-  ../includes/malloc.h
 )
 
 target_link_libraries(test_malloc

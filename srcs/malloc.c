@@ -1,7 +1,5 @@
-#include "ft_printf.h"
-#include "libft.h"
 #include "malloc.h"
-#include "alloc.h"
+#include "init.h"
 #include <errno.h>
 
 /*
@@ -47,12 +45,14 @@
 
 void	*malloc_(size_t size)
 {
-	ft_printf("malloc called %zu\n", size);
 	if (!size || size > MALLOC_ABSOLUTE_SIZE_MAX)
 		return (NULL);
-	if (!g_regions.initialized && init_malloc() == ERROR)
-		return (NULL);
-	return (allocate_chunk(size));
+	if (!g_malloc.is_initialized)
+	{
+		if (init_malloc() == -1)
+			return (NULL);
+	}
+	return (allocate(size));
 }
 
 void	*malloc(size_t size)

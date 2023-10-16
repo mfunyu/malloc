@@ -1,7 +1,7 @@
 #include "malloc.h"
 #include "ft_printf.h"
 
-size_t	print_large(t_mmap_chunk *lst)
+static size_t	_print_large_simple(t_mmap_chunk *lst)
 {
 	size_t	sum;
 
@@ -16,20 +16,20 @@ size_t	print_large(t_mmap_chunk *lst)
 	return (sum);
 }
 
-size_t	print_simple(char *zone, t_region region)
+static size_t	_print_malloc_simple(char *zone, t_magazine magazine)
 {
-	t_heap_chunk	*chunk;
+	t_malloc_chunk	*chunk;
 	size_t			sum;
 	size_t			size;
 
 	sum = 0;
-	chunk = region.head;
-	ft_printf("%s : %p\n", zone, region.head);
+	chunk = magazine.regions;
+	ft_printf("%s : %p\n", zone, chunk);
 	while (!IS_FOOTER(chunk))
 	{
 		if (IS_ALLOCED(chunk))
 		{
-			size = CHUNKSIZE(chunk) - HEADER_SIZE;
+			size = ALLOCSIZE(chunk);
 			ft_printf("%p ~ %p : %d bytes\n", MEM(chunk), MEM(chunk) + size, size);
 			sum += size;
 		}
@@ -43,8 +43,8 @@ void	show_alloc_mem()
 	size_t	total;
 
 	total = 0;
-	total += print_simple("TINY", g_regions.tiny_region);
-	total += print_simple("SMALL", g_regions.small_region);
-	total += print_large(g_regions.large_lst);
+	total += _print_malloc_simple("TINY", g_malloc.tiny_magazine);
+	total += _print_malloc_simple("SMALL", g_malloc.small_magazine);
+	total += _print_large_simple(g_malloc.large_allocations);
 	ft_printf("TOTAL: %zu bytes\n", total);
 }

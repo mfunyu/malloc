@@ -1,7 +1,7 @@
 #include <sys/mman.h>
 #include "ft_printf.h"
 
-void	*map_pages_by_size(size_t map_size)
+void	*mmap_by_size(size_t map_size)
 {
 	void	*ptr;
 

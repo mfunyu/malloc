@@ -1,93 +1,70 @@
-#ifdef __APPLE__
-# include <malloc/malloc.h>
-#endif
 #include "malloc.h"
-#include "ft_printf.h"
-#include <stddef.h>
+#include "lists.h"
 #include <sys/mman.h>
 
-void	add_chunk_to_freelist(t_heap_chunk *chunk, t_heap_chunk **freelist)
+static t_malloc_chunk	*_merge_chunks(t_magazine *magazine, t_malloc_chunk *chunk)
 {
-	t_heap_chunk	*lst;
+	t_malloc_chunk	*next;
+	t_malloc_chunk	*prev;
 
-	if (!*freelist || CHUNKSIZE((*freelist)) >= CHUNKSIZE(chunk)) {
-		freelst_add_front(freelist, chunk);
-	} else {
-		lst = *freelist;
-		while (lst->fd && CHUNKSIZE(lst->fd) < CHUNKSIZE(chunk)) {
-			lst = lst->fd;
-		}
-		freelst_insert(lst, chunk);
-	}
-}
-
-void	*merge_chunks(t_heap_chunk *chunk, t_region *region)
-{
-	t_heap_chunk	*next;
-	t_heap_chunk	*prev;
-
-	next = NEXTCHUNK(chunk);
-	if (!IS_FOOTER(chunk) && !IS_ALLOCED(next))
+	chunk->size &= ~ALLOCED;
+	if (!IS_ALLOCED(NEXTCHUNK(chunk)))
 	{
+		next = NEXTCHUNK(chunk);
 		chunk->size += CHUNKSIZE(next);
-		freelst_pop(next, &(region->freelist));
+		lst_malloc_chunk_pop(&(magazine->freelist), next);
 	}
 	if (!IS_PREV_IN_USE(chunk))
 	{
-		prev = (void *)chunk - chunk->prev_size;
+		prev = PREVCHUNK(chunk);
 		prev->size += CHUNKSIZE(chunk);
-		freelst_pop(prev, &(region->freelist));
-		return (prev);
+		lst_malloc_chunk_pop(&(magazine->freelist), prev);
+		chunk = prev;
 	}
 	return (chunk);
 }
 
-void	find_block_and_free(t_region *region, t_heap_chunk *chunk)
+static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
 {
-	t_heap_chunk	*next;
+	t_malloc_chunk	*next;
 
-	chunk = merge_chunks(chunk, region);
-	add_chunk_to_freelist(chunk, &(region->freelist));
-	chunk->size &= ~ALLOCED;
+	chunk = _merge_chunks(magazine, chunk);
+	lst_malloc_chunk_sort_add(&(magazine->freelist), chunk);
 	next = NEXTCHUNK(chunk);
 	next->prev_size = CHUNKSIZE(chunk);
 	next->size &= ~PREV_IN_USE;
 }
 
-void	free_mmapped_block(t_mmap_chunk **head, t_mmap_chunk *chunk)
+static void	_free_mmap(t_mmap_chunk **alloced_lst, t_mmap_chunk *chunk)
 {
-	t_mmap_chunk	*lst;
-
-	if (*head == chunk)
+	lst_mmap_chunk_pop(alloced_lst, chunk);
+	if (munmap(chunk, CHUNKSIZE(chunk)))
 	{
-		*head = chunk->fd;
+		ft_printf("Error: munmap\n");
 		return ;
 	}
-	lst = *head;
-	while (lst && lst->fd != chunk)
-		lst = lst->fd;
-	if (lst->fd == chunk)
-		lst->fd = chunk->fd;
-	munmap(chunk, CHUNKSIZE(chunk));
 }
 
 void	free_(void *ptr)
 {
-	t_heap_chunk	*chunk;
+	t_malloc_chunk	*chunk;
 	size_t			size;
 
 	chunk = CHUNK(ptr);
 	size = ALLOCSIZE(chunk);
 	if (IS_MAPPED(chunk))
-		free_mmapped_block(&(g_regions.large_lst), (t_mmap_chunk *)chunk);
+		_free_mmap(&(g_malloc.large_allocations), (t_mmap_chunk *)chunk);
 	else if (size <= TINY_MAX)
-		find_block_and_free(&(g_regions.tiny_region), chunk);
+		_free_alloc(&(g_malloc.tiny_magazine), chunk);
 	else if (size <= SMALL_MAX)
-		find_block_and_free(&(g_regions.small_region), chunk);
+		_free_alloc(&(g_malloc.small_magazine), chunk);
 }
 
 void	free(void *ptr)
 {
+	if (!ptr)
+		return ;
+
 #ifdef __APPLE__
 	malloc_zone_t	*zone;
 
@@ -97,9 +74,5 @@ void	free(void *ptr)
 		return ;
 	}
 #endif
-
-	ft_printf("free called: %p\n", ptr);
-	if (!ptr)
-		return ;
 	free_(ptr);
 }
