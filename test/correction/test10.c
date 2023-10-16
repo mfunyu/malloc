@@ -5,7 +5,7 @@
 
 void	main()
 {
-	ft_printf("=== test9 jsut size for space left malloc ===\n");
+	ft_printf("=== test10 jsut size for space left malloc ===\n");
 
 	void	*ptr1 = malloc(16);
 	void	*ptr2 = malloc(16);
