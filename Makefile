@@ -55,7 +55,8 @@ ifdef BONUS
 	SRCS	+= print.c \
 				set_flag.c \
 				show_alloc_heap.c \
-				show_freelist.c
+				show_freelist.c \
+				extend_region.c
 	VPATH	+= srcs/bonus
 	CFLAGS	+= -D BONUS
 endif
@@ -109,12 +110,6 @@ FILENAME = test.c
 correction	: all
 	$(CC) $(INCLUDES) ./test/correction/$(FILENAME) $(LIBS) $(NAME) -o $@
 
-ifdef DARWIN
-	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./$@
-else
-	LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=. ./$@
-endif
-
 .PHONY	: test2
 test2	: all
 	$(CC) $(INCLUDES) ./test/test2.c $(LIBS)
@@ -139,4 +134,4 @@ gtest	: all
 .PHONY	: test
 test	:
 	cd test && cmake --build build 1> /dev/null
-	cd test/build && ./test_malloc 2> ../log
+	cd test/build && MallocShowHeap=1 ./test_malloc 2> ../log

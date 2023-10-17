@@ -65,18 +65,18 @@ typedef struct s_malloc_footer
 	t_malloc_chunk	*fd;
 }			t_malloc_footer;
 
-typedef struct s_magazine
-{
-	size_t			size;
-	t_malloc_chunk	*regions;
-	t_malloc_chunk	*freelist;
-}				t_magazine;
-
 typedef struct s_mmap_chunk
 {
 	struct s_mmap_chunk	*fd;
 	size_t				size;
 }				t_mmap_chunk;
+
+typedef struct s_magazine
+{
+	size_t			size; /* region allocation size */
+	t_malloc_chunk	*regions;
+	t_malloc_chunk	*freelist;
+}				t_magazine;
 
 typedef	struct s_malloc
 {

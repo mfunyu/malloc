@@ -3,6 +3,7 @@
 
 /* lst_malloc_chunk.c */
 void	lst_malloc_chunk_add_front(t_malloc_chunk **lst, t_malloc_chunk *new_chunk);
+void	lst_malloc_chunk_add_back(t_malloc_chunk **lst, t_malloc_chunk *new_chunk);
 void	lst_malloc_chunk_insert(t_malloc_chunk *prev, t_malloc_chunk *insert);
 void	lst_malloc_chunk_replace(t_malloc_chunk **lst,
 			t_malloc_chunk *old, t_malloc_chunk *new_chunk);
