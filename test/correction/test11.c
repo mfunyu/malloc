@@ -2,21 +2,19 @@
 
 int		main()
 {
-	char	*ptr[100];
+	char	*ptr[1000];
 
 	ft_printf("===== test11 time overhead =====\n");
-	for (int i = 0; i < 3; i++) {
-		for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 1000; i++) {
 			int size = rand() & 1023;
-			//ft_printf("%d\n", size);
-			ptr[i] = malloc(rand() & 1023);
+			if (size > 1008)
+				size = 1008;
+			ptr[i] = malloc(size);
 		}
-		/*
-		for (int i = 0; i < 50; i++)
+
+		for (int i = 0; i < 500; i++)
 			free(ptr[i * 2]);
-		for (int i = 0; i < 100; i++)
-			ptr[i] = malloc(1100 + i);
-		for (int i = 0; i < 100; i++)
-			free(ptr[i]); */
 	}
+
 }
