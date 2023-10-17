@@ -63,6 +63,11 @@ void	lst_malloc_chunk_add_back(t_malloc_chunk **lst, t_malloc_chunk *new_chunk)
 	t_malloc_chunk	*l;
 
 	l = *lst;
+	if (!l)
+	{
+		*lst = new_chunk;
+		return ;
+	}
 	while (l->fd)
 		l = l->fd;
 	lst_malloc_chunk_insert(l, new_chunk);
