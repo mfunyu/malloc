@@ -15,8 +15,8 @@ static void	print_single_line()
 {
 	int	col_width;
 
-	col_width = 16;
-	print_line(col_width);
+	col_width = 18;
+	print_line(10);
 	ft_putchar_fd('+', FILENO);
 	print_line(col_width);
 	ft_putchar_fd('+', FILENO);
@@ -30,20 +30,25 @@ static void	print_single_line()
 
 void	show_freelist(t_magazine magazine)
 {
-	t_malloc_chunk	*freelist;
+	t_malloc_chunk	*lst;
 
 	ft_printf("< FreeList >\n");
 
-	freelist = magazine.freelist;
 	print_single_line();
-	while (freelist) {
-		ft_printf(" %p |", freelist);
-		ft_printf(" %5d (%6p) |", ALLOCSIZE(freelist), ALLOCSIZE(freelist));
-		ft_printf(" %14p |", freelist->fd);
-		ft_printf(" %14p |", freelist->bk);
+	for (size_t i = 2; i < 128 ; i++)
+	{
+		lst = magazine.freelist[i];
+		ft_printf(" [%i]", i);
+		ft_printf(" (%i) |", i * 8);
+		while (lst)
+		{
+			ft_printf("-> %p |", lst);
+			if (i * 8 < 512 && i * 8 != CHUNKSIZE(lst))
+				D(CHUNKSIZE(lst));
+			lst = lst->fd;
+		}
 		ft_printf("\n");
 		print_single_line();
-		freelist = freelist->fd;
 	}
 	ft_printf("\n");
 }

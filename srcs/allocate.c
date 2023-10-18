@@ -1,5 +1,6 @@
 #include "malloc.h"
 #include "utils.h"
+#include "freelist.h"
 #include "lists.h"
 #include "ft_printf.h"
 
@@ -18,22 +19,9 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 	t_malloc_chunk	*chunk;
 	t_malloc_chunk	*next;
 
-	chunk = magazine->freelist;
+	chunk = freelist_takeout(magazine->freelist, chunk_size);
 	if (chunk)
-	{
-		while (chunk->fd && CHUNKSIZE(chunk) < chunk_size)
-			chunk = chunk->fd;
-		if (CHUNKSIZE(chunk) >= chunk_size)
-		{
-			lst_malloc_chunk_pop(&(magazine->freelist), chunk);
-			if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + chunk_size)
-			{
-				next = split_chunk(chunk, chunk_size);
-				lst_malloc_chunk_sort_add(&(magazine->freelist), next);
-			}
-			return (chunk);
-		}
-	}
+		return (chunk);
 	chunk = magazine->top;
 	if (chunk && !IS_ALLOCED(chunk))
 	{

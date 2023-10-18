@@ -1,7 +1,7 @@
 #include "malloc.h"
 #include "libft.h"
 #include "utils.h"
-#include "lists.h"
+#include "freelist.h"
 #include <errno.h>
 
 /*
@@ -30,11 +30,11 @@ bool	extend_chunk(t_malloc_chunk *chunk, size_t size)
 		magazine = &(g_malloc.tiny_magazine);
 	else
 		magazine = &(g_malloc.small_magazine);
-	lst_malloc_chunk_pop(&(magazine->freelist), next);
+	freelist_pop(magazine->freelist, next);
 	if (CHUNKSIZE(next) - size_diff > MIN_CHUNKSIZE)
 	{
 		new = split_chunk(next, size_diff);
-		lst_malloc_chunk_sort_add(&(magazine->freelist), new);
+		freelist_add(magazine->freelist, new);
 	}
 	chunk->size += CHUNKSIZE(next);
 	next = NEXTCHUNK(chunk);

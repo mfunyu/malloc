@@ -1,5 +1,6 @@
 #include "malloc.h"
 #include "lists.h"
+#include "freelist.h"
 #include <sys/mman.h>
 
 static t_malloc_chunk	*_merge_chunks(t_magazine *magazine, t_malloc_chunk *chunk)
@@ -15,7 +16,7 @@ static t_malloc_chunk	*_merge_chunks(t_magazine *magazine, t_malloc_chunk *chunk
 		if (next == magazine->top)
 			magazine->top = chunk;
 		else
-			lst_malloc_chunk_pop(&(magazine->freelist), next);
+			freelist_pop(magazine->freelist, next);
 	}
 	if (!IS_PREV_IN_USE(chunk))
 	{
@@ -23,7 +24,7 @@ static t_malloc_chunk	*_merge_chunks(t_magazine *magazine, t_malloc_chunk *chunk
 		prev->size += CHUNKSIZE(chunk);
 		if (chunk == magazine->top)
 			magazine->top = prev;
-		lst_malloc_chunk_pop(&(magazine->freelist), prev);
+		freelist_pop(magazine->freelist, prev);
 		chunk = prev;
 	}
 	return (chunk);
@@ -34,7 +35,7 @@ static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
 	t_malloc_chunk	*next;
 
 	chunk = _merge_chunks(magazine, chunk);
-	lst_malloc_chunk_sort_add(&(magazine->freelist), chunk);
+	freelist_add(magazine->freelist, chunk);
 	next = NEXTCHUNK(chunk);
 	next->prev_size = CHUNKSIZE(chunk);
 	next->size &= ~PREV_IN_USE;

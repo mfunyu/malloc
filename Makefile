@@ -11,10 +11,10 @@ SRCS	:= malloc.c \
 
 SRCS	+= alignment.c \
 			get_page_size.c \
-			lst_malloc_chunk.c \
 			lst_mmap_chunk.c \
 			mmap_by_size.c \
-			split_chunk.c
+			split_chunk.c \
+			freelist.c
 
 # ---------------------------------------------------------------------------- #
 #                                     PATHS                                    #
