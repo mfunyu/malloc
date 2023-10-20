@@ -25,14 +25,18 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 	chunk = magazine->top;
 	if (chunk && !IS_ALLOCED(chunk))
 	{
-		if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + chunk_size)
+		if (CHUNKSIZE(chunk) >= chunk_size)
 		{
-			next = split_chunk(chunk, chunk_size);
-			magazine->top = next;
+			if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + chunk_size)
+			{
+				next = split_chunk(chunk, chunk_size);
+				magazine->top = next;
+			}
+			else
+				magazine->top = NULL;
+			return (chunk);
 		}
-		else
-			magazine->top = NULL;
-		return (chunk);
+		freelist_add(magazine->freelist, magazine->top);
 	}
 	chunk = _handle_not_enough_space(magazine);
 	if (!chunk)
