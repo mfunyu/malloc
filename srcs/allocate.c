@@ -35,7 +35,7 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 		}
 	}
 	chunk = magazine->top;
-	if (chunk)
+	if (chunk && !IS_ALLOCED(chunk))
 	{
 		if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + chunk_size)
 		{
