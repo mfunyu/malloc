@@ -25,7 +25,7 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 			chunk = chunk->fd;
 		if (CHUNKSIZE(chunk) >= chunk_size)
 		{
-			if (CHUNKSIZE(chunk) - chunk_size > MIN_CHUNKSIZE)
+			if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + chunk_size)
 			{
 				next = split_chunk(chunk, chunk_size);
 				lst_malloc_chunk_replace(&(magazine->freelist), chunk, next);
@@ -36,7 +36,7 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 		}
 	}
 	chunk = _handle_not_enough_space(magazine);
-	if (CHUNKSIZE(chunk) - chunk_size > MIN_CHUNKSIZE)
+	if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + chunk_size)
 	{
 		next = split_chunk(chunk, chunk_size);
 		lst_malloc_chunk_replace(&(magazine->freelist), chunk, next);
