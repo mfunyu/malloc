@@ -16,6 +16,7 @@ static void	*_handle_not_enough_space(t_magazine *magazine)
 static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 {
 	t_malloc_chunk	*chunk;
+	t_malloc_chunk	*next;
 
 	chunk = magazine->freelist;
 	if (chunk)
@@ -23,9 +24,25 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 		while (chunk->fd && CHUNKSIZE(chunk) < chunk_size)
 			chunk = chunk->fd;
 		if (CHUNKSIZE(chunk) >= chunk_size)
+		{
+			if (CHUNKSIZE(chunk) - chunk_size > MIN_CHUNKSIZE)
+			{
+				next = split_chunk(chunk, chunk_size);
+				lst_malloc_chunk_replace(&(magazine->freelist), chunk, next);
+			}
+			else
+				lst_malloc_chunk_pop(&(magazine->freelist), chunk);
 			return (chunk);
+		}
 	}
 	chunk = _handle_not_enough_space(magazine);
+	if (CHUNKSIZE(chunk) - chunk_size > MIN_CHUNKSIZE)
+	{
+		next = split_chunk(chunk, chunk_size);
+		lst_malloc_chunk_replace(&(magazine->freelist), chunk, next);
+	}
+	else
+		lst_malloc_chunk_pop(&(magazine->freelist), chunk);
 	return (chunk);
 }
 
@@ -40,13 +57,6 @@ static void	*_allocate_malloc(t_magazine *magazine, size_t size)
 	if (!chunk)
 		return (NULL);
 	next = NEXTCHUNK(chunk);
-	if (CHUNKSIZE(chunk) - chunk_size > MIN_CHUNKSIZE)
-	{
-		next = split_chunk(chunk, chunk_size);
-		lst_malloc_chunk_replace(&(magazine->freelist), chunk, next);
-	}
-	else
-		lst_malloc_chunk_pop(&(magazine->freelist), chunk);
 	chunk->size |= ALLOCED;
 	next->size |= PREV_IN_USE;
 	return (MEM(chunk));
