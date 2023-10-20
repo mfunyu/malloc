@@ -34,13 +34,28 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 			return (chunk);
 		}
 	}
+	chunk = magazine->top;
+	if (chunk)
+	{
+		if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + chunk_size)
+		{
+			next = split_chunk(chunk, chunk_size);
+			magazine->top = next;
+		}
+		else
+			magazine->top = NULL;
+		return (chunk);
+	}
 	chunk = _handle_not_enough_space(magazine);
-	lst_malloc_chunk_pop(&(magazine->freelist), chunk);
+	if (!chunk)
+		return (NULL);
 	if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + chunk_size)
 	{
 		next = split_chunk(chunk, chunk_size);
-		lst_malloc_chunk_sort_add(&(magazine->freelist), next);
+		magazine->top = next;
 	}
+	else
+		magazine->top = NULL;
 	return (chunk);
 }
 

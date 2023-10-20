@@ -49,7 +49,7 @@ static int	_init_small_magazine(t_magazine *small_magazine)
 		return (-1);
 	small_magazine->size = size;
 	small_magazine->regions = region;
-	lst_malloc_chunk_add_front(&(small_magazine->freelist), region);
+	small_magazine->top = region;
 	return (0);
 }
 
@@ -66,7 +66,7 @@ static int	_init_tiny_magazine(t_magazine *tiny_magazine)
 		return (-1);
 	tiny_magazine->size = size;
 	tiny_magazine->regions = region;
-	lst_malloc_chunk_add_front(&(tiny_magazine->freelist), region);
+	tiny_magazine->top = region;
 	return (0);
 }
 

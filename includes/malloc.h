@@ -76,6 +76,7 @@ typedef struct s_magazine
 	size_t			size; /* region allocation size */
 	t_malloc_chunk	*regions;
 	t_malloc_chunk	*freelist;
+	t_malloc_chunk	*top;
 }				t_magazine;
 
 typedef	struct s_malloc

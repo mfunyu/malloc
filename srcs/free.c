@@ -12,12 +12,17 @@ static t_malloc_chunk	*_merge_chunks(t_magazine *magazine, t_malloc_chunk *chunk
 	{
 		next = NEXTCHUNK(chunk);
 		chunk->size += CHUNKSIZE(next);
-		lst_malloc_chunk_pop(&(magazine->freelist), next);
+		if (next == magazine->top)
+			magazine->top = chunk;
+		else
+			lst_malloc_chunk_pop(&(magazine->freelist), next);
 	}
 	if (!IS_PREV_IN_USE(chunk))
 	{
 		prev = PREVCHUNK(chunk);
 		prev->size += CHUNKSIZE(chunk);
+		if (chunk == magazine->top)
+			magazine->top = prev;
 		lst_malloc_chunk_pop(&(magazine->freelist), prev);
 		chunk = prev;
 	}
