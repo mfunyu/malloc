@@ -18,12 +18,14 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 	t_malloc_chunk	*chunk;
 
 	chunk = magazine->freelist;
-	if (!chunk)
-		return (_handle_not_enough_space(magazine));
-	while (chunk->fd && CHUNKSIZE(chunk) < chunk_size)
-		chunk = chunk->fd;
-	if (CHUNKSIZE(chunk) < chunk_size)
-		return (_handle_not_enough_space(magazine));
+	if (chunk)
+	{
+		while (chunk->fd && CHUNKSIZE(chunk) < chunk_size)
+			chunk = chunk->fd;
+		if (CHUNKSIZE(chunk) >= chunk_size)
+			return (chunk);
+	}
+	chunk = _handle_not_enough_space(magazine);
 	return (chunk);
 }
 
