@@ -13,4 +13,6 @@ void	print_chunk(t_malloc_chunk *chunk);
 
 void	*extend_region(t_magazine *magazine);
 
+t_malloc_chunk	*defragment_chunks(t_magazine *magazine, t_malloc_chunk *chunk);
+
 #endif /* BONUS_H */

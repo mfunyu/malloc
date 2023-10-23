@@ -56,7 +56,8 @@ ifdef BONUS
 				set_flag.c \
 				show_alloc_heap.c \
 				show_freelist.c \
-				extend_region.c
+				extend_region.c \
+				defragment_chunks.c
 	VPATH	+= srcs/bonus
 	CFLAGS	+= -D BONUS
 endif
