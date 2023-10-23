@@ -94,6 +94,8 @@ void	*allocate(size_t size);
 void	*malloc_(size_t size);
 void	free_(void *ptr);
 
+void	show_alloc_mem();
+
 # ifdef BONUS
 #  include "bonus.h"
 # endif
