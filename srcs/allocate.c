@@ -9,6 +9,7 @@ static void	*_handle_not_enough_space(t_magazine *magazine)
 # ifdef BONUS
 	return (extend_region(magazine));
 # else
+	(void)magazine;
 	ft_printf("error not enough space\n");
 	return (NULL);
 # endif
