@@ -64,6 +64,17 @@ static void	_print_footer(t_malloc_chunk *footer)
 	ft_printf("%s\n", RESET);
 }
 
+void	print_chunk(t_malloc_chunk *chunk)
+{
+	_print_header(chunk);
+	if (!IS_ALLOCED(chunk))
+		_print_unused(chunk);
+	else
+		_print_used(chunk);
+	chunk = NEXTCHUNK(chunk);
+	print_line('=');
+}
+
 static void	_print_magazine(t_magazine magazine)
 {
 	void			*tail;
@@ -78,15 +89,7 @@ static void	_print_magazine(t_magazine magazine)
 		chunk = region;
 		print_line('=');
 		while (!IS_FOOTER(chunk))
-		{
-			_print_header(chunk);
-			if (!IS_ALLOCED(chunk))
-				_print_unused(chunk);
-			else
-				_print_used(chunk);
-			chunk = NEXTCHUNK(chunk);
-			print_line('=');
-		}
+			print_chunk(chunk);
 		_print_footer(chunk);
 		region = chunk->fd;
 	}
