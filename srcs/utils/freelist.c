@@ -51,24 +51,20 @@ void	freelist_add(t_malloc_chunk *freelist[128], t_malloc_chunk *add)
 
 void	freelist_pop(t_malloc_chunk *freelist[128], t_malloc_chunk *pop)
 {
-	int				index;
 	t_malloc_chunk	*next;
 	t_malloc_chunk	*prev;
+	int				index;
 
 	next = pop->fd;
 	prev = pop->bk;
-	if (!prev)
-	{
-		index = get_index(pop);
-		if (next)
-			next->bk = NULL;
-		freelist[index] = next;
-	}
+	if (next)
+		next->bk = prev;
+	if (prev)
+		prev->fd = next;
 	else
 	{
-		prev->fd = next;
-		if (next)
-			next->bk = prev;
+		index = get_index(pop);
+		freelist[index] = next;
 	}
 }
 
