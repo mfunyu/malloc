@@ -54,7 +54,8 @@ BONUS=1
 ifdef BONUS
 	SRCS	+= print.c \
 				set_flag.c \
-				show_alloc_heap.c \
+				show_alloc_mem_ex.c \
+				print_alloc.c \
 				show_freelist.c \
 				extend_region.c \
 				defragment_chunks.c
