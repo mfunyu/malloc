@@ -6,10 +6,10 @@ static void	*_merge_prev(t_magazine	*magazine, t_malloc_chunk *chunk)
 	t_malloc_chunk	*prev;
 
 	prev = PREVCHUNK(chunk);
+	freelist_pop(magazine->freelist, prev);
 	prev->size += CHUNKSIZE(chunk);
 	if (chunk == magazine->top)
 		magazine->top = prev;
-	freelist_pop(magazine->freelist, prev);
 	return (prev);
 }
 
