@@ -75,7 +75,8 @@ typedef struct s_magazine
 {
 	size_t			size; /* region allocation size */
 	t_malloc_chunk	*regions;
-	t_malloc_chunk	*freelist;
+	t_malloc_chunk	*top;
+	t_malloc_chunk	*freelist[128];
 }				t_magazine;
 
 typedef	struct s_malloc
@@ -92,6 +93,8 @@ void	*allocate(size_t size);
 
 void	*malloc_(size_t size);
 void	free_(void *ptr);
+
+void	show_alloc_mem();
 
 # ifdef BONUS
 #  include "bonus.h"

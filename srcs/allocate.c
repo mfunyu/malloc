@@ -1,5 +1,6 @@
 #include "malloc.h"
 #include "utils.h"
+#include "freelist.h"
 #include "lists.h"
 #include "ft_printf.h"
 
@@ -8,6 +9,7 @@ static void	*_handle_not_enough_space(t_magazine *magazine)
 # ifdef BONUS
 	return (extend_region(magazine));
 # else
+	(void)magazine;
 	ft_printf("error not enough space\n");
 	return (NULL);
 # endif
@@ -16,14 +18,37 @@ static void	*_handle_not_enough_space(t_magazine *magazine)
 static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 {
 	t_malloc_chunk	*chunk;
+	t_malloc_chunk	*next;
 
-	chunk = magazine->freelist;
+	chunk = freelist_takeout(magazine->freelist, chunk_size);
+	if (chunk)
+		return (chunk);
+	chunk = magazine->top;
+	if (chunk && !IS_ALLOCED(chunk))
+	{
+		if (CHUNKSIZE(chunk) >= chunk_size)
+		{
+			if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + chunk_size)
+			{
+				next = split_chunk(chunk, chunk_size);
+				magazine->top = next;
+			}
+			else
+				magazine->top = NULL;
+			return (chunk);
+		}
+		freelist_add(magazine->freelist, magazine->top);
+	}
+	chunk = _handle_not_enough_space(magazine);
 	if (!chunk)
-		return (_handle_not_enough_space(magazine));
-	while (chunk->fd && CHUNKSIZE(chunk) < chunk_size)
-		chunk = chunk->fd;
-	if (CHUNKSIZE(chunk) < chunk_size)
-		return (_handle_not_enough_space(magazine));
+		return (NULL);
+	if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + chunk_size)
+	{
+		next = split_chunk(chunk, chunk_size);
+		magazine->top = next;
+	}
+	else
+		magazine->top = NULL;
 	return (chunk);
 }
 
@@ -38,13 +63,6 @@ static void	*_allocate_malloc(t_magazine *magazine, size_t size)
 	if (!chunk)
 		return (NULL);
 	next = NEXTCHUNK(chunk);
-	if (CHUNKSIZE(chunk) - chunk_size > MIN_CHUNKSIZE)
-	{
-		next = split_chunk(chunk, chunk_size);
-		lst_malloc_chunk_replace(&(magazine->freelist), chunk, next);
-	}
-	else
-		lst_malloc_chunk_pop(&(magazine->freelist), chunk);
 	chunk->size |= ALLOCED;
 	next->size |= PREV_IN_USE;
 	return (MEM(chunk));

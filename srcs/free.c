@@ -1,35 +1,17 @@
 #include "malloc.h"
 #include "lists.h"
+#include "freelist.h"
 #include <sys/mman.h>
-
-static t_malloc_chunk	*_merge_chunks(t_magazine *magazine, t_malloc_chunk *chunk)
-{
-	t_malloc_chunk	*next;
-	t_malloc_chunk	*prev;
-
-	chunk->size &= ~ALLOCED;
-	if (!IS_ALLOCED(NEXTCHUNK(chunk)))
-	{
-		next = NEXTCHUNK(chunk);
-		chunk->size += CHUNKSIZE(next);
-		lst_malloc_chunk_pop(&(magazine->freelist), next);
-	}
-	if (!IS_PREV_IN_USE(chunk))
-	{
-		prev = PREVCHUNK(chunk);
-		prev->size += CHUNKSIZE(chunk);
-		lst_malloc_chunk_pop(&(magazine->freelist), prev);
-		chunk = prev;
-	}
-	return (chunk);
-}
 
 static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
 {
 	t_malloc_chunk	*next;
 
-	chunk = _merge_chunks(magazine, chunk);
-	lst_malloc_chunk_sort_add(&(magazine->freelist), chunk);
+	chunk->size &= ~ALLOCED;
+# ifdef BONUS
+	chunk = defragment_chunks(magazine, chunk);
+# endif
+	freelist_add(magazine->freelist, chunk);
 	next = NEXTCHUNK(chunk);
 	next->prev_size = CHUNKSIZE(chunk);
 	next->size &= ~PREV_IN_USE;

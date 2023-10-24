@@ -11,10 +11,10 @@ SRCS	:= malloc.c \
 
 SRCS	+= alignment.c \
 			get_page_size.c \
-			lst_malloc_chunk.c \
 			lst_mmap_chunk.c \
 			mmap_by_size.c \
-			split_chunk.c
+			split_chunk.c \
+			freelist.c
 
 # ---------------------------------------------------------------------------- #
 #                                     PATHS                                    #
@@ -54,9 +54,11 @@ BONUS=1
 ifdef BONUS
 	SRCS	+= print.c \
 				set_flag.c \
-				show_alloc_heap.c \
+				show_alloc_mem_ex.c \
+				print_alloc.c \
 				show_freelist.c \
-				extend_region.c
+				extend_region.c \
+				defragment_chunks.c
 	VPATH	+= srcs/bonus
 	CFLAGS	+= -D BONUS
 endif

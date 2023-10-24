@@ -7,7 +7,8 @@ void	*split_chunk(t_malloc_chunk *chunk, size_t new_size)
 
 	next = (void *)chunk + new_size;
 	next->size = CHUNKSIZE(chunk) - new_size;
-	
+	NEXTCHUNK(next)->prev_size = next->size;
+
 	chunk_flags = GET_FLAGS(chunk);
 	chunk->size = new_size;
 	chunk->size |= chunk_flags;

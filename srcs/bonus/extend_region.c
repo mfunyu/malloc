@@ -13,6 +13,6 @@ void	*extend_region(t_magazine *magazine)
 	footer = (void *)region + magazine->size - REGION_FOOTERSIZE;
 	footer->fd = magazine->regions;
 	magazine->regions = region;
-	lst_malloc_chunk_add_back(&(magazine->freelist), region);
+	magazine->top = region;
 	return (region);
 }

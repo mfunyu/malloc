@@ -1,7 +1,7 @@
 #include "malloc.h"
 #include "libft.h"
 #include "utils.h"
-#include "lists.h"
+#include "freelist.h"
 #include <errno.h>
 
 /*
@@ -18,23 +18,36 @@
 bool	extend_chunk(t_malloc_chunk *chunk, size_t size)
 {
 	t_malloc_chunk	*next;
-	t_malloc_chunk	*new;
+	t_malloc_chunk	*rest;
 	size_t			size_diff;
 	t_magazine		*magazine;
 
 	next = NEXTCHUNK(chunk);
-	size_diff = align_malloc(size) - ALLOCSIZE(chunk);
+	size_diff = align_malloc(size) - ALLOCSIZE(chunk); /* Always positive */
 	if (IS_ALLOCED(next) || size_diff > CHUNKSIZE(next))
 		return (false);
 	if (size <= TINY_MAX)
 		magazine = &(g_malloc.tiny_magazine);
 	else
 		magazine = &(g_malloc.small_magazine);
-	lst_malloc_chunk_pop(&(magazine->freelist), next);
-	if (CHUNKSIZE(next) - size_diff > MIN_CHUNKSIZE)
+	if (next == magazine->top)
 	{
-		new = split_chunk(next, size_diff);
-		lst_malloc_chunk_sort_add(&(magazine->freelist), new);
+		if (CHUNKSIZE(next) > size_diff + MIN_CHUNKSIZE)
+		{
+			rest = split_chunk(next, size_diff);
+			magazine->top = rest;
+		}
+		else
+			magazine->top = NULL;
+	}
+	else
+	{
+		freelist_pop(magazine->freelist, next);
+		if (CHUNKSIZE(next) > size_diff + MIN_CHUNKSIZE)
+		{
+			rest = split_chunk(next, size_diff);
+			freelist_add(magazine->freelist, rest);
+		}
 	}
 	chunk->size += CHUNKSIZE(next);
 	next = NEXTCHUNK(chunk);

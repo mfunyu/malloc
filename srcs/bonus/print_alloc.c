@@ -2,8 +2,6 @@
 #include "print.h"
 #include "bonus.h"
 
-void show_alloc_heap(void)__attribute__((destructor));
-
 static void	_print_used(t_malloc_chunk *chunk)
 {
 	ft_printf("%s", CYAN);
@@ -64,7 +62,17 @@ static void	_print_footer(t_malloc_chunk *footer)
 	ft_printf("%s\n", RESET);
 }
 
-static void	_print_magazine(t_magazine magazine)
+void	print_chunk(t_malloc_chunk *chunk)
+{
+	_print_header(chunk);
+	if (!IS_ALLOCED(chunk))
+		_print_unused(chunk);
+	else
+		_print_used(chunk);
+	print_line('=');
+}
+
+void	print_malloc(t_magazine magazine, e_size type)
 {
 	void			*tail;
 	t_malloc_chunk	*chunk;
@@ -74,26 +82,26 @@ static void	_print_magazine(t_magazine magazine)
 	while (region)
 	{
 		tail = (void *)region + magazine.size;
-		ft_printf("TINY: %p ~ %p (%zu bytes)\n", region, tail, magazine.size);
+		if (type == TINY)
+			ft_printf("TINY: ");
+		else if (type == SMALL)
+			ft_printf("SMALL: ");
+		ft_printf("%p ~ %p (%zu bytes)\n", region, tail, magazine.size);
 		chunk = region;
 		print_line('=');
 		while (!IS_FOOTER(chunk))
 		{
-			_print_header(chunk);
-			if (!IS_ALLOCED(chunk))
-				_print_unused(chunk);
-			else
-				_print_used(chunk);
+			print_chunk(chunk);
 			chunk = NEXTCHUNK(chunk);
-			print_line('=');
 		}
 		_print_footer(chunk);
 		region = chunk->fd;
 	}
 }
 
-static void	_print_large(t_mmap_chunk *lst)
+void	print_large(t_mmap_chunk *lst)
 {
+	ft_printf("LARGE: \n");
 	while (lst && lst->fd)
 	{
 		print_line('=');
@@ -112,16 +120,3 @@ static void	_print_large(t_mmap_chunk *lst)
 	}
 }
 
-void	show_alloc_heap()
-{
-	if (!malloc_show_heap && !malloc_show_abbr)
-		return ;
-	ft_printf("TINY: ");
-	_print_magazine(g_malloc.tiny_magazine);
-	show_freelist(g_malloc.tiny_magazine);
-	ft_printf("SMALL: ");
-	_print_magazine(g_malloc.small_magazine);
-	show_freelist(g_malloc.small_magazine);
-	ft_printf("LARGE: \n");
-	_print_large(g_malloc.large_allocations);
-}
