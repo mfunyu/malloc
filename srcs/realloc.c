@@ -18,24 +18,30 @@
 bool	extend_chunk(t_malloc_chunk *chunk, size_t size)
 {
 	t_malloc_chunk	*next;
-	t_malloc_chunk	*new;
+	t_malloc_chunk	*rest;
 	size_t			size_diff;
 	t_magazine		*magazine;
 
 	next = NEXTCHUNK(chunk);
-	size_diff = align_malloc(size) - ALLOCSIZE(chunk);
+	size_diff = align_malloc(size) - ALLOCSIZE(chunk); /* Always positive */
 	if (IS_ALLOCED(next) || size_diff > CHUNKSIZE(next))
 		return (false);
 	if (size <= TINY_MAX)
 		magazine = &(g_malloc.tiny_magazine);
 	else
 		magazine = &(g_malloc.small_magazine);
-	freelist_pop(magazine->freelist, next);
+	if (next != magazine->top)
+		freelist_pop(magazine->freelist, next);
 	if (CHUNKSIZE(next) - size_diff > MIN_CHUNKSIZE)
 	{
-		new = split_chunk(next, size_diff);
-		freelist_add(magazine->freelist, new);
+		rest = split_chunk(next, size_diff);
+		if (next != magazine->top)
+			freelist_add(magazine->freelist, rest);
+		else
+			magazine->top = rest;
 	}
+	else if (next == magazine->top)
+		magazine->top = NULL;
 	chunk->size += CHUNKSIZE(next);
 	next = NEXTCHUNK(chunk);
 	next->size |= PREV_IN_USE;
