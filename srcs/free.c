@@ -1,6 +1,7 @@
 #include "malloc.h"
 #include "lists.h"
 #include "freelist.h"
+#include "utils.h"
 #include <sys/mman.h>
 
 static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
@@ -32,6 +33,8 @@ void	free_(void *ptr)
 	t_malloc_chunk	*chunk;
 	size_t			size;
 
+	if (IS_ALIGNED(ptr))
+		return error_msg("invalid pointer");
 	chunk = CHUNK(ptr);
 	size = ALLOCSIZE(chunk);
 	if (IS_MAPPED(chunk))
