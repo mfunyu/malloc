@@ -13,6 +13,7 @@ SRCS	+= alignment.c \
 			get_page_size.c \
 			lst_mmap_chunk.c \
 			mmap_by_size.c \
+			error.c \
 			split_chunk.c \
 			freelist.c
 

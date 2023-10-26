@@ -17,4 +17,9 @@ size_t	align_large(size_t size);
 
 void	*split_chunk(t_malloc_chunk *chunk, size_t new_size);
 
+/* error.c */
+void	*error_null(char *error_msg);
+int		error_ret(char *error_msg, int ret);
+void	error_msg(char *error_msg);
+
 #endif /* UTILS_H */
