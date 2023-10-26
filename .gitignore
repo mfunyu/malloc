@@ -6,6 +6,7 @@
 !test/*.c*
 !test/*.sh
 !test/correction/*
+!test/check/*
 !.github/**
 
 !./Makefile
