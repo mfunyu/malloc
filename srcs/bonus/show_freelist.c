@@ -39,11 +39,11 @@ void	show_freelist(t_magazine magazine)
 	{
 		lst = magazine.freelist[i];
 		ft_printf(" [%i]", i);
-		ft_printf(" (%i) |", i * 8);
+		ft_printf(" (%i) |", i << 4);
 		while (lst)
 		{
 			ft_printf("-> %p |", lst);
-			if (i * 8 < 512 && i * 8 != CHUNKSIZE(lst))
+			if (i << 4 != CHUNKSIZE(lst))
 				D(CHUNKSIZE(lst));
 			lst = lst->fd;
 		}

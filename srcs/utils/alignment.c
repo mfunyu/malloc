@@ -14,13 +14,11 @@ size_t	align_malloc(size_t size)
 size_t	align_malloc_chunk(size_t size)
 {
 	size_t	aligned_size;
-	size_t	total_size;
 
-	aligned_size = align_malloc(size);
-	total_size = aligned_size + CHUNK_OVERHEAD;
-	if (total_size < MIN_CHUNKSIZE)
-		total_size = MIN_CHUNKSIZE;
-	return (total_size);
+	aligned_size = align_malloc(size + CHUNK_OVERHEAD);
+	if (aligned_size < MIN_CHUNKSIZE)
+		aligned_size = MIN_CHUNKSIZE;
+	return (aligned_size);
 }
 
 size_t	align_large(size_t size)

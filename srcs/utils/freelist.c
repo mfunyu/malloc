@@ -3,8 +3,8 @@
 
 int	largebin_index(size_t size)
 {
-	if (size >> 6 <= 32)
-		return (57 + (size >> 6));
+	if (size >> 6 <= 48)
+		return (48 + (size >> 6));
 	if (size >> 9 <= 20)
 		return (91 + (size >> 9));
 	if (size >> 12 <= 10)
@@ -20,8 +20,8 @@ int	get_index_by_size(size_t size)
 {
 	int		index;
 
-	if (size <= 512)
-		index = size / 8;
+	if (size <= 1024)
+		index = size >> 4;
 	else
 		index = largebin_index(size);
 	return (index);
