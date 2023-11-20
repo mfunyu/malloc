@@ -70,8 +70,17 @@ static int	_init_tiny_magazine(t_magazine *tiny_magazine)
 	return (0);
 }
 
+int		init_validations()
+{
+	if ((MALLOC_ALIGNMENT & (MALLOC_ALIGNMENT - 1)) != 0)
+		return (error_ret("configuration - malloc alignment should be a power of two", -1));
+	return (0);
+}
+
 int		init_malloc()
 {
+	if (init_validations() == -1)
+		return (-1);
 # ifdef BONUS
 	set_flags_from_environment();
 # endif
