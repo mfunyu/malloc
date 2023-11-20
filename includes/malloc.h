@@ -19,7 +19,7 @@
 
 # define CHUNK_OVERHEAD 8
 # define CHUNK_HEADERSIZE 16
-# define REGION_FOOTERSIZE sizeof(t_malloc_footer)
+# define REGION_FOOTERSIZE ALIGN(sizeof(t_malloc_footer), MALLOC_ALIGNMENT)
 # define LARGE_HEADERSIZE sizeof(t_mmap_chunk)
 
 # define CHUNK(ptr) ((void *)ptr - CHUNK_HEADERSIZE)
@@ -29,6 +29,8 @@
 # define IS_MAPPED(chunk) (chunk->size & MAPPED)
 # define GET_FLAGS(chunk) (chunk->size & (ALL - 1))
 # define IS_FOOTER(chunk) (CHUNKSIZE(chunk) == 0 && IS_ALLOCED(chunk))
+
+# define ALIGN(size, align) ((size + (align - 1)) & ~(align - 1))
 
 # define CHUNKSIZE(chunk) (chunk->size & ~(ALL - 1))
 # define ALLOCSIZE(chunk) (CHUNKSIZE(chunk) - CHUNK_OVERHEAD)

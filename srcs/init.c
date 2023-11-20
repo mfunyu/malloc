@@ -13,7 +13,7 @@ static size_t	calc_region_size(size_t max_block_size)
 	if (!page_size)
 		return (0);
 	region_size = (max_block_size + CHUNK_OVERHEAD) * MIN_ALLOCNUMS + REGION_FOOTERSIZE;
-	return (align(region_size, page_size));
+	return (ALIGN(region_size, page_size));
 }
 
 t_malloc_chunk	*init_region(size_t	size)
