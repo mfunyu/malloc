@@ -59,6 +59,8 @@ static void	*_allocate_malloc(t_magazine *magazine, size_t size)
 	t_malloc_chunk	*next;
 
 	chunk_size = align_malloc_chunk(size);
+	if (size == 1008)
+		SD("c", chunk_size);
 	chunk = _find_unused_chunk(magazine, chunk_size);
 	if (!chunk)
 		return (NULL);
@@ -91,6 +93,9 @@ void	*allocate(size_t size)
 	if (size <= TINY_MAX)
 		return (_allocate_malloc(&(g_malloc.tiny_magazine), size));
 	else if (size <= SMALL_MAX)
+	{
+		S("small");
 		return (_allocate_malloc(&(g_malloc.small_magazine), size));
+	}
 	return (_allocate_mmap(&(g_malloc.large_allocations), size));
 }

@@ -39,7 +39,11 @@ void	free_(void *ptr)
 	else if (size <= TINY_MAX)
 		_free_alloc(&(g_malloc.tiny_magazine), chunk);
 	else if (size <= SMALL_MAX)
+	{
+		SD("size", CHUNKSIZE(chunk));
+		S("pass");
 		_free_alloc(&(g_malloc.small_magazine), chunk);
+	}
 }
 
 void	free(void *ptr)

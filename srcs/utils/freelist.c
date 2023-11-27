@@ -1,5 +1,6 @@
 #include "malloc.h"
 #include "utils.h"
+#include <stdlib.h>
 
 int	largebin_index(size_t size)
 {
@@ -78,12 +79,28 @@ void	*freelist_takeout(t_malloc_chunk *freelist[128], size_t size)
 	if (!freelist[index])
 		return (NULL);
 	chunk = freelist[index];
+	if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + size)
+	{
+		SD("size", size);
+		SD("index", index);
+		SD("chunk", CHUNKSIZE(chunk));
+		SP("chunk", chunk);
+		P(freelist + index);
+		P(g_malloc.small_magazine.freelist + 72);
+		show_alloc_mem_ex();
+	}
 	next = chunk->fd;
 	if (next)
 		next->bk = NULL;
 	freelist[index] = next;
 	if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + size)
 	{
+		SD("size", size);
+		SD("index", index);
+		SD("chunk", CHUNKSIZE(chunk));
+		SP("chunk", chunk);
+		//show_alloc_mem_ex();
+		exit(1);
 		next = split_chunk(chunk, size);
 		freelist_add(freelist, next);
 	}
