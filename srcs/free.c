@@ -42,15 +42,9 @@ void	free_(void *ptr)
 	if (IS_MAPPED(chunk))
 		_free_mmap(&(g_malloc.large_allocations), (t_mmap_chunk *)chunk);
 	else if (size <= TINY_MAX || ((uintptr_t)chunk & (SMALL_QUANTUM - 1)))
-	{
 		_free_alloc(&(g_malloc.tiny_magazine), chunk);
-	}
 	else if (size <= SMALL_MAX)
-	{
-		SD("size", CHUNKSIZE(chunk));
-		S("pass");
 		_free_alloc(&(g_malloc.small_magazine), chunk);
-	}
 	//else error
 }
 

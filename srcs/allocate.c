@@ -116,9 +116,6 @@ void	*allocate(size_t size)
 	if (size <= TINY_MAX)
 		return (_allocate_tiny_malloc(size));
 	else if (size <= SMALL_MAX)
-	{
-		S("small");
 		return (_allocate_small_malloc(size));
-	}
 	return (_allocate_mmap(&(g_malloc.large_allocations), size));
 }
