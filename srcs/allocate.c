@@ -20,9 +20,6 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 	t_malloc_chunk	*chunk;
 	t_malloc_chunk	*next;
 
-	chunk = freelist_takeout(magazine->freelist, chunk_size);
-	if (chunk)
-		return (chunk);
 	chunk = magazine->top;
 	if (chunk && !IS_ALLOCED(chunk))
 	{
@@ -70,6 +67,9 @@ static void	*_allocate_tiny_malloc(size_t size)
 
 	chunk_size = align_malloc_chunk(size, TINY);
 	magazine = &(g_malloc.tiny_magazine);
+	chunk = freelist_takeout(magazine->freelist, chunk_size);
+	if (chunk)
+		return (_mark_allocate(chunk));
 	chunk = _find_unused_chunk(magazine, chunk_size);
 	if (!chunk)
 		return (NULL);
@@ -84,6 +84,9 @@ static void	*_allocate_small_malloc(size_t size)
 
 	chunk_size = align_malloc_chunk(size, SMALL);
 	magazine = &(g_malloc.small_magazine);
+	chunk = freelist_takeout(magazine->freelist, chunk_size);
+	if (chunk)
+		return (_mark_allocate(chunk));
 	chunk = _find_unused_chunk(magazine, chunk_size);
 	if (!chunk)
 		return (NULL);
