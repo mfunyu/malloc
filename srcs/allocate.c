@@ -65,10 +65,12 @@ static void	*_mark_allocate(t_malloc_chunk *chunk)
 static void	*_allocate_tiny_malloc(size_t size)
 {
 	size_t			chunk_size;
+	t_magazine		*magazine;
 	t_malloc_chunk	*chunk;
 
 	chunk_size = align_malloc_chunk(size, TINY);
-	chunk = _find_unused_chunk(&(g_malloc.tiny_magazine), chunk_size);
+	magazine = &(g_malloc.tiny_magazine);
+	chunk = _find_unused_chunk(magazine, chunk_size);
 	if (!chunk)
 		return (NULL);
 	return (_mark_allocate(chunk));
@@ -77,10 +79,12 @@ static void	*_allocate_tiny_malloc(size_t size)
 static void	*_allocate_small_malloc(size_t size)
 {
 	size_t			chunk_size;
+	t_magazine		*magazine;
 	t_malloc_chunk	*chunk;
 
 	chunk_size = align_malloc_chunk(size, SMALL);
-	chunk = _find_unused_chunk(&(g_malloc.small_magazine), chunk_size);
+	magazine = &(g_malloc.small_magazine);
+	chunk = _find_unused_chunk(magazine, chunk_size);
 	if (!chunk)
 		return (NULL);
 	return (_mark_allocate(chunk));
