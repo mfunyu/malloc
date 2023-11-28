@@ -7,7 +7,10 @@
 
 # include "debug.h"
 
-# define TINY_MAX 1008
+# define TINY_QUANTUM 16
+# define SMALL_QUANTUM 512
+# define NUMS_TINY_SLOTS 64
+# define TINY_MAX ((NUMS_TINY_SLOTS) * TINY_QUANTUM) /* 1024 */
 # define SMALL_MAX 127 * 8192
 # define MIN_ALLOCNUMS 100
 

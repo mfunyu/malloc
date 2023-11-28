@@ -52,15 +52,11 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 	return (chunk);
 }
 
-static void	*_allocate_malloc(t_magazine *magazine, size_t size)
+static void	*_allocate_malloc(t_magazine *magazine, size_t chunk_size)
 {
-	size_t			chunk_size;
 	t_malloc_chunk	*chunk;
 	t_malloc_chunk	*next;
 
-	chunk_size = align_malloc_chunk(size);
-	if (size == 1008)
-		SD("c", chunk_size);
 	chunk = _find_unused_chunk(magazine, chunk_size);
 	if (!chunk)
 		return (NULL);
@@ -68,6 +64,22 @@ static void	*_allocate_malloc(t_magazine *magazine, size_t size)
 	chunk->size |= ALLOCED;
 	next->size |= PREV_IN_USE;
 	return (MEM(chunk));
+}
+
+static void	*_allocate_tiny_malloc(size_t size)
+{
+	size_t			chunk_size;
+
+	chunk_size = align_malloc_chunk(size, TINY);
+	return (_allocate_malloc(&(g_malloc.tiny_magazine), chunk_size));
+}
+
+static void	*_allocate_small_malloc(size_t size)
+{
+	size_t			chunk_size;
+
+	chunk_size = align_malloc_chunk(size, SMALL);
+	return (_allocate_malloc(&(g_malloc.small_magazine), chunk_size));
 }
 
 static void	*_allocate_mmap(t_mmap_chunk **large_allocs, size_t size)
@@ -91,11 +103,11 @@ static void	*_allocate_mmap(t_mmap_chunk **large_allocs, size_t size)
 void	*allocate(size_t size)
 {
 	if (size <= TINY_MAX)
-		return (_allocate_malloc(&(g_malloc.tiny_magazine), size));
+		return (_allocate_tiny_malloc(size));
 	else if (size <= SMALL_MAX)
 	{
 		S("small");
-		return (_allocate_malloc(&(g_malloc.small_magazine), size));
+		return (_allocate_small_malloc(size));
 	}
 	return (_allocate_mmap(&(g_malloc.large_allocations), size));
 }
