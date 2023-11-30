@@ -25,22 +25,18 @@ void	extend_chunk(t_malloc_chunk *chunk, t_magazine *magazine, size_t chunk_size
 	size_diff = chunk_size - CHUNKSIZE(chunk); /* Always positive */
 	if (next == magazine->top)
 	{
-		if (CHUNKSIZE(next) > size_diff + MIN_CHUNKSIZE)
-		{
-			rest = split_chunk(next, size_diff);
+		rest = remaindering(next, size_diff, magazine->type);
+		if (rest)
 			magazine->top = rest;
-		}
 		else
 			magazine->top = NULL;
 	}
 	else
 	{
 		freelist_pop(magazine->freelist, next);
-		if (CHUNKSIZE(next) > size_diff + MIN_CHUNKSIZE)
-		{
-			rest = split_chunk(next, size_diff);
+		rest = remaindering(next, size_diff, magazine->type);
+		if (rest)
 			freelist_add(magazine->freelist, rest);
-		}
 	}
 	chunk->size += CHUNKSIZE(next);
 	next = NEXTCHUNK(chunk);

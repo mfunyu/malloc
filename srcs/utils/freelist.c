@@ -83,10 +83,8 @@ void	*freelist_takeout(t_magazine *magazine, size_t size)
 	if (next)
 		next->bk = NULL;
 	magazine->freelist[index] = next;
-	if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + size)
-	{
-		next = split_chunk(chunk, size);
+	next = remaindering(chunk, size, magazine->type);
+	if (next)
 		freelist_add(magazine->freelist, next);
-	}
 	return (chunk);
 }

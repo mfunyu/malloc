@@ -14,7 +14,7 @@ SRCS	+= alignment.c \
 			lst_mmap_chunk.c \
 			mmap_by_size.c \
 			error.c \
-			split_chunk.c \
+			remaindering.c \
 			freelist.c
 
 # ---------------------------------------------------------------------------- #
