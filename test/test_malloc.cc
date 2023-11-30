@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <stdio.h>
 #include <dlfcn.h>
-#include "../includes/malloc.h"
+#include "../includes/malloc_internal.h"
 
 void	*handle_malloc;
 void	*handle_free;

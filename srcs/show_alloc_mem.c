@@ -1,4 +1,4 @@
-#include "malloc.h"
+#include "malloc_internal.h"
 #include "ft_printf.h"
 
 static size_t	_print_large_simple(t_mmap_chunk *lst)

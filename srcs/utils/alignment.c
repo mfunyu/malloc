@@ -1,4 +1,4 @@
-#include "malloc.h"
+#include "malloc_internal.h"
 #include "utils.h"
 
 size_t	align_malloc(size_t size, e_size type)

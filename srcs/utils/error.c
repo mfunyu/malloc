@@ -1,4 +1,4 @@
-#include "malloc.h"
+#include "malloc_internal.h"
 
 void	*error_null(char *error_msg)
 {

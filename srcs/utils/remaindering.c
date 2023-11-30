@@ -1,4 +1,4 @@
-#include "malloc.h"
+#include "malloc_internal.h"
 
 static void	*_split_chunk(t_malloc_chunk *chunk, size_t new_size)
 {

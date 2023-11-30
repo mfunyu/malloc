@@ -1,4 +1,4 @@
-#include "malloc.h"
+#include "malloc_internal.h"
 #include "libft.h"
 #include "utils.h"
 #include "freelist.h"
@@ -84,7 +84,6 @@ void	*realloc_(void *ptr, size_t size)
 		}
 	}
 	retval = malloc_(size);
-	//`SP("mall", ptr);
 	if (!retval)
 		return (NULL);
 	ft_memmove(retval, ptr, ALLOCSIZE(chunk));

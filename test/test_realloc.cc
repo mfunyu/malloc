@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <dlfcn.h>
 #include <string.h>
-#include "../includes/malloc.h"
+#include "../includes/malloc_internal.h"
 
 void	*handle_realloc;
 

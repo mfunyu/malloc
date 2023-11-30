@@ -1,4 +1,4 @@
-#include "malloc.h"
+#include "malloc_internal.h"
 
 void	lst_mmap_chunk_add(t_mmap_chunk **head, t_mmap_chunk *chunk)
 {
