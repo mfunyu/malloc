@@ -9,7 +9,7 @@ static size_t	_print_large_simple(t_mmap_chunk *lst)
 	while (lst)
 	{
 		ft_printf("LARGE: %p\n", lst);
-		ft_printf("%p ~ %p : %d bytes\n", MEM(lst), MEM(lst) + CHUNKSIZE(lst), CHUNKSIZE(lst));
+		ft_printf("%p ~ %p : %zu bytes\n", MEM(lst), MEM(lst) + CHUNKSIZE(lst), CHUNKSIZE(lst));
 		sum += CHUNKSIZE(lst);
 		lst = lst->fd;
 	}
@@ -30,7 +30,7 @@ static size_t	_print_malloc_simple(char *zone, t_magazine magazine)
 		if (IS_ALLOCED(chunk))
 		{
 			size = ALLOCSIZE(chunk);
-			ft_printf("%p ~ %p : %d bytes\n", MEM(chunk), MEM(chunk) + size, size);
+			ft_printf("%p ~ %p : %zu bytes\n", MEM(chunk), MEM(chunk) + size, size);
 			sum += size;
 		}
 		chunk = NEXTCHUNK(chunk);
