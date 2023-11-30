@@ -11,8 +11,6 @@ void	*mmap_by_size(size_t map_size);
 
 /* alignment.c */
 size_t	align_malloc(size_t size, e_size type);
-size_t	align_malloc_chunk(size_t size, e_size type);
-size_t	align_large(size_t size);
 
 void	*split_chunk(t_malloc_chunk *chunk, size_t new_size);
 

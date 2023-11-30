@@ -65,7 +65,7 @@ static void	*_allocate_tiny_malloc(size_t size)
 	t_magazine		*magazine;
 	t_malloc_chunk	*chunk;
 
-	chunk_size = align_malloc_chunk(size, TINY);
+	chunk_size = align_malloc(size, TINY);
 	magazine = &(g_malloc.tiny_magazine);
 	chunk = freelist_takeout(magazine->freelist, chunk_size);
 	if (chunk)
@@ -82,7 +82,7 @@ static void	*_allocate_small_malloc(size_t size)
 	t_magazine		*magazine;
 	t_malloc_chunk	*chunk;
 
-	chunk_size = align_malloc_chunk(size, SMALL);
+	chunk_size = align_malloc(size, SMALL);
 	magazine = &(g_malloc.small_magazine);
 	chunk = freelist_takeout(magazine->freelist, chunk_size);
 	if (chunk)
@@ -98,7 +98,7 @@ static void	*_allocate_mmap(t_mmap_chunk **large_allocs, size_t size)
 	size_t			aligned_size;
 	t_mmap_chunk	*chunk;
 
-	aligned_size = align_large(size);
+	aligned_size = align_malloc(size, LARGE);
 	if (!aligned_size)
 		return (NULL);
 	chunk = mmap_by_size(aligned_size);

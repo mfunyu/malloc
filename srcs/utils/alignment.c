@@ -3,29 +3,22 @@
 
 size_t	align_malloc(size_t size, e_size type)
 {
-	if (type == TINY)
-		return (ALIGN(size, TINY_QUANTUM));
-	if (type == SMALL)
-		return (ALIGN(size, SMALL_QUANTUM));
-	return (0);
-}
-
-size_t	align_malloc_chunk(size_t size, e_size type)
-{
+	int		page_size;
 	size_t	aligned_size;
 
-	aligned_size = align_malloc(size + CHUNK_OVERHEAD, type);
+	if (type == TINY)
+		aligned_size = ALIGN(size + CHUNK_OVERHEAD, TINY_QUANTUM);
+	else if (type == SMALL)
+		aligned_size = ALIGN(size + CHUNK_OVERHEAD, SMALL_QUANTUM);
+	else if (type == LARGE)
+	{
+		page_size = get_page_size();
+		if (page_size == -1)
+			return (0);
+		aligned_size = ALIGN(size + LARGE_HEADERSIZE, page_size);
+	}
+
 	if (aligned_size < MIN_CHUNKSIZE)
 		aligned_size = MIN_CHUNKSIZE;
 	return (aligned_size);
-}
-
-size_t	align_large(size_t size)
-{
-	int		page_size;
-
-	page_size = get_page_size();
-	if (page_size == -1)
-		return (0);
-	return(ALIGN(size + LARGE_HEADERSIZE, page_size));
 }
