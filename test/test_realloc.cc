@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <stdio.h>
 #include <dlfcn.h>
+#include <string.h>
 #include "../includes/malloc.h"
 
 void	*handle_realloc;
@@ -37,6 +38,32 @@ char	*set_data(size_t size, int chr)
 	return ptr;
 }
 
+
+char	*set_random_data(size_t size)
+{
+	char *ptr;
+
+	ptr = (char *)ft_malloc(size);
+	if (!ptr)
+		return (NULL);
+	for (int i; i < size - 1; i++)
+	{
+		char c = rand() & 127;
+		c = c > 32 ? c : 32;
+		ptr[i] = c;
+	}
+	ptr[size - 1] = '\0';
+
+	return ptr;
+}
+
+int		size_generator()
+{
+	int size = rand() & 1023;
+	if (size > TINY_MAX)
+		size = TINY_MAX;
+	return size;
+}
 
 /* -------------------------------------------------------------------------- */
 /*                             Realloc Tiny Tests                             */
@@ -94,4 +121,16 @@ TEST(ReallocTest, NullZero) {
 
 	new_ptr = ft_realloc(NULL, 0);
 	EXPECT_EQ(ptr, new_ptr) << "should return NULL";
+}
+
+TEST(ReallocTest, ReserveContents) {
+
+	for (int i = 0; i < 100; i++)
+	{
+		void	*str= set_random_data(size_generator());
+		char	*str1 = strdup((char *)str);
+		char	*str2 = (char *)ft_realloc(str, size_generator());
+
+		EXPECT_EQ(strcmp(str1, str2), 0);
+	}
 }

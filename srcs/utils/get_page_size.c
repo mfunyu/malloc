@@ -3,12 +3,15 @@
 
 int		get_page_size()
 {
-	int	page_size;
+	static int	page_size;
 
+	if (page_size > 0)
+		return (page_size);
 	page_size = getpagesize();
-	if (page_size == -1) {
+	if (page_size == -1)
+	{
 		ft_printf("Error: getpagesize");
 		return (-1);
 	}
-	return page_size;
+	return (page_size);
 }

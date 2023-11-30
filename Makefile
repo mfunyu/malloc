@@ -13,7 +13,8 @@ SRCS	+= alignment.c \
 			get_page_size.c \
 			lst_mmap_chunk.c \
 			mmap_by_size.c \
-			split_chunk.c \
+			error.c \
+			remaindering.c \
 			freelist.c
 
 # ---------------------------------------------------------------------------- #
@@ -58,7 +59,7 @@ ifdef BONUS
 				print_alloc.c \
 				show_freelist.c \
 				extend_region.c \
-				defragment_chunks.c
+				consolidation.c
 	VPATH	+= srcs/bonus
 	CFLAGS	+= -D BONUS
 endif

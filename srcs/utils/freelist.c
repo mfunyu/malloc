@@ -1,10 +1,11 @@
 #include "malloc.h"
 #include "utils.h"
+#include <stdlib.h>
 
 int	largebin_index(size_t size)
 {
-	if (size >> 6 <= 32)
-		return (57 + (size >> 6));
+	if (size >> 6 <= 48)
+		return (48 + (size >> 6));
 	if (size >> 9 <= 20)
 		return (91 + (size >> 9));
 	if (size >> 12 <= 10)
@@ -20,8 +21,8 @@ int	get_index_by_size(size_t size)
 {
 	int		index;
 
-	if (size <= 512)
-		index = size / 8;
+	if (size <= 1024)
+		index = size >> 4;
 	else
 		index = largebin_index(size);
 	return (index);
@@ -68,24 +69,23 @@ void	freelist_pop(t_malloc_chunk *freelist[128], t_malloc_chunk *pop)
 	}
 }
 
-void	*freelist_takeout(t_malloc_chunk *freelist[128], size_t size)
+void	*freelist_takeout(t_magazine *magazine, size_t size)
 {
 	int				index;
 	t_malloc_chunk	*chunk;
 	t_malloc_chunk	*next;
+	t_malloc_chunk	*remainder;
 
 	index = get_index_by_size(size);
-	if (!freelist[index])
+	if (!magazine->freelist[index])
 		return (NULL);
-	chunk = freelist[index];
+	chunk = magazine->freelist[index];
 	next = chunk->fd;
 	if (next)
 		next->bk = NULL;
-	freelist[index] = next;
-	if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + size)
-	{
-		next = split_chunk(chunk, size);
-		freelist_add(freelist, next);
-	}
+	magazine->freelist[index] = next;
+	remainder = remaindering(chunk, size, magazine->type);
+	if (remainder)
+		freelist_add(magazine->freelist, remainder);
 	return (chunk);
 }

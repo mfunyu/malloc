@@ -9,7 +9,7 @@ static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
 
 	chunk->size &= ~ALLOCED;
 # ifdef BONUS
-	chunk = defragment_chunks(magazine, chunk);
+	chunk = consolidation(magazine, chunk);
 # endif
 	freelist_add(magazine->freelist, chunk);
 	next = NEXTCHUNK(chunk);
@@ -34,12 +34,18 @@ void	free_(void *ptr)
 
 	chunk = CHUNK(ptr);
 	size = ALLOCSIZE(chunk);
+	if (((uintptr_t)chunk & (TINY_QUANTUM - 1)))
+	{
+		S("ERRRROOORR");
+		return;
+	}
 	if (IS_MAPPED(chunk))
 		_free_mmap(&(g_malloc.large_allocations), (t_mmap_chunk *)chunk);
-	else if (size <= TINY_MAX)
+	else if (size <= TINY_MAX || ((uintptr_t)chunk & (SMALL_QUANTUM - 1)))
 		_free_alloc(&(g_malloc.tiny_magazine), chunk);
 	else if (size <= SMALL_MAX)
 		_free_alloc(&(g_malloc.small_magazine), chunk);
+	//else error
 }
 
 void	free(void *ptr)

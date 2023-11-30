@@ -7,7 +7,10 @@
 
 # include "debug.h"
 
-# define TINY_MAX 1008
+# define TINY_QUANTUM 16
+# define SMALL_QUANTUM 512
+# define NUMS_TINY_SLOTS 64
+# define TINY_MAX ((NUMS_TINY_SLOTS) * TINY_QUANTUM) /* 1024 */
 # define SMALL_MAX 127 * 8192
 # define MIN_ALLOCNUMS 100
 
@@ -19,7 +22,7 @@
 
 # define CHUNK_OVERHEAD 8
 # define CHUNK_HEADERSIZE 16
-# define REGION_FOOTERSIZE sizeof(t_malloc_footer)
+# define REGION_FOOTERSIZE ALIGN(sizeof(t_malloc_footer), MALLOC_ALIGNMENT)
 # define LARGE_HEADERSIZE sizeof(t_mmap_chunk)
 
 # define CHUNK(ptr) ((void *)ptr - CHUNK_HEADERSIZE)
@@ -29,6 +32,8 @@
 # define IS_MAPPED(chunk) (chunk->size & MAPPED)
 # define GET_FLAGS(chunk) (chunk->size & (ALL - 1))
 # define IS_FOOTER(chunk) (CHUNKSIZE(chunk) == 0 && IS_ALLOCED(chunk))
+
+# define ALIGN(size, align) ((size + (align - 1)) & ~(align - 1))
 
 # define CHUNKSIZE(chunk) (chunk->size & ~(ALL - 1))
 # define ALLOCSIZE(chunk) (CHUNKSIZE(chunk) - CHUNK_OVERHEAD)
@@ -73,6 +78,7 @@ typedef struct s_mmap_chunk
 
 typedef struct s_magazine
 {
+	e_size			type;
 	size_t			size; /* region allocation size */
 	t_malloc_chunk	*regions;
 	t_malloc_chunk	*top;
