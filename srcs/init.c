@@ -47,6 +47,7 @@ static int	_init_small_magazine(t_magazine *small_magazine)
 	region = init_region(size);
 	if (!region)
 		return (-1);
+	small_magazine->type = SMALL;
 	small_magazine->size = size;
 	small_magazine->regions = region;
 	small_magazine->top = region;
@@ -64,6 +65,7 @@ static int	_init_tiny_magazine(t_magazine *tiny_magazine)
 	region = init_region(size);
 	if (!region)
 		return (-1);
+	tiny_magazine->type = TINY;
 	tiny_magazine->size = size;
 	tiny_magazine->regions = region;
 	tiny_magazine->top = region;

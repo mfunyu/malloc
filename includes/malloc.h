@@ -78,6 +78,7 @@ typedef struct s_mmap_chunk
 
 typedef struct s_magazine
 {
+	e_size			type;
 	size_t			size; /* region allocation size */
 	t_malloc_chunk	*regions;
 	t_malloc_chunk	*top;
