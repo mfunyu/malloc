@@ -58,10 +58,9 @@ void	extend_chunk(t_malloc_chunk *chunk, size_t size)
 	next->size |= PREV_IN_USE;
 }
 
-bool	is_chunk_extendable(t_malloc_chunk *chunk, size_t size)
+bool	is_chunk_extendable(t_malloc_chunk *chunk, size_t size, size_t chunk_size)
 {
 	t_malloc_chunk	*next;
-	size_t			new_chunk_size;
 
 	if (size > TINY_MAX && (ALLOCSIZE(chunk) <= TINY_MAX
 			|| !((uintptr_t)chunk & (SMALL_QUANTUM - 1)))) /* tiny to large */
@@ -70,12 +69,7 @@ bool	is_chunk_extendable(t_malloc_chunk *chunk, size_t size)
 	next = NEXTCHUNK(chunk);
 	if (IS_ALLOCED(next))
 		return (false);
-
-	if (size <= TINY_MAX)
-		new_chunk_size = align_malloc(size, TINY);
-	else if (size <= SMALL_MAX)
-		new_chunk_size = align_malloc(size, SMALL);
-	if (new_chunk_size > CHUNKSIZE(chunk) + CHUNKSIZE(next))
+	if (chunk_size > CHUNKSIZE(chunk) + CHUNKSIZE(next))
 		return (false);
 	return (true);
 }
@@ -83,6 +77,7 @@ bool	is_chunk_extendable(t_malloc_chunk *chunk, size_t size)
 void	*realloc_(void *ptr, size_t size)
 {
 	t_malloc_chunk	*chunk;
+	size_t			chunk_size;
 	void			*retval;
 
 	if (size > MALLOC_ABSOLUTE_SIZE_MAX)
@@ -93,7 +88,8 @@ void	*realloc_(void *ptr, size_t size)
 
 	if (size <= TINY_MAX)
 	{
-		if (is_chunk_extendable(chunk, size))
+		chunk_size = align_malloc(size, TINY);
+		if (is_chunk_extendable(chunk, size, chunk_size))
 		{
 			extend_chunk(chunk, size);
 			return (ptr);
@@ -101,7 +97,8 @@ void	*realloc_(void *ptr, size_t size)
 	}
 	else if (size <= SMALL_MAX)
 	{
-		if (is_chunk_extendable(chunk, size))
+		chunk_size = align_malloc(size, SMALL);
+		if (is_chunk_extendable(chunk, size, chunk_size))
 		{
 			extend_chunk(chunk, size);
 			return (ptr);
