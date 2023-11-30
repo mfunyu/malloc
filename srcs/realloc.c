@@ -15,17 +15,21 @@
 ** - success: If the area pointed to was moved, a free(ptr) is done.
 */
 
-bool	extend_chunk(t_malloc_chunk *chunk, size_t size)
+void	extend_chunk(t_malloc_chunk *chunk, size_t size)
 {
 	t_malloc_chunk	*next;
 	t_malloc_chunk	*rest;
 	size_t			size_diff;
+	size_t			new_chunk_size;
 	t_magazine		*magazine;
 
+
+	if (size <= TINY_MAX)
+		new_chunk_size = align_malloc2(size, TINY);
+	else if (size <= TINY_MAX)
+		new_chunk_size = align_malloc2(size, SMALL);
 	next = NEXTCHUNK(chunk);
-	size_diff = align_malloc(size) - ALLOCSIZE(chunk); /* Always positive */
-	if (IS_ALLOCED(next) || size_diff > CHUNKSIZE(next))
-		return (false);
+	size_diff = new_chunk_size - CHUNKSIZE(chunk); /* Always positive */
 	if (size <= TINY_MAX)
 		magazine = &(g_malloc.tiny_magazine);
 	else
@@ -52,6 +56,29 @@ bool	extend_chunk(t_malloc_chunk *chunk, size_t size)
 	chunk->size += CHUNKSIZE(next);
 	next = NEXTCHUNK(chunk);
 	next->size |= PREV_IN_USE;
+}
+
+bool	is_chunk_extendable(t_malloc_chunk *chunk, size_t size)
+{
+	t_malloc_chunk	*next;
+	size_t			new_chunk_size;
+
+	if (size > SMALL_MAX) /* large block */
+		return (false);
+	if (size > TINY_MAX && (ALLOCSIZE(chunk) <= TINY_MAX
+			|| !((uintptr_t)chunk & (SMALL_QUANTUM - 1)))) /* tiny to large */
+		return (false);
+
+	next = NEXTCHUNK(chunk);
+	if (IS_ALLOCED(next))
+		return (false);
+
+	if (size <= TINY_MAX)
+		new_chunk_size = align_malloc2(size, TINY);
+	else if (size <= TINY_MAX)
+		new_chunk_size = align_malloc2(size, SMALL);
+	if (new_chunk_size > CHUNKSIZE(chunk) + CHUNKSIZE(next))
+		return (false);
 	return (true);
 }
 
@@ -65,12 +92,14 @@ void	*realloc_(void *ptr, size_t size)
 	chunk = CHUNK(ptr);
 	if (ALLOCSIZE(chunk) >= size)
 		return (ptr);
-	if (size <= SMALL_MAX)
+	if (is_chunk_extendable(chunk, size))
 	{
-		if (extend_chunk(chunk, size))
-			return (ptr);
+		S("ex");
+		extend_chunk(chunk, size);
+		return (ptr);
 	}
 	retval = malloc_(size);
+	//`SP("mall", ptr);
 	if (!retval)
 		return (NULL);
 	ft_memmove(retval, ptr, ALLOCSIZE(chunk));
