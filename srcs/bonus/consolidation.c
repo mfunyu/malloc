@@ -1,7 +1,7 @@
 #include "malloc.h"
 #include "freelist.h"
 
-static void	*_merge_prev(t_magazine	*magazine, t_malloc_chunk *chunk)
+static void	*_consolidate_prev(t_magazine	*magazine, t_malloc_chunk *chunk)
 {
 	t_malloc_chunk	*prev;
 
@@ -13,7 +13,7 @@ static void	*_merge_prev(t_magazine	*magazine, t_malloc_chunk *chunk)
 	return (prev);
 }
 
-static void	_merge_next(t_magazine	*magazine, t_malloc_chunk *chunk)
+static void	_consolidate_next(t_magazine	*magazine, t_malloc_chunk *chunk)
 {
 	t_malloc_chunk	*next;
 
@@ -25,11 +25,11 @@ static void	_merge_next(t_magazine	*magazine, t_malloc_chunk *chunk)
 		freelist_pop(magazine->freelist, next);
 }
 
-t_malloc_chunk	*defragment_chunks(t_magazine *magazine, t_malloc_chunk *chunk)
+t_malloc_chunk	*consolidation(t_magazine *magazine, t_malloc_chunk *chunk)
 {
 	if (!IS_ALLOCED(NEXTCHUNK(chunk)))
-		_merge_next(magazine, chunk);
+		_consolidate_next(magazine, chunk);
 	if (!IS_PREV_IN_USE(chunk))
-		chunk = _merge_prev(magazine, chunk);
+		chunk = _consolidate_prev(magazine, chunk);
 	return (chunk);
 }
