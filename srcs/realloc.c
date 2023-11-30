@@ -63,8 +63,6 @@ bool	is_chunk_extendable(t_malloc_chunk *chunk, size_t size)
 	t_malloc_chunk	*next;
 	size_t			new_chunk_size;
 
-	if (size > SMALL_MAX) /* large block */
-		return (false);
 	if (size > TINY_MAX && (ALLOCSIZE(chunk) <= TINY_MAX
 			|| !((uintptr_t)chunk & (SMALL_QUANTUM - 1)))) /* tiny to large */
 		return (false);
@@ -92,11 +90,22 @@ void	*realloc_(void *ptr, size_t size)
 	chunk = CHUNK(ptr);
 	if (ALLOCSIZE(chunk) >= size)
 		return (ptr);
-	if (is_chunk_extendable(chunk, size))
+
+	if (size <= TINY_MAX)
 	{
-		S("ex");
-		extend_chunk(chunk, size);
-		return (ptr);
+		if (is_chunk_extendable(chunk, size))
+		{
+			extend_chunk(chunk, size);
+			return (ptr);
+		}
+	}
+	else if (size <= SMALL_MAX)
+	{
+		if (is_chunk_extendable(chunk, size))
+		{
+			extend_chunk(chunk, size);
+			return (ptr);
+		}
 	}
 	retval = malloc_(size);
 	//`SP("mall", ptr);
