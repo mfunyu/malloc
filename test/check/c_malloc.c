@@ -18,12 +18,12 @@ int	malloc_zero()
 	printf("\n");
 }
 
-int	malloc_error()
+int	malloc_error(size_t size)
 {
-	void	*ptr = malloc(SIZE_MAX);
+	void	*ptr = malloc(size);
 	char	*expl = "malloc error";
 
-	print_expl("malloc error");
+	printf("SIZE : %zu\n", size);
 	if (!ptr)
 	{
 		printf("ERRNO: %d\n", errno);
@@ -41,7 +41,7 @@ void	malloc_rec(int *arr, void *prev)
 	else
 		ptr = malloc(0);
 	if (prev)
-		printf("%p : %d (%d [%p])\n", prev, arr[0], ptr - prev, ptr - prev);
+		printf("%p : %d (%ld [%p])\n", prev, arr[0], ptr - prev, ptr - prev);
 	if (!arr[1])
 		return ;
 	return malloc_rec(arr + 1, ptr);
@@ -53,11 +53,29 @@ int malloc_address()
 
 	print_expl("malloc check return address");
 	malloc_rec(arr, NULL);
+	printf("\n");
+}
+
+void	malloc_large()
+{
+	print_expl("malloc large");
+	malloc_error(3000000000);
+	malloc_error(10000000000);
+	malloc_error(12500000000);
+	malloc_error(12550000000);
+	malloc_error(13000000000);
+	malloc_error(13750000000);
+	malloc_error(15000000000);
+	malloc_error(20000000000);
+	malloc_error(50000000000);
+	malloc_error(70000000000);
+	malloc_error(9223372036854775807);
+	malloc_error(SIZE_MAX);
 }
 
 int	main()
 {
 	malloc_zero();
-	malloc_error();
 	malloc_address();
+	malloc_large();
 }
