@@ -18,18 +18,13 @@ static void	*_handle_not_enough_space(t_magazine *magazine)
 static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 {
 	t_malloc_chunk	*chunk;
-	t_malloc_chunk	*next;
 
 	chunk = magazine->top;
 	if (chunk && !IS_ALLOCED(chunk))
 	{
 		if (CHUNKSIZE(chunk) >= chunk_size)
 		{
-			next = remaindering(chunk, chunk_size, magazine->type);
-			if (next)
-				magazine->top = next;
-			else
-				magazine->top = NULL;
+			magazine->top = remaindering(chunk, chunk_size, magazine->type);
 			return (chunk);
 		}
 		freelist_add(magazine->freelist, magazine->top);
@@ -37,11 +32,7 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 	chunk = _handle_not_enough_space(magazine);
 	if (!chunk)
 		return (NULL);
-	next = remaindering(chunk, chunk_size, magazine->type);
-	if (next)
-		magazine->top = next;
-	else
-		magazine->top = NULL;
+	magazine->top = remaindering(chunk, chunk_size, magazine->type);
 	return (chunk);
 }
 

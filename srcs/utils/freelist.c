@@ -74,6 +74,7 @@ void	*freelist_takeout(t_magazine *magazine, size_t size)
 	int				index;
 	t_malloc_chunk	*chunk;
 	t_malloc_chunk	*next;
+	t_malloc_chunk	*remainder;
 
 	index = get_index_by_size(size);
 	if (!magazine->freelist[index])
@@ -83,8 +84,8 @@ void	*freelist_takeout(t_magazine *magazine, size_t size)
 	if (next)
 		next->bk = NULL;
 	magazine->freelist[index] = next;
-	next = remaindering(chunk, size, magazine->type);
-	if (next)
-		freelist_add(magazine->freelist, next);
+	remainder = remaindering(chunk, size, magazine->type);
+	if (remainder)
+		freelist_add(magazine->freelist, remainder);
 	return (chunk);
 }

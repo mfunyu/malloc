@@ -18,25 +18,19 @@
 void	extend_chunk(t_malloc_chunk *chunk, t_magazine *magazine, size_t chunk_size)
 {
 	t_malloc_chunk	*next;
-	t_malloc_chunk	*rest;
+	t_malloc_chunk	*remainder;
 	size_t			size_diff;
 
 	next = NEXTCHUNK(chunk);
 	size_diff = chunk_size - CHUNKSIZE(chunk); /* Always positive */
 	if (next == magazine->top)
-	{
-		rest = remaindering(next, size_diff, magazine->type);
-		if (rest)
-			magazine->top = rest;
-		else
-			magazine->top = NULL;
-	}
+		magazine->top = remaindering(next, size_diff, magazine->type);
 	else
 	{
 		freelist_pop(magazine->freelist, next);
-		rest = remaindering(next, size_diff, magazine->type);
-		if (rest)
-			freelist_add(magazine->freelist, rest);
+		remainder = remaindering(next, size_diff, magazine->type);
+		if (remainder)
+			freelist_add(magazine->freelist, remainder);
 	}
 	chunk->size += CHUNKSIZE(next);
 	next = NEXTCHUNK(chunk);
