@@ -15,25 +15,14 @@
 ** - success: If the area pointed to was moved, a free(ptr) is done.
 */
 
-void	extend_chunk(t_malloc_chunk *chunk, size_t size)
+void	extend_chunk(t_malloc_chunk *chunk, t_magazine *magazine, size_t chunk_size)
 {
 	t_malloc_chunk	*next;
 	t_malloc_chunk	*rest;
 	size_t			size_diff;
-	size_t			new_chunk_size;
-	t_magazine		*magazine;
 
-
-	if (size <= TINY_MAX)
-		new_chunk_size = align_malloc(size, TINY);
-	else if (size <= SMALL_MAX)
-		new_chunk_size = align_malloc(size, SMALL);
 	next = NEXTCHUNK(chunk);
-	size_diff = new_chunk_size - CHUNKSIZE(chunk); /* Always positive */
-	if (size <= TINY_MAX)
-		magazine = &(g_malloc.tiny_magazine);
-	else
-		magazine = &(g_malloc.small_magazine);
+	size_diff = chunk_size - CHUNKSIZE(chunk); /* Always positive */
 	if (next == magazine->top)
 	{
 		if (CHUNKSIZE(next) > size_diff + MIN_CHUNKSIZE)
@@ -91,7 +80,7 @@ void	*realloc_(void *ptr, size_t size)
 		chunk_size = align_malloc(size, TINY);
 		if (is_chunk_extendable(chunk, size, chunk_size))
 		{
-			extend_chunk(chunk, size);
+			extend_chunk(chunk, &(g_malloc.tiny_magazine), chunk_size);
 			return (ptr);
 		}
 	}
@@ -100,7 +89,7 @@ void	*realloc_(void *ptr, size_t size)
 		chunk_size = align_malloc(size, SMALL);
 		if (is_chunk_extendable(chunk, size, chunk_size))
 		{
-			extend_chunk(chunk, size);
+			extend_chunk(chunk, &(g_malloc.small_magazine), chunk_size);
 			return (ptr);
 		}
 	}
