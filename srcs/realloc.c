@@ -25,9 +25,9 @@ void	extend_chunk(t_malloc_chunk *chunk, size_t size)
 
 
 	if (size <= TINY_MAX)
-		new_chunk_size = align_malloc2(size, TINY);
+		new_chunk_size = align_malloc(size, TINY);
 	else if (size <= TINY_MAX)
-		new_chunk_size = align_malloc2(size, SMALL);
+		new_chunk_size = align_malloc(size, SMALL);
 	next = NEXTCHUNK(chunk);
 	size_diff = new_chunk_size - CHUNKSIZE(chunk); /* Always positive */
 	if (size <= TINY_MAX)
@@ -74,9 +74,9 @@ bool	is_chunk_extendable(t_malloc_chunk *chunk, size_t size)
 		return (false);
 
 	if (size <= TINY_MAX)
-		new_chunk_size = align_malloc2(size, TINY);
+		new_chunk_size = align_malloc(size, TINY);
 	else if (size <= TINY_MAX)
-		new_chunk_size = align_malloc2(size, SMALL);
+		new_chunk_size = align_malloc(size, SMALL);
 	if (new_chunk_size > CHUNKSIZE(chunk) + CHUNKSIZE(next))
 		return (false);
 	return (true);
