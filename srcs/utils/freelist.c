@@ -69,24 +69,24 @@ void	freelist_pop(t_malloc_chunk *freelist[128], t_malloc_chunk *pop)
 	}
 }
 
-void	*freelist_takeout(t_malloc_chunk *freelist[128], size_t size)
+void	*freelist_takeout(t_magazine *magazine, size_t size)
 {
 	int				index;
 	t_malloc_chunk	*chunk;
 	t_malloc_chunk	*next;
 
 	index = get_index_by_size(size);
-	if (!freelist[index])
+	if (!magazine->freelist[index])
 		return (NULL);
-	chunk = freelist[index];
+	chunk = magazine->freelist[index];
 	next = chunk->fd;
 	if (next)
 		next->bk = NULL;
-	freelist[index] = next;
+	magazine->freelist[index] = next;
 	if (CHUNKSIZE(chunk) > MIN_CHUNKSIZE + size)
 	{
 		next = split_chunk(chunk, size);
-		freelist_add(freelist, next);
+		freelist_add(magazine->freelist, next);
 	}
 	return (chunk);
 }
