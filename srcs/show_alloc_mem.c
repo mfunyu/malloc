@@ -8,7 +8,7 @@ static size_t	_print_large_simple(t_mmap_chunk *lst)
 	sum = 0;
 	while (lst)
 	{
-		ft_printf("LARGE: %p\n", lst);
+		ft_printf("LARGE : %p\n", lst);
 		ft_printf("%p ~ %p : %zu bytes\n", MEM(lst), MEM(lst) + CHUNKSIZE(lst), CHUNKSIZE(lst));
 		sum += CHUNKSIZE(lst);
 		lst = lst->fd;
@@ -46,5 +46,5 @@ void	show_alloc_mem()
 	total += _print_malloc_simple("TINY", g_malloc.tiny_magazine);
 	total += _print_malloc_simple("SMALL", g_malloc.small_magazine);
 	total += _print_large_simple(g_malloc.large_allocations);
-	ft_printf("TOTAL: %zu bytes\n", total);
+	ft_printf("TOTAL : %zu bytes\n", total);
 }

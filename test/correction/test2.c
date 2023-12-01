@@ -13,7 +13,7 @@ void	malloc_write_free(size_t size)
 
 int	main()
 {
-	ft_printf("\n===== test1 Basic Test2: malloc -> write -> read =====\n");
+	ft_printf("\n===== test2 Basic Test2: malloc -> write -> read =====\n");
 
 	malloc_write_free(1);
 	malloc_write_free(421);
