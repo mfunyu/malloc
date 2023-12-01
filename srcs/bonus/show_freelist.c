@@ -62,6 +62,8 @@ void	show_freelist(t_magazine magazine)
 	for (size_t i = 2; i < 128; i++)
 	{
 		lst = magazine.freelist[i];
+		if (!lst)
+			continue ;
 		size = get_size_by_index(i);
 		ft_printf(" [%i]", i);
 		ft_printf(" (%i) |", size);
