@@ -5,10 +5,11 @@
 
 # define SIZE 12530990000
 # define COUNT (SIZE_MAX / SIZE)
+# define STORE 1000000
 
 int	main()
 {
-	void	*ptr[1000];
+	void	*ptr[STORE];
 	size_t	i;
 
 	ft_printf("\n===== test3 Large Test: Nmalloc =====\n");
@@ -19,7 +20,7 @@ int	main()
 		ptr[j] = malloc(SIZE);
 		if (!ptr[j])
 			break;
-		if (j == 1000) /* free from old to new */
+		if (j == STORE) /* free from old to new */
 		{
 			for (int k = 0; k < j; k++)
 				free(ptr[k]);
