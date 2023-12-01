@@ -111,7 +111,7 @@ void	print_malloc(t_magazine magazine, e_size type)
 void	print_large(t_mmap_chunk *lst)
 {
 	ft_printf("LARGE: \n");
-	while (lst && lst->fd)
+	while (lst)
 	{
 		print_line('=');
 		print_first_col(lst);
