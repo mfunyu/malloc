@@ -11,7 +11,8 @@ static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
 # ifdef BONUS
 	chunk = consolidation(magazine, chunk);
 # endif
-	freelist_add(magazine->freelist, chunk);
+	if (chunk != magazine->top)
+		freelist_add(magazine->freelist, chunk);
 	next = NEXTCHUNK(chunk);
 	next->prev_size = CHUNKSIZE(chunk);
 	next->size &= ~PREV_IN_USE;
