@@ -20,12 +20,23 @@ static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
 
 static void	_free_mmap(t_mmap_chunk **alloced_lst, t_mmap_chunk *chunk)
 {
-	lst_mmap_chunk_pop(alloced_lst, chunk);
+	t_mmap_chunk	*lst;
+
 	if (munmap(chunk, CHUNKSIZE(chunk)))
 	{
 		ft_printf("Error: munmap\n");
 		return ;
 	}
+	if (*alloced_lst == chunk)
+	{
+		*alloced_lst = chunk->fd;
+		return ;
+	}
+	lst = *alloced_lst;
+	while (lst && lst->fd != chunk)
+		lst = lst->fd;
+	if (lst->fd == chunk)
+		lst->fd = chunk->fd;
 }
 
 void	free_(void *ptr)

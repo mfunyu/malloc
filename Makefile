@@ -11,7 +11,6 @@ SRCS	:= malloc.c \
 
 SRCS	+= alignment.c \
 			get_page_size.c \
-			lst_mmap_chunk.c \
 			mmap_by_size.c \
 			error.c \
 			remaindering.c \
@@ -24,7 +23,7 @@ SRCS	+= alignment.c \
 DIR_OBJS:= objs
 LIBFT	:= libft
 PRINTF	:= ft_printf
-VPATH	:= srcs srcs/utils srcs/lists
+VPATH	:= srcs srcs/utils
 
 # ---------------------------------------------------------------------------- #
 #                                   VARIABLES                                  #
