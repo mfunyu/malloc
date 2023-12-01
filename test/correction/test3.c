@@ -11,7 +11,7 @@ int	main()
 	void	*ptr;
 	size_t	i;
 
-	ft_printf("\n===== test3 Edge-Case Test: Nmalloc =====\n");
+	ft_printf("\n===== test3 Large Test: Nmalloc =====\n");
 
 	i = 0;
 	for (; i < COUNT; i++)
