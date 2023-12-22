@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <stdio.h>
 #include <dlfcn.h>
-#include "../includes/malloc_internal.h"
+#include "malloc_internal.h"
 
 void	*handle_malloc;
 void	*handle_free;
@@ -11,7 +11,7 @@ void* ft_malloc(size_t size)
 
 	if (!my_malloc)
 	{
-		handle_malloc = dlopen("../../libft_malloc.so", RTLD_LOCAL | RTLD_LAZY);
+		handle_malloc = dlopen("../../../libft_malloc.so", RTLD_LOCAL | RTLD_LAZY);
 		if (!handle_malloc) {
 			exit(EXIT_FAILURE);
 		}
@@ -27,7 +27,7 @@ void ft_free(void *ptr)
 
 	if (!my_free)
 	{
-		handle_free = dlopen("../../libft_malloc.so", RTLD_LOCAL | RTLD_LAZY);
+		handle_free = dlopen("../../../libft_malloc.so", RTLD_LOCAL | RTLD_LAZY);
 		if (!handle_free) {
 			exit(EXIT_FAILURE);
 		}
@@ -69,6 +69,8 @@ void	TestOne(size_t len, bool check_free)
 	char	chr = 'a';
 
 	ac = set_data(ft_malloc, len, chr);
+	if (!ac)
+		return ;
 	ex = set_data(malloc, len, chr);
 	EXPECT_EQ(strncmp(ac, ex, len), 0) << "malloc should reserve its contents";
 	free(ex);

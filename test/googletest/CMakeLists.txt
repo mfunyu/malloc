@@ -19,7 +19,8 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-include_directories(ft_printf ../ft_printf)
+include_directories(ft_printf ../../ft_printf)
+include_directories(includes ../../includes)
 
 add_executable(test_malloc
   test_malloc.cc

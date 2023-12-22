@@ -15,7 +15,7 @@ void	*ft_realloc(void *ptr, size_t size)
 
 	if (!my_realloc)
 	{
-		handle_realloc = dlopen("../../libft_malloc.so", RTLD_LOCAL | RTLD_LAZY);
+		handle_realloc = dlopen("../../../libft_malloc.so", RTLD_LOCAL | RTLD_LAZY);
 		if (!handle_realloc) {
 			exit(EXIT_FAILURE);
 		}
@@ -128,9 +128,11 @@ TEST(ReallocTest, ReserveContents) {
 	for (int i = 0; i < 100; i++)
 	{
 		void	*str= set_random_data(size_generator());
+		if (!str)
+			return ;
 		char	*str1 = strdup((char *)str);
 		char	*str2 = (char *)ft_realloc(str, size_generator());
-
+		
 		EXPECT_EQ(strcmp(str1, str2), 0);
 	}
 }

@@ -22,3 +22,14 @@ Test no. | Name | Details
 - Therefore, the test loads malloc as `ft_malloc` using `dlopen`
 
 - To enable google testing, malloc and realloc function does not call malloc internally. It instead calls `malloc_` function to avoid calling real malloc during testing.
+
+- run (build)
+  ```
+  make gtest
+  ```
+
+- for bonus compilation
+  - This will execute all tests in one process, allowing the tests of extended memory regions.
+  ```
+  make test
+  ```
