@@ -46,7 +46,6 @@ else ifeq ($(shell uname), Darwin)
 	DARWIN = 1
 endif
 
-BONUS=1
 # ---------------------------------------------------------------------------- #
 #                                     BONUS                                    #
 # ---------------------------------------------------------------------------- #
@@ -107,10 +106,14 @@ bonus	:
 #                                ADVANCED RULES                                #
 # ---------------------------------------------------------------------------- #
 
-FILENAME = test.c
+FILENAME = test0.c
 .PHONY	: correction
 correction	: all
 	$(CC) $(INCLUDES) ./test/correction/$(FILENAME) $(LIBS) $(NAME) -o $@
+
+.PHONY	: expected
+expected	: all
+	$(CC) $(INCLUDES) ./test/correction/$(FILENAME) $(LIBS) -o $@
 
 .PHONY	: test2
 test2	: all

@@ -1,5 +1,6 @@
 #include "malloc.h"
 #include "ft_printf.h"
+#include <stddef.h>
 
 int	main()
 {
@@ -23,6 +24,7 @@ int	main()
 	ptr[i++] = malloc(1040384); /* SMALL_MAX */
 	// ptr[i++] = malloc(1040384 + 1);
 	ptr[i++] = malloc(500000000);
+	ptr[i++] = malloc(__INT_MAX__);
 	// ptr[i++] = malloc(3000000000);
 	ptr[i++] = malloc(10000000000);
 	// ptr[i++] = malloc(12500000000);
