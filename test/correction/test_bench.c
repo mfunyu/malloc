@@ -1,6 +1,8 @@
 #include "ft_printf.h"
 #include "malloc.h"
 #include <stdlib.h>
+#include <errno.h>
+#include <string.h>
 
 #define TINY_MAX 1024
 
@@ -21,6 +23,11 @@ int		main(int ac, char **av)
 		{
 			int size = rand() & (TINY_MAX - 1);
 			ptr[i] = malloc(size);
+			if (!ptr[i])
+			{
+				ft_printf("Error: %s\n", strerror(errno));
+				exit(1);
+			}
 		}
 
 		for (int i = 0; i < 500; i++)
