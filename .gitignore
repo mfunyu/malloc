@@ -13,5 +13,4 @@
 !.github/
 
 !./Makefile
-!./env.example*
 !./git*
