@@ -22,11 +22,6 @@ static void	_free_mmap(t_mmap_chunk **alloced_lst, t_mmap_chunk *chunk)
 {
 	t_mmap_chunk	*lst;
 
-	if (munmap(chunk, CHUNKSIZE(chunk)))
-	{
-		ft_printf("Error: munmap\n");
-		return ;
-	}
 	if (*alloced_lst == chunk)
 	{
 		*alloced_lst = chunk->fd;
@@ -37,6 +32,11 @@ static void	_free_mmap(t_mmap_chunk **alloced_lst, t_mmap_chunk *chunk)
 		lst = lst->fd;
 	if (lst->fd == chunk)
 		lst->fd = chunk->fd;
+	if (munmap(chunk, CHUNKSIZE(chunk)))
+	{
+		ft_printf("Error: munmap\n");
+		return ;
+	}
 }
 
 void	free_(void *ptr)
