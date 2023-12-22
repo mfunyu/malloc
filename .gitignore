@@ -1,10 +1,11 @@
 *
 !*.c
+!*.h
 !*.cc
 !*.txt
 !*.md
 
-!includes/*.h
+!includes/
 !srcs/
 !test/
 !test/correction/
