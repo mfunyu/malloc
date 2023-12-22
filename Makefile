@@ -127,6 +127,10 @@ normal	: all
 	$(CC) $(INCLUDES) ./test/test2.c $(LIBS)
 	./a.out
 
+# ---------------------------------------------------------------------------- #
+#                                  GOOGLE TEST                                 #
+# ---------------------------------------------------------------------------- #
+
 .PHONY	: gtest
 gtest	: all
 	cd test && cmake -S . -B build
@@ -137,3 +141,11 @@ gtest	: all
 test	:
 	cd test && cmake --build build 1> /dev/null
 	cd test/build && MallocShowHeap=1 ./test_malloc 2> ../log
+
+# ---------------------------------------------------------------------------- #
+#                                 WORKDIR SETUP                                #
+# ---------------------------------------------------------------------------- #
+
+.PHONY	: SETUP
+setup	:
+	cp .github/hooks/pre-commit .git/hooks/
