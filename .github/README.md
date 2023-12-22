@@ -12,3 +12,11 @@ Test no. | Name | Details
 1 | basic test1 | `malloc -> free -> malloc` : mallc the exact same size region just after the free of the same size block.
 2 | basic test2 | `malloc -> wirte -> read` : malloc ereas and write and read from them to varify if it works.
 3 | large test | `Nmalloc` : malloc as much as possible with large allocation size.
+
+## Google Test
+
+- Google Test uses malloc, so replacing original malloc will cause problems to run the test
+
+- Therefore, the test loads malloc as `ft_malloc` using `dlopen`
+
+- To enable google testing, malloc and realloc function does not call malloc internally. It instead calls `malloc_` function to avoid calling real malloc during testing.
