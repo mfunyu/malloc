@@ -51,7 +51,7 @@ endif
 # ---------------------------------------------------------------------------- #
 
 ifdef BONUS
-	SRCS	+= print.c \
+	SRCS	+= print_format.c \
 				set_flag.c \
 				show_alloc_mem_ex.c \
 				print_alloc.c \
