@@ -7,7 +7,9 @@ void	malloc_write_free(size_t size)
 	char	*ptr;
 
 	ptr = malloc(size);
+	/* Max size for memset: 100000 */
 	memset(ptr, 'B', size > 100000 ? 100000 : size);
+	/* Max size for print: first 100 chars */
 	ft_printf("ptr: %.100s, (%zu)\n", ptr, size);
 }
 
