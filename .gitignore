@@ -1,13 +1,16 @@
 *
-!*/
+!*.c
+!*.cc
+!*.txt
+!*.md
+
 !includes/*.h
-!srcs/**/*.c
-!test/*.txt
-!test/*.c*
-!test/*.sh
-!test/correction/*
-!test/check/*
-!.github/**
+!srcs/
+!test/
+!test/correction/
+!test/check/
+!test/googletest/
+!.github/
 
 !./Makefile
 !./env.example*
