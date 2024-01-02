@@ -1,3 +1,6 @@
+#ifdef __APPLE__
+#include <malloc/malloc.h>
+#endif
 #include "malloc_internal.h"
 #include "lists.h"
 #include "freelist.h"

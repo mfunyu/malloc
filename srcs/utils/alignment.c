@@ -6,6 +6,7 @@ size_t	align_malloc(size_t size, e_size type)
 	int		page_size;
 	size_t	aligned_size;
 
+	aligned_size = 0;
 	if (type == TINY)
 		aligned_size = ALIGN(size + CHUNK_OVERHEAD, TINY_QUANTUM);
 	else if (type == SMALL)
