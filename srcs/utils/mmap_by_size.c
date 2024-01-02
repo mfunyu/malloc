@@ -9,7 +9,7 @@ void	*mmap_by_size(size_t map_size)
 			MAP_ANON | MAP_PRIVATE, -1, 0);
 	if (ptr == MAP_FAILED)
 	{
-		ft_printf("Error: mmap failed - size %d\n", map_size);
+		ft_printf("Error: mmap failed - size %zu\n", map_size);
 		return (NULL);
 	}
 	return (ptr);

@@ -1,4 +1,4 @@
-#include "malloc.h"
+#include "malloc_internal.h"
 #include "ft_printf.h"
 
 static size_t	_print_large_simple(t_mmap_chunk *lst)
@@ -8,8 +8,8 @@ static size_t	_print_large_simple(t_mmap_chunk *lst)
 	sum = 0;
 	while (lst)
 	{
-		ft_printf("LARGE: %p\n", lst);
-		ft_printf("%p ~ %p : %d bytes\n", MEM(lst), MEM(lst) + CHUNKSIZE(lst), CHUNKSIZE(lst));
+		ft_printf("LARGE : %p\n", lst);
+		ft_printf("%p ~ %p : %zu bytes\n", MEM(lst), MEM(lst) + CHUNKSIZE(lst), CHUNKSIZE(lst));
 		sum += CHUNKSIZE(lst);
 		lst = lst->fd;
 	}
@@ -30,7 +30,7 @@ static size_t	_print_malloc_simple(char *zone, t_magazine magazine)
 		if (IS_ALLOCED(chunk))
 		{
 			size = ALLOCSIZE(chunk);
-			ft_printf("%p ~ %p : %d bytes\n", MEM(chunk), MEM(chunk) + size, size);
+			ft_printf("%p ~ %p : %zu bytes\n", MEM(chunk), MEM(chunk) + size, size);
 			sum += size;
 		}
 		chunk = NEXTCHUNK(chunk);
@@ -46,5 +46,5 @@ void	show_alloc_mem()
 	total += _print_malloc_simple("TINY", g_malloc.tiny_magazine);
 	total += _print_malloc_simple("SMALL", g_malloc.small_magazine);
 	total += _print_large_simple(g_malloc.large_allocations);
-	ft_printf("TOTAL: %zu bytes\n", total);
+	ft_printf("TOTAL : %zu bytes\n", total);
 }

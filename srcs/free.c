@@ -1,4 +1,4 @@
-#include "malloc.h"
+#include "malloc_internal.h"
 #include "lists.h"
 #include "freelist.h"
 #include <sys/mman.h>
@@ -11,7 +11,8 @@ static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
 # ifdef BONUS
 	chunk = consolidation(magazine, chunk);
 # endif
-	freelist_add(magazine->freelist, chunk);
+	if (chunk != magazine->top)
+		freelist_add(magazine->freelist, chunk);
 	next = NEXTCHUNK(chunk);
 	next->prev_size = CHUNKSIZE(chunk);
 	next->size &= ~PREV_IN_USE;
@@ -19,7 +20,18 @@ static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
 
 static void	_free_mmap(t_mmap_chunk **alloced_lst, t_mmap_chunk *chunk)
 {
-	lst_mmap_chunk_pop(alloced_lst, chunk);
+	t_mmap_chunk	*lst;
+
+	if (*alloced_lst == chunk)
+	{
+		*alloced_lst = chunk->fd;
+		return ;
+	}
+	lst = *alloced_lst;
+	while (lst && lst->fd != chunk)
+		lst = lst->fd;
+	if (lst->fd == chunk)
+		lst->fd = chunk->fd;
 	if (munmap(chunk, CHUNKSIZE(chunk)))
 	{
 		ft_printf("Error: munmap\n");
@@ -43,7 +55,7 @@ void	free_(void *ptr)
 		_free_mmap(&(g_malloc.large_allocations), (t_mmap_chunk *)chunk);
 	else if (size <= TINY_MAX || ((uintptr_t)chunk & (SMALL_QUANTUM - 1)))
 		_free_alloc(&(g_malloc.tiny_magazine), chunk);
-	else if (size <= SMALL_MAX)
+	else if (!((uintptr_t)chunk & (SMALL_QUANTUM - 1)))
 		_free_alloc(&(g_malloc.small_magazine), chunk);
 	//else error
 }

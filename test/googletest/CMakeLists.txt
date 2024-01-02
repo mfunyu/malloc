@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.14)
-project(my_project)
+set(CMAKE_CXX_COMPILER g++ CACHE STRING "C++ compiler" FORCE)
+project(ft_malloc)
 
 # GoogleTest requires at least C++14
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(DGTEST_CREATE_SHARED_LIBRARY 1)
 
+# Fetch GoogleTest
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -17,7 +19,8 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-include_directories(ft_printf ../ft_printf)
+include_directories(ft_printf ../../ft_printf)
+include_directories(includes ../../includes)
 
 add_executable(test_malloc
   test_malloc.cc

@@ -1,4 +1,4 @@
-#include "malloc.h"
+#include "malloc_internal.h"
 #include "utils.h"
 #include "freelist.h"
 #include "lists.h"
@@ -80,7 +80,7 @@ static void	*_allocate_small_malloc(size_t size)
 	return (_mark_allocate(chunk));
 }
 
-static void	*_allocate_mmap(t_mmap_chunk **large_allocs, size_t size)
+static void	*_allocate_large_mmap(t_mmap_chunk **large_allocs, size_t size)
 {
 	size_t			aligned_size;
 	t_mmap_chunk	*chunk;
@@ -91,10 +91,10 @@ static void	*_allocate_mmap(t_mmap_chunk **large_allocs, size_t size)
 	chunk = mmap_by_size(aligned_size);
 	if (!chunk)
 		return (NULL);
-	chunk->fd = NULL;
+	chunk->fd = *large_allocs;
 	chunk->size = aligned_size;
 	chunk->size |= MAPPED;
-	lst_mmap_chunk_add(large_allocs, chunk);
+	*large_allocs = chunk;
 	return (MEM(chunk));
 }
 
@@ -104,5 +104,5 @@ void	*allocate(size_t size)
 		return (_allocate_tiny_malloc(size));
 	else if (size <= SMALL_MAX)
 		return (_allocate_small_malloc(size));
-	return (_allocate_mmap(&(g_malloc.large_allocations), size));
+	return (_allocate_large_mmap(&(g_malloc.large_allocations), size));
 }

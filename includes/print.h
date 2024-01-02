@@ -9,7 +9,7 @@
 # define GRAY "\033[2m"
 # define RESET "\033[m"
 
-#include "malloc.h"
+#include "malloc_internal.h"
 
 void	print_malloc(t_magazine magazine, e_size type);
 void	print_large(t_mmap_chunk *lst);

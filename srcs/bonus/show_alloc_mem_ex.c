@@ -1,4 +1,4 @@
-#include "malloc.h"
+#include "malloc_internal.h"
 #include "print.h"
 
 void show_alloc_mem_ex(void)__attribute__((destructor));

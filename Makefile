@@ -11,7 +11,6 @@ SRCS	:= malloc.c \
 
 SRCS	+= alignment.c \
 			get_page_size.c \
-			lst_mmap_chunk.c \
 			mmap_by_size.c \
 			error.c \
 			remaindering.c \
@@ -24,7 +23,7 @@ SRCS	+= alignment.c \
 DIR_OBJS:= objs
 LIBFT	:= libft
 PRINTF	:= ft_printf
-VPATH	:= srcs srcs/utils srcs/lists
+VPATH	:= srcs srcs/utils
 
 # ---------------------------------------------------------------------------- #
 #                                   VARIABLES                                  #
@@ -47,13 +46,12 @@ else ifeq ($(shell uname), Darwin)
 	DARWIN = 1
 endif
 
-BONUS=1
 # ---------------------------------------------------------------------------- #
 #                                     BONUS                                    #
 # ---------------------------------------------------------------------------- #
 
 ifdef BONUS
-	SRCS	+= print.c \
+	SRCS	+= print_format.c \
 				set_flag.c \
 				show_alloc_mem_ex.c \
 				print_alloc.c \
@@ -107,15 +105,20 @@ bonus	:
 # ---------------------------------------------------------------------------- #
 #                                ADVANCED RULES                                #
 # ---------------------------------------------------------------------------- #
+TESTDIR = ./test
 
-FILENAME = test.c
+FILENAME = test0.c
 .PHONY	: correction
 correction	: all
-	$(CC) $(INCLUDES) ./test/correction/$(FILENAME) $(LIBS) $(NAME) -o $@
+	$(CC) $(INCLUDES) $(TESTDIR)/correction/$(FILENAME) $(LIBS) $(NAME) -o $@
+
+.PHONY	: expected
+expected	: all
+	$(CC) $(INCLUDES) $(TESTDIR)/correction/$(FILENAME) $(LIBS) -o $@
 
 .PHONY	: test2
 test2	: all
-	$(CC) $(INCLUDES) ./test/test2.c $(LIBS)
+	$(CC) $(INCLUDES) $(TESTDIR)/test2.c $(LIBS)
 
 ifdef DARWIN
 	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./a.out
@@ -125,16 +128,30 @@ endif
 
 .PHONY	: normal
 normal	: all
-	$(CC) $(INCLUDES) ./test/test2.c $(LIBS)
+	$(CC) $(INCLUDES) $(TESTDIR)/test2.c $(LIBS)
 	./a.out
+
+# ---------------------------------------------------------------------------- #
+#                                  GOOGLE TEST                                 #
+# ---------------------------------------------------------------------------- #
+
+GTESTDIR= $(TESTDIR)/googletest
 
 .PHONY	: gtest
 gtest	: all
-	cd test && cmake -S . -B build
-	cd test && cmake --build build 1> /dev/null
-	cd test/build && ctest
+	cd $(GTESTDIR) && cmake -S . -B build
+	cd $(GTESTDIR) && cmake --build build 1> /dev/null
+	cd $(GTESTDIR)/build && ctest
 
 .PHONY	: test
 test	:
-	cd test && cmake --build build 1> /dev/null
-	cd test/build && MallocShowHeap=1 ./test_malloc 2> ../log
+	cd $(GTESTDIR) && cmake --build build 1> /dev/null
+	cd $(GTESTDIR)/build && MallocShowHeap=1 ./test_malloc 2> ../log
+
+# ---------------------------------------------------------------------------- #
+#                                 WORKDIR SETUP                                #
+# ---------------------------------------------------------------------------- #
+
+.PHONY	: SETUP
+setup	:
+	cp .github/hooks/pre-commit .git/hooks/

@@ -1,18 +1,27 @@
 #include "malloc.h"
 #include "ft_printf.h"
 
+void	malloc_free_malloc(size_t size)
+{
+	void	*ptr;
+
+	ptr = malloc(size);
+	ft_printf("before: %p\n", ptr);
+
+	free(ptr);
+
+	ptr = malloc(size);
+	ft_printf("after : %p\n", ptr);
+	ft_printf("\n");
+}
+
 int	main()
 {
-	void	*ptr[103];
+	size_t	size;
 
-	for (int i = 0; i < 100; i++)
-		ptr[i] = malloc(TINY_MAX - 1);
-	free(ptr[98]);
-	malloc(800);
-	size_t	len = 768;
-	char	*p = malloc(len);
-	ft_printf("%p\n", p);
-	if (!p)
-		return 0;
-	ft_memset(p, 42, len);
+	ft_printf("\n===== test1 Basic Test1: malloc -> free -> malloc =====\n");
+
+	malloc_free_malloc(212);
+	malloc_free_malloc(4242);
+	malloc_free_malloc(121212);
 }

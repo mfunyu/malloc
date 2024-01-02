@@ -1,4 +1,4 @@
-#include "malloc.h"
+#include "malloc_internal.h"
 #include "freelist.h"
 
 static void	*_consolidate_prev(t_magazine	*magazine, t_malloc_chunk *chunk)
