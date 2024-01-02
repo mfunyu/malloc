@@ -9,6 +9,11 @@ YELLOW="\033[33m"
 RESET="\033[m"
 PROMPT="${CYAN}${THICK}$>${RESET}"
 
+if [ $# != 1 ] ; then
+	printf "usage: ./run.sh [test number]\n"
+	exit 1
+fi
+
 printf "${GREEN}[ RUN test no.$1 ]\n"
 printf "${PROMPT} "
 make correction FILENAME="test$1.c"
