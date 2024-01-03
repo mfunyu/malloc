@@ -112,8 +112,8 @@ FILENAME = test0.c
 correction	: all
 	$(CC) $(INCLUDES) $(TESTDIR)/correction/$(FILENAME) $(LIBS) $(NAME) -o $@
 
-.PHONY	: expected
-expected	: all
+.PHONY	: original
+original	: all
 	$(CC) $(INCLUDES) $(TESTDIR)/correction/$(FILENAME) $(LIBS) -o $@
 
 # ---------------------------------------------------------------------------- #
