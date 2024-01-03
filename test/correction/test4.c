@@ -6,6 +6,7 @@
 #include <errno.h>
 
 # define STORE 1000000
+# define TINY_MAX 1024
 # define SMALL_MAX 1040384
 
 size_t	i;
@@ -35,6 +36,8 @@ int	main()
 	for (int j = 0; i < SIZE_MAX; i++)
 	{
 		size = rand() & (SMALL_MAX - 1);
+		if (size < TINY_MAX)
+			size = TINY_MAX;
 		ptr[j] = malloc(size);
 		if (!ptr[j])
 		{

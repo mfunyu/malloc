@@ -35,6 +35,8 @@ int	main()
 	for (int j = 0; i < SIZE_MAX; i++)
 	{
 		size = rand() & (TINY_MAX - 1);
+		if (size == 0)
+			size = 1;
 		ptr[j] = malloc(size);
 		if (!ptr[j])
 		{
