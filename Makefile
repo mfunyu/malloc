@@ -90,7 +90,7 @@ clean	:
 	$(RM) -R $(DIR_OBJS)
 
 .PHONY	: fclean
-fclean	: clean c_fclean
+fclean	: clean t_clean c_clean
 	$(MAKE) fclean -C $(LIBFT)
 	$(MAKE) fclean -C $(PRINTF) LIBFT=../$(LIBFT)
 	$(RM) $(NAME) libft_malloc.so .env
@@ -115,6 +115,10 @@ correction	: all
 .PHONY	: original
 original	: all
 	$(CC) $(INCLUDES) $(TESTDIR)/correction/$(FILENAME) $(LIBS) -o $@
+
+.PHONY	: t_clean
+t_clean	:
+	$(RM) correction original
 
 # ---------------------------------------------------------------------------- #
 #                                  GOOGLE TEST                                 #
@@ -145,8 +149,8 @@ check	: all
 	gcc -o $(CHECKDIR)/c_malloc $(CHECKDIR)/c_malloc.c
 	gcc -o $(CHECKDIR)/c_realloc $(CHECKDIR)/c_realloc.c
 
-.PHONY	: c_fclean
-c_fclean	:
+.PHONY	: c_clean
+c_clean	:
 	$(RM) $(CHECKDIR)/c_free
 	$(RM) $(CHECKDIR)/c_malloc
 	$(RM) $(CHECKDIR)/c_realloc
