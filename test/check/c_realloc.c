@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdint.h>
 
-int	realloc_same_size()
+void	realloc_same_size()
 {
 	void	*ptr;
 	void	*new_ptr;
@@ -20,7 +20,7 @@ int	realloc_same_size()
 	printf("\n");
 }
 
-int	realloc_small_size()
+void	realloc_small_size()
 {
 	void	*ptr;
 	void	*new_ptr;
@@ -37,7 +37,7 @@ int	realloc_small_size()
 }
 
 
-int	realloc_zero_size()
+void	realloc_zero_size()
 {
 	void	*ptr;
 	void	*new_ptr;
@@ -53,7 +53,7 @@ int	realloc_zero_size()
 	printf("\n");
 }
 
-int	realloc_null_zero()
+void	realloc_null_zero()
 {
 	void	*new_ptr;
 	char	*expl = "realloc null size zero";
@@ -65,7 +65,7 @@ int	realloc_null_zero()
 	printf("\n");
 }
 
-int	realloc_error()
+void	realloc_error()
 {
 	void	*ptr = realloc(NULL, SIZE_MAX);
 	char	*expl = "realloc error";
@@ -86,4 +86,5 @@ int	main()
 	realloc_zero_size();
 	realloc_null_zero();
 	realloc_error();
+	return (0);
 }
