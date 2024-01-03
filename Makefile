@@ -90,7 +90,7 @@ clean	:
 	$(RM) -R $(DIR_OBJS)
 
 .PHONY	: fclean
-fclean	: clean t_clean c_clean
+fclean	: clean g_clean t_clean c_clean
 	$(MAKE) fclean -C $(LIBFT)
 	$(MAKE) fclean -C $(PRINTF) LIBFT=../$(LIBFT)
 	$(RM) $(NAME) libft_malloc.so .env
@@ -136,6 +136,11 @@ gtest	: all
 test	:
 	cd $(GTESTDIR) && cmake --build build 1> /dev/null
 	cd $(GTESTDIR)/build && MallocShowHeap=1 ./test_malloc 2> ../log
+
+.PHONY	: g_clean
+g_clean	:
+	$(RM) -R $(GTESTDIR)/build
+	$(RM) $(GTESTDIR)/log
 
 # ---------------------------------------------------------------------------- #
 #                                      DEV                                     #
