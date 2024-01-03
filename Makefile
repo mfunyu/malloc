@@ -90,7 +90,7 @@ clean	:
 	$(RM) -R $(DIR_OBJS)
 
 .PHONY	: fclean
-fclean	: clean
+fclean	: clean c_fclean
 	$(MAKE) fclean -C $(LIBFT)
 	$(MAKE) fclean -C $(PRINTF) LIBFT=../$(LIBFT)
 	$(RM) $(NAME) libft_malloc.so .env
@@ -116,21 +116,6 @@ correction	: all
 expected	: all
 	$(CC) $(INCLUDES) $(TESTDIR)/correction/$(FILENAME) $(LIBS) -o $@
 
-.PHONY	: test2
-test2	: all
-	$(CC) $(INCLUDES) $(TESTDIR)/test2.c $(LIBS)
-
-ifdef DARWIN
-	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./a.out
-else
-	LD_PRELOAD=./libft_malloc.so ./a.out
-endif
-
-.PHONY	: normal
-normal	: all
-	$(CC) $(INCLUDES) $(TESTDIR)/test2.c $(LIBS)
-	./a.out
-
 # ---------------------------------------------------------------------------- #
 #                                  GOOGLE TEST                                 #
 # ---------------------------------------------------------------------------- #
@@ -147,6 +132,24 @@ gtest	: all
 test	:
 	cd $(GTESTDIR) && cmake --build build 1> /dev/null
 	cd $(GTESTDIR)/build && MallocShowHeap=1 ./test_malloc 2> ../log
+
+# ---------------------------------------------------------------------------- #
+#                                      DEV                                     #
+# ---------------------------------------------------------------------------- #
+
+CHECKDIR = $(TESTDIR)/check
+
+.PHONY	: check 
+check	: all
+	gcc -o $(CHECKDIR)/c_free $(CHECKDIR)/c_free.c
+	gcc -o $(CHECKDIR)/c_malloc $(CHECKDIR)/c_malloc.c
+	gcc -o $(CHECKDIR)/c_realloc $(CHECKDIR)/c_realloc.c
+
+.PHONY	: c_fclean
+c_fclean	:
+	$(RM) $(CHECKDIR)/c_free
+	$(RM) $(CHECKDIR)/c_malloc
+	$(RM) $(CHECKDIR)/c_realloc
 
 # ---------------------------------------------------------------------------- #
 #                                 WORKDIR SETUP                                #
