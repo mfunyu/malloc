@@ -19,6 +19,7 @@ void	*remaindering(t_malloc_chunk *current, size_t size_req, e_size type)
 {
 	size_t	min_chunksize;
 
+	min_chunksize = 0;
 	if (type == TINY)
 		min_chunksize = MIN_CHUNKSIZE;
 	else if (type == SMALL)

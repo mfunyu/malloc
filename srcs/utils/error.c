@@ -1,4 +1,5 @@
 #include "malloc_internal.h"
+#include "ft_printf.h"
 
 void	*error_null(char *error_msg)
 {

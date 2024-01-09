@@ -1,6 +1,10 @@
+#ifdef __APPLE__
+#include <malloc/malloc.h>
+#endif
 #include "malloc_internal.h"
 #include "lists.h"
 #include "freelist.h"
+#include "ft_printf.h"
 #include <sys/mman.h>
 
 static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
@@ -48,7 +52,7 @@ void	free_(void *ptr)
 	size = ALLOCSIZE(chunk);
 	if (((uintptr_t)chunk & (TINY_QUANTUM - 1)))
 	{
-		S("ERRRROOORR");
+		ft_printf("ERRRROOORR");
 		return;
 	}
 	if (IS_MAPPED(chunk))

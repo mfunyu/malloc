@@ -70,8 +70,6 @@ void	show_freelist(t_magazine magazine)
 		while (lst)
 		{
 			ft_printf("-> %p |", lst);
-			if (size != CHUNKSIZE(lst))
-				D(CHUNKSIZE(lst));
 			lst = lst->fd;
 		}
 		ft_printf("\n");

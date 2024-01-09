@@ -5,8 +5,6 @@
 # include <stddef.h>
 # include <stdint.h>
 
-# include "debug.h"
-
 # define TINY_QUANTUM 16
 # define SMALL_QUANTUM 512
 # define NUMS_TINY_SLOTS 64
