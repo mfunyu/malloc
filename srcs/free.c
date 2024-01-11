@@ -2,7 +2,6 @@
 #include <malloc/malloc.h>
 #endif
 #include "malloc_internal.h"
-#include "lists.h"
 #include "freelist.h"
 #include "ft_printf.h"
 #include "utils.h"

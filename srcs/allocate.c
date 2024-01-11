@@ -1,7 +1,6 @@
 #include "malloc_internal.h"
 #include "utils.h"
 #include "freelist.h"
-#include "lists.h"
 #include "ft_printf.h"
 
 static void	*_handle_not_enough_space(t_magazine *magazine)
