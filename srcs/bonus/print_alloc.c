@@ -67,7 +67,7 @@ static void	_print_other_chunk(t_malloc_chunk *chunk, bool is_footer)
 		ft_printf("%s\n", RESET);
 }
 
-void	print_chunk(t_malloc_chunk *chunk)
+static void	_print_chunk(t_malloc_chunk *chunk)
 {
 	_print_header(chunk);
 	if (!IS_ALLOCED(chunk))
@@ -96,7 +96,7 @@ void	print_malloc(t_magazine magazine, e_size type)
 		print_line('=');
 		while (!IS_FOOTER(chunk) && chunk != magazine.top)
 		{
-			print_chunk(chunk);
+			_print_chunk(chunk);
 			chunk = NEXTCHUNK(chunk);
 		}
 		if (chunk == magazine.top)

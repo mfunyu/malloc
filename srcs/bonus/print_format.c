@@ -2,7 +2,7 @@
 #include "libft.h"
 #include "print.h"
 
-void	print_n_chars(char c, size_t len)
+static void	_print_n_chars(char c, size_t len)
 {
 	size_t	i;
 
@@ -13,9 +13,9 @@ void	print_n_chars(char c, size_t len)
 
 void	print_line(char c)
 {
-	print_n_chars(c, 18);
+	_print_n_chars(c, 18);
 	ft_putstr_fd("++", FILENO);
-	print_n_chars(c, 26);
+	_print_n_chars(c, 26);
 	ft_putendl_fd("+", FILENO);
 }
 
