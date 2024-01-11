@@ -62,6 +62,8 @@ void	*realloc_(void *ptr, size_t size)
 	if (size > MALLOC_ABSOLUTE_SIZE_MAX)
 		return (NULL);
 	chunk = CHUNK(ptr);
+	if (((uintptr_t)chunk & (TINY_QUANTUM - 1)))
+		return (error_null("pointer being realloc'd was not allocated"));
 	if (ALLOCSIZE(chunk) >= size)
 		return (ptr);
 

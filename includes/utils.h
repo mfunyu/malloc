@@ -3,7 +3,8 @@
 
 # include <stddef.h>
 
-struct t_malloc_chunk;
+typedef struct	s_malloc_chunk t_malloc_chunk;
+typedef enum	s_size e_size;
 
 int		get_page_size();
 

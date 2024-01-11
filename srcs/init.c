@@ -74,7 +74,7 @@ static int	_init_tiny_magazine(t_magazine *tiny_magazine)
 static int	_init_validations()
 {
 	if ((MALLOC_ALIGNMENT & (MALLOC_ALIGNMENT - 1)) != 0)
-		return (error_ret("configuration - malloc alignment should be a power of two", -1));
+		return (error_ret("malloc alignment should be a power of two", -1));
 	return (0);
 }
 
