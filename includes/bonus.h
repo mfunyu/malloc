@@ -1,8 +1,15 @@
 #ifndef BONUS_H
 # define BONUS_H
 
-extern unsigned	malloc_show_heap;
-extern unsigned	malloc_show_abbr;
+typedef enum e_flag
+{
+	SHOW_HEAP,
+	SHOW_ABBR,
+	TOTAL
+}			e_flag;
+
+typedef struct	s_magazine t_magazine;
+typedef struct	s_malloc_chunk t_malloc_chunk;
 
 void	set_flags_from_environment();
 

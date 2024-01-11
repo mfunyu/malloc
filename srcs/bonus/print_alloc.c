@@ -8,7 +8,7 @@ static void	_print_used(t_malloc_chunk *chunk)
 	ft_printf("%s", CYAN);
 	print_line('-');
 	print_row(MEM(chunk), NULL, "mem");
-	if (malloc_show_abbr)
+	if (g_malloc.flags[SHOW_ABBR])
 		return ;
 	print_row(MEM(chunk) + 8, NULL, NULL);
 	if (MIN_CHUNKSIZE < ALLOCSIZE(chunk))
@@ -39,7 +39,7 @@ static void	_print_header(t_malloc_chunk *chunk)
 		print_row_ptr(chunk, "prev_size");
 		print_line('-');
 	}
-	else if (!malloc_show_abbr)
+	else if (!g_malloc.flags[SHOW_ABBR])
 	{
 		print_row(chunk, NULL, NULL);
 		print_line('-');
@@ -120,7 +120,7 @@ void	print_large(t_mmap_chunk *lst)
 		print_line('-');
 		print_first_col(&(lst->size));
 		ft_printf(" %12d (%9p) | size\n", ALLOCSIZE(lst), CHUNKSIZE(lst));
-		if (!malloc_show_abbr)
+		if (!g_malloc.flags[SHOW_ABBR])
 		{
 			print_line('-');
 			print_row(MEM(lst), NULL, "mem");

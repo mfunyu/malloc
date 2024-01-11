@@ -5,6 +5,10 @@
 # include <stddef.h>
 # include <stdint.h>
 
+# ifdef BONUS
+#  include "bonus.h"
+# endif
+
 # define TINY_QUANTUM 16
 # define SMALL_QUANTUM 512
 # define NUMS_TINY_SLOTS 64
@@ -89,6 +93,9 @@ typedef	struct s_malloc
 	t_magazine		tiny_magazine;
 	t_magazine		small_magazine;
 	t_mmap_chunk	*large_allocations;
+# ifdef BONUS
+	unsigned		flags[TOTAL];
+# endif
 }			t_malloc;
 
 extern t_malloc	g_malloc;
@@ -97,9 +104,5 @@ void	*allocate(size_t size);
 
 void	*malloc_(size_t size);
 void	free_(void *ptr);
-
-# ifdef BONUS
-#  include "bonus.h"
-# endif
 
 #endif /* MALLOC_INTERNAL_H */

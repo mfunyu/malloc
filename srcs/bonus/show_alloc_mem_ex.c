@@ -1,11 +1,12 @@
 #include "malloc_internal.h"
 #include "print.h"
+#include "bonus.h"
 
 void show_alloc_mem_ex(void)__attribute__((destructor));
 
 void	show_alloc_mem_ex()
 {
-	if (!malloc_show_heap && !malloc_show_abbr)
+	if (!g_malloc.flags[SHOW_HEAP] && !g_malloc.flags[SHOW_ABBR])
 		return ;
 	print_malloc(g_malloc.tiny_magazine, TINY);
 	show_freelist(g_malloc.tiny_magazine);
