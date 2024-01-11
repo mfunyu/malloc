@@ -9,7 +9,7 @@ static void	print_expl(char *expl)
 	printf("« %s »\n", expl);
 }
 
-int	malloc_zero()
+void	malloc_zero()
 {
 	void	*ptr = malloc(0);
 
@@ -18,7 +18,7 @@ int	malloc_zero()
 	printf("\n");
 }
 
-int	malloc_error(size_t size)
+void	malloc_error(size_t size)
 {
 	void	*ptr = malloc(size);
 	char	*expl = "malloc error";
@@ -41,13 +41,13 @@ void	malloc_rec(int *arr, void *prev)
 	else
 		ptr = malloc(0);
 	if (prev)
-		printf("%p : %d (%ld [%p])\n", prev, arr[0], ptr - prev, ptr - prev);
+		printf("%p : %d (%ld [%p])\n", prev, arr[0], ptr - prev, (void *)(ptr - prev));
 	if (!arr[1])
 		return ;
 	return malloc_rec(arr + 1, ptr);
 }
 
-int malloc_address()
+void	malloc_address()
 {
 	int		arr[20] = {0, 1, 16, 24, 25, 32, 33, 40, 41, 48};
 

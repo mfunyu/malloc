@@ -4,6 +4,23 @@
 
 ## `test/correction`
 
+### usage
+
+- run 
+  ```
+  ./test/run.sh [N]
+  ```
+- compare
+  - result cannot be compared with original version if this message is shown     
+    >\> executable 'original' cannot be created for this test
+
+  - the same test can be run with original malloc by `./original` if this message is shown
+    >\> executable 'original' created for compareson
+    run
+    ```
+    ./original
+    ```
+
 ### basic tests
 
 Test no. | Name | Details

@@ -6,20 +6,38 @@
 #include <errno.h>
 
 # define STORE 1000000
+# define TINY_MAX 1024
 # define SMALL_MAX 1040384
+
+size_t	i;
+
+void	print_result(void)
+{
+	ft_printf("\nmalloc %zu times, total around %zu bytes\n", i, i * SMALL_MAX);
+}
+
+void	sig_handler(int signo)
+{
+	if (signo == SIGINT)
+	{
+		print_result();
+		exit(0);
+	}
+}
 
 int	main()
 {
 	void	*ptr[STORE];
-	size_t	i;
 	int		size;
 
+	signal(SIGINT, sig_handler);
 	ft_printf("\n===== test4 Small Test: Nmalloc =====\n");
 
-	i = 0;
 	for (int j = 0; i < SIZE_MAX; i++)
 	{
 		size = rand() & (SMALL_MAX - 1);
+		if (size < TINY_MAX)
+			size = TINY_MAX;
 		ptr[j] = malloc(size);
 		if (!ptr[j])
 		{
@@ -33,5 +51,5 @@ int	main()
 			j = 0;
 		}
 	}
-	ft_printf("malloc %zu times, total around %zu bytes\n", i, i * SMALL_MAX);
+	print_result();
 }

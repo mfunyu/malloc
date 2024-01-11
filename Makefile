@@ -90,7 +90,7 @@ clean	:
 	$(RM) -R $(DIR_OBJS)
 
 .PHONY	: fclean
-fclean	: clean
+fclean	: clean g_clean t_clean c_clean
 	$(MAKE) fclean -C $(LIBFT)
 	$(MAKE) fclean -C $(PRINTF) LIBFT=../$(LIBFT)
 	$(RM) $(NAME) libft_malloc.so .env
@@ -112,24 +112,13 @@ FILENAME = test0.c
 correction	: all
 	$(CC) $(INCLUDES) $(TESTDIR)/correction/$(FILENAME) $(LIBS) $(NAME) -o $@
 
-.PHONY	: expected
-expected	: all
+.PHONY	: original
+original	: all
 	$(CC) $(INCLUDES) $(TESTDIR)/correction/$(FILENAME) $(LIBS) -o $@
 
-.PHONY	: test2
-test2	: all
-	$(CC) $(INCLUDES) $(TESTDIR)/test2.c $(LIBS)
-
-ifdef DARWIN
-	DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./a.out
-else
-	LD_PRELOAD=./libft_malloc.so ./a.out
-endif
-
-.PHONY	: normal
-normal	: all
-	$(CC) $(INCLUDES) $(TESTDIR)/test2.c $(LIBS)
-	./a.out
+.PHONY	: t_clean
+t_clean	:
+	$(RM) correction original
 
 # ---------------------------------------------------------------------------- #
 #                                  GOOGLE TEST                                 #
@@ -138,15 +127,40 @@ normal	: all
 GTESTDIR= $(TESTDIR)/googletest
 
 .PHONY	: gtest
-gtest	: all
-	cd $(GTESTDIR) && cmake -S . -B build
+gtest	: all $(GTESTDIR)/build
 	cd $(GTESTDIR) && cmake --build build 1> /dev/null
 	cd $(GTESTDIR)/build && ctest
 
 .PHONY	: test
-test	:
+test	: all $(GTESTDIR)/build
 	cd $(GTESTDIR) && cmake --build build 1> /dev/null
 	cd $(GTESTDIR)/build && MallocShowHeap=1 ./test_malloc 2> ../log
+
+$(GTESTDIR)/build:
+	cd $(GTESTDIR) && cmake -S . -B build
+
+.PHONY	: g_clean
+g_clean	:
+	$(RM) -R $(GTESTDIR)/build
+	$(RM) $(GTESTDIR)/log
+
+# ---------------------------------------------------------------------------- #
+#                                      DEV                                     #
+# ---------------------------------------------------------------------------- #
+
+CHECKDIR = $(TESTDIR)/check
+
+.PHONY	: check 
+check	: all
+	gcc -o $(CHECKDIR)/c_free $(CHECKDIR)/c_free.c
+	gcc -o $(CHECKDIR)/c_malloc $(CHECKDIR)/c_malloc.c
+	gcc -o $(CHECKDIR)/c_realloc $(CHECKDIR)/c_realloc.c
+
+.PHONY	: c_clean
+c_clean	:
+	$(RM) $(CHECKDIR)/c_free
+	$(RM) $(CHECKDIR)/c_malloc
+	$(RM) $(CHECKDIR)/c_realloc
 
 # ---------------------------------------------------------------------------- #
 #                                 WORKDIR SETUP                                #

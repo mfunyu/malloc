@@ -9,16 +9,21 @@ YELLOW="\033[33m"
 RESET="\033[m"
 PROMPT="${CYAN}${THICK}$>${RESET}"
 
+if [ $# != 1 ] ; then
+	printf "usage: ./run.sh [test number]\n"
+	exit 1
+fi
+
 printf "${GREEN}[ RUN test no.$1 ]\n"
 printf "${PROMPT} "
 make correction FILENAME="test$1.c"
 printf "${PROMPT} "
-make expected FILENAME="test$1.c"
+make original FILENAME="test$1.c"
 
 if [ $? == 0 ] ; then
-	printf "${CYAN}> executable 'expected' created for compareson\n${RESET}"
+	printf "${CYAN}> executable 'original' created for compareson\n${RESET}"
 else
-	printf "${RED}> executable 'expected' cannot be created for this test\n${RESET}"
+	printf "${RED}> executable 'original' cannot be created for this test\n${RESET}"
 fi
 
 if [ $(uname) == "Darwin" ] ; then

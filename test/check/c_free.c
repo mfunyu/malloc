@@ -10,7 +10,7 @@ static void	print_expl(char *expl)
 }
 
 
-int	free_dne_align()
+void	free_dne_align()
 {
 	void	*ptr = malloc(12);
 
@@ -18,7 +18,7 @@ int	free_dne_align()
 	free(ptr + 32);
 }
 
-int	free_dne()
+void	free_dne()
 {
 	void	*ptr = malloc(12);
 
@@ -26,7 +26,7 @@ int	free_dne()
 	free(ptr + 1);
 }
 
-int	free_double_free2()
+void	free_double_free2()
 {
 	void	*ptr = malloc(12);
 	void	*ptr2 = malloc(12);
@@ -39,7 +39,7 @@ int	free_double_free2()
 	free(ptr);
 }
 
-int	free_double_free()
+void	free_double_free()
 {
 	void	*ptr = malloc(12);
 
@@ -48,7 +48,7 @@ int	free_double_free()
 	free(ptr);
 }
 
-int	free_info()
+void	free_info()
 {
 	void	*ptr = malloc(12);
 
