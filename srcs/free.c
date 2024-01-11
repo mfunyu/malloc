@@ -5,6 +5,7 @@
 #include "lists.h"
 #include "freelist.h"
 #include "ft_printf.h"
+#include "utils.h"
 #include <sys/mman.h>
 
 static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
@@ -27,20 +28,17 @@ static void	_free_mmap(t_mmap_chunk **alloced_lst, t_mmap_chunk *chunk)
 	t_mmap_chunk	*lst;
 
 	if (*alloced_lst == chunk)
-	{
 		*alloced_lst = chunk->fd;
-		return ;
-	}
+	else
+	{
 	lst = *alloced_lst;
 	while (lst && lst->fd != chunk)
 		lst = lst->fd;
 	if (lst->fd == chunk)
 		lst->fd = chunk->fd;
-	if (munmap(chunk, CHUNKSIZE(chunk)))
-	{
-		ft_printf("Error: munmap\n");
-		return ;
 	}
+	if (munmap(chunk, CHUNKSIZE(chunk)))
+		return (error_msg("munmap failed"));
 }
 
 void	free_(void *ptr)
