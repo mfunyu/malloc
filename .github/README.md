@@ -31,6 +31,7 @@ Test no. | Name | Details
 3 | tiny test | `Nmalloc` : malloc as much as possible with tiny allocation size.
 4 | small test | `Nmalloc` : malloc as much as possible with small allocation size.
 5 | large test | `Nmalloc` : malloc as much as possible with large allocation size.
+6 | basic realloc test | `malloc -> realloc` : realloc malloced ptr with different sizes and check there contents.
 
 ## Google Test
 

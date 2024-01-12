@@ -30,11 +30,14 @@ void	malloc_realloc(char *title, size_t size)
 	char	*after;
 
 	ft_printf("<malloc_realloc_%s>\n", title);
-	before = malloc(strlen(str));
-	strcpy(before, str);
+
+	before = malloc(strlen(str) + 1);
+	strncpy(before, str, strlen(str));
 	ft_printf("before: (%p) [%.50s...]\n", before, before);
+
 	after = realloc(before, size);
 	ft_printf("after : (%p) [%.50s...]\n", after, after);
+
 	ft_printf("diff: %d\n", strcmp(str, after));
 	ft_printf("\n");
 }
@@ -45,7 +48,7 @@ int	main()
 	ft_printf("\n===== test6 Basic Realloc Test: malloc -> realloc =====\n");
 
 	base = strlen(str);
-	malloc_realloc("minus", 10);
+	malloc_realloc("minus", 17);
 	malloc_realloc("plus1", base + 1);
 	malloc_realloc("plus16", base + 16);
 	malloc_realloc("x2", base * 2);
