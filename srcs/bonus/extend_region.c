@@ -1,5 +1,4 @@
 #include "malloc_internal.h"
-#include "lists.h"
 #include "init.h"
 
 void	*extend_region(t_magazine *magazine)
