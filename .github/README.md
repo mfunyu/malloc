@@ -1,5 +1,12 @@
 # malloc
 
+## environments
+Name | Details
+:--:|:--
+MallocShowHeap | show detailed heap at the end of the execution
+MallocShowAbbr | show abbriviated heap log at the end of the execution
+MallocHelp | show availiable environment variables and quick explanations
+
 # Tests
 
 ## `test/correction`
