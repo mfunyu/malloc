@@ -3,6 +3,10 @@
 #include <dlfcn.h>
 #include "malloc_internal.h"
 
+/* -------------------------------------------------------------------------- */
+/*                             load malloc / free                             */
+/* -------------------------------------------------------------------------- */
+
 void	*handle_malloc;
 void	*handle_free;
 void* ft_malloc(size_t size)
@@ -37,6 +41,21 @@ void ft_free(void *ptr)
 	return my_free(ptr);
 }
 
+/* -------------------------------------------------------------------------- */
+/*                               close handlers                               */
+/* -------------------------------------------------------------------------- */
+
+static void _exit_close(void)__attribute__((destructor));
+
+static void	_exit_close(void)
+{
+	dlclose(handle_malloc);
+	dlclose(handle_free);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              support functions                             */
+/* -------------------------------------------------------------------------- */
 
 char *set_data(void *(*func)(size_t), size_t size, int chr)
 {
@@ -209,7 +228,5 @@ TEST(MallocFreeTest, Zero) {
 TEST(ErrorTest, Malloc) {
 	ft_malloc(MALLOC_ABSOLUTE_SIZE_MAX + 1);
 	ft_malloc(MALLOC_ABSOLUTE_SIZE_MAX);
-	//ft_malloc(MALLOC_ABSOLUTE_SIZE_MAX - 1);
-	//dlclose(handle_malloc);
-	//dlclose(handle_free);
+	ft_malloc(MALLOC_ABSOLUTE_SIZE_MAX - 1);
 }

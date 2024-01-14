@@ -4,11 +4,15 @@
 #include <string.h>
 #include "../includes/malloc_internal.h"
 
-void	*handle_realloc;
 
 void	*ft_malloc(size_t size);
 void	ft_free(void *ptr);
 
+/* -------------------------------------------------------------------------- */
+/*                                load realloc                                */
+/* -------------------------------------------------------------------------- */
+
+void	*handle_realloc;
 void	*ft_realloc(void *ptr, size_t size)
 {
 	static void	*(*my_realloc)(void *, size_t);
@@ -24,6 +28,21 @@ void	*ft_realloc(void *ptr, size_t size)
 	}
 	return my_realloc(ptr, size);
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                close handler                               */
+/* -------------------------------------------------------------------------- */
+
+static void _exit_close(void)__attribute__((destructor));
+
+static void	_exit_close(void)
+{
+	dlclose(handle_realloc);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              support functions                             */
+/* -------------------------------------------------------------------------- */
 
 char	*set_data(size_t size, int chr)
 {
