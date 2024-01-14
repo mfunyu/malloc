@@ -127,14 +127,16 @@ t_clean	:
 GTESTDIR= $(TESTDIR)/googletest
 
 .PHONY	: gtest
-gtest	: all $(GTESTDIR)/build
-	cd $(GTESTDIR) && cmake --build build 1> /dev/null
+gtest	: all g_build
 	cd $(GTESTDIR)/build && ctest
 
 .PHONY	: test
-test	: all $(GTESTDIR)/build
-	cd $(GTESTDIR) && cmake --build build 1> /dev/null
+test	: all g_build
 	cd $(GTESTDIR)/build && MallocShowHeap=1 ./test_malloc 2> ../log
+
+.PHONY	: g_build
+g_build	: $(GTESTDIR)/build
+	cd $(GTESTDIR) && cmake --build build 1> /dev/null
 
 $(GTESTDIR)/build:
 	cd $(GTESTDIR) && cmake -S . -B build
