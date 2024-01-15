@@ -1,11 +1,54 @@
 # malloc
 
-## environments
-Name | Details
-:--:|:--
-MallocShowHeap | show detailed heap at the end of the execution
-MallocShowAbbr | show abbriviated heap log at the end of the execution
-MallocHelp | show availiable environment variables and quick explanations
+## mandatory
+
+### compilation
+
+```
+make
+```
+### usage
+- can be run with any program compiled with libc
+- for Linux
+  ```
+  LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=. ./a.out
+  ```
+- for mac
+  ```
+  DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./a.out
+  ```
+
+## bonus
+
+ - `show_alloc_mem_ex()` function is available
+ - malloc debug environment variables are enabled
+ - freed memory is defragmented
+
+### compilation
+  ```
+  make fclean
+  make bonus
+  ```
+
+### environments
+
+- types
+
+  Name | Details
+  :--:|:--
+  MallocShowHeap | show detailed heap at the end of the execution
+  MallocShowAbbr | show abbriviated heap log at the end of the execution
+  MallocHelp | show availiable environment variables and quick explanations
+
+- usage
+  - a. export environment variable
+    ```
+	export MallocShowHeap=1
+	```
+  - b. without exporting (for Linux)
+    ```
+	MallocShowHeap=1 LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=. ./a.out
+	```
 
 # Tests
 
@@ -28,7 +71,17 @@ MallocHelp | show availiable environment variables and quick explanations
     ./original
     ```
 
-### basic tests
+- apply enviroment varialbes to a test without using export
+  - compile
+    ```
+    make correction FILENO=[N]
+    ```
+  - run
+    ```
+    MallocHelp=1 LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=. ./correction
+    ```
+
+### test details
 
 Test no. | Name | Details
 :--:|:--:|:--
