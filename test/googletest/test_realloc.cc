@@ -4,11 +4,14 @@
 #include <string.h>
 #include "../includes/malloc_internal.h"
 
-void	*handle_realloc;
-
 void	*ft_malloc(size_t size);
 void	ft_free(void *ptr);
 
+/* -------------------------------------------------------------------------- */
+/*                                load realloc                                */
+/* -------------------------------------------------------------------------- */
+
+void	*handle_realloc;
 void	*ft_realloc(void *ptr, size_t size)
 {
 	static void	*(*my_realloc)(void *, size_t);
@@ -23,6 +26,34 @@ void	*ft_realloc(void *ptr, size_t size)
 		printf("===== realloc loaded =====\n");
 	}
 	return my_realloc(ptr, size);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                close handler                               */
+/* -------------------------------------------------------------------------- */
+
+static void _exit_close(void)__attribute__((destructor));
+
+static void	_exit_close(void)
+{
+	if (handle_realloc)
+		dlclose(handle_realloc);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              support functions                             */
+/* -------------------------------------------------------------------------- */
+
+static void	_print_test_name(const char *category, const char *name)
+{
+	static char	*current_category;
+
+	if (current_category != category)
+	{
+		fprintf(stderr, "\n==== %s ====\n", category);
+		current_category = (char *)category;
+	}
+	fprintf(stderr, "[ %s ]\n", name);
 }
 
 char	*set_data(size_t size, int chr)
@@ -132,7 +163,7 @@ TEST(ReallocTest, ReserveContents) {
 			return ;
 		char	*str1 = strdup((char *)str);
 		char	*str2 = (char *)ft_realloc(str, size_generator());
-		
+
 		EXPECT_EQ(strcmp(str1, str2), 0);
 	}
 }

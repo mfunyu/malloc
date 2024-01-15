@@ -54,7 +54,8 @@ void	free_(void *ptr)
 		_free_alloc(&(g_malloc.tiny_magazine), chunk);
 	else if (!((uintptr_t)chunk & (SMALL_QUANTUM - 1)))
 		_free_alloc(&(g_malloc.small_magazine), chunk);
-	error_msg("not a valid pointer");
+	else
+		error_msg("not a valid pointer");
 }
 
 void	free(void *ptr)

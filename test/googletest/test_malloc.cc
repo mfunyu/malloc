@@ -3,6 +3,10 @@
 #include <dlfcn.h>
 #include "malloc_internal.h"
 
+/* -------------------------------------------------------------------------- */
+/*                             load malloc / free                             */
+/* -------------------------------------------------------------------------- */
+
 void	*handle_malloc;
 void	*handle_free;
 void* ft_malloc(size_t size)
@@ -37,6 +41,35 @@ void ft_free(void *ptr)
 	return my_free(ptr);
 }
 
+/* -------------------------------------------------------------------------- */
+/*                               close handlers                               */
+/* -------------------------------------------------------------------------- */
+
+static void _exit_close(void)__attribute__((destructor));
+
+static void	_exit_close(void)
+{
+	if (handle_malloc)
+		dlclose(handle_malloc);
+	if (handle_free)
+		dlclose(handle_free);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              support functions                             */
+/* -------------------------------------------------------------------------- */
+
+static void	_print_test_name(const char *category, const char *name)
+{
+	static char	*current_category;
+
+	if (current_category != category)
+	{
+		fprintf(stderr, "\n==== %s ====\n", category);
+		current_category = (char *)category;
+	}
+	fprintf(stderr, "[ %s ]\n", name);
+}
 
 char *set_data(void *(*func)(size_t), size_t size, int chr)
 {
@@ -105,35 +138,42 @@ void	TestMultiple(int start_len, int loop, bool diff)
 /* -------------------------------------------------------------------------- */
 
 TEST(MallocTinyTest, One) {
+	_print_test_name("MallocTinyTest", "One");
 	TestOne(42, false);
 	TestOne(1007, false);
 }
 
 TEST(MallocTinyTest, SameMultiple) {
+	_print_test_name("MallocTinyTest", "SameMultiple");
 	TestMultiple(42, 5, false);
 	TestMultiple(2, 5, false);
 }
 
 TEST(MallocTinyTest, DiffMultiple) {
+	_print_test_name("MallocTinyTest", "DiffMultiple");
 	TestMultiple(75, 5, true);
 	TestMultiple(21, 8, true);
 	TestMultiple(100, 12, true);
 }
 
 TEST(MallocTinyTest, Small) {
+	_print_test_name("MallocTinyTest", "Small");
 	TestOne(0, false);
 	TestOne(1, false);
 	TestMultiple(0, 7, true);
 }
 
 TEST(MallocTinyTest, BigMultiple) {
+	_print_test_name("MallocTinyTest", "BigMultiple");
 	TestMultiple(1000, 5, true);
 	TestMultiple(1000, 100, false);
 	TestMultiple(1000, 200, false);
 }
 
 TEST(MallocTinyTest, OverLimit) { // does not segfault anyway
+	_print_test_name("MallocTinyTest", "OverLimit");
 	void	*ptr[104];
+
 	for (int i = 0; i < 104; i++)
 		ptr[i] = malloc(1000);
 	free(ptr[0]);
@@ -144,6 +184,7 @@ TEST(MallocTinyTest, OverLimit) { // does not segfault anyway
 /* -------------------------------------------------------------------------- */
 
 TEST(MallocSmallTest, One) {
+	_print_test_name("MallocSmallTest", "One");
 	TestOne(1008, false);
 	TestOne(1009, false);
 	TestOne(3200, false);
@@ -151,21 +192,25 @@ TEST(MallocSmallTest, One) {
 }
 
 TEST(MallocSmallTest, SameMultiple) {
+	_print_test_name("MallocSmallTest", "SameMultiple");
 	TestMultiple(420, 5, false);
 	TestMultiple(999, 19, false);
 }
 
 TEST(MallocSmallTest, DiffMultiple) {
+	_print_test_name("MallocSmallTest", "DiffMultiple");
 	TestMultiple(3721, 5, true);
 	TestMultiple(3059, 8, true);
 }
 
 TEST(MallocSmallTest, BigMultiple) {
+	_print_test_name("MallocSmallTest", "BigMultiple");
 	TestMultiple(1040383, 5, true);
 	TestMultiple(1000000, 100, true);
 }
 
 TEST(MallocSmallTest, FillUp) {
+	_print_test_name("MallocSmallTest", "FillUp");
 	TestMultiple(100000, 110, true);
 	TestMultiple(10000, 110, true);
 	ft_malloc(8500);
@@ -176,6 +221,7 @@ TEST(MallocSmallTest, FillUp) {
 /* -------------------------------------------------------------------------- */
 
 TEST(MallocLargeTest, One) {
+	_print_test_name("MallocLargeTest", "One");
 	TestOne(1040384, false);
 	TestOne(2040384, false);
 	ft_malloc(1040384);
@@ -183,11 +229,13 @@ TEST(MallocLargeTest, One) {
 }
 
 TEST(MallocLargeTest, OneFree) {
+	_print_test_name("MallocLargeTest", "OneFree");
 	TestOne(1040384, true);
 	TestOne(204000384, true);
 }
 
 TEST(MallocLargeTest, BigMultiple) {
+	_print_test_name("MallocLargeTest", "BigMultiple");
 	TestMultiple(1040384, 100, true);
 }
 
@@ -196,6 +244,7 @@ TEST(MallocLargeTest, BigMultiple) {
 /* -------------------------------------------------------------------------- */
 
 TEST(MallocFreeTest, Zero) {
+	_print_test_name("MallocFreeTest", "Zero");
 	void	*ac;
 
 	ac = ft_malloc(0);
@@ -207,9 +256,8 @@ TEST(MallocFreeTest, Zero) {
 /* -------------------------------------------------------------------------- */
 
 TEST(ErrorTest, Malloc) {
+	_print_test_name("ErrorTest", "Malloc");
 	ft_malloc(MALLOC_ABSOLUTE_SIZE_MAX + 1);
 	ft_malloc(MALLOC_ABSOLUTE_SIZE_MAX);
-	//ft_malloc(MALLOC_ABSOLUTE_SIZE_MAX - 1);
-	//dlclose(handle_malloc);
-	//dlclose(handle_free);
+	ft_malloc(MALLOC_ABSOLUTE_SIZE_MAX - 1);
 }

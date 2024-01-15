@@ -4,16 +4,16 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <signal.h>
 
 # define STORE 1000000
 # define TINY_MAX 1024
-# define SMALL_MAX 1040384
 
 size_t	i;
 
 void	print_result(void)
 {
-	ft_printf("\nmalloc %zu times, total around %zu bytes\n", i, i * SMALL_MAX);
+	ft_printf("\nmalloc %zu times, total around %zu bytes\n", i, i * TINY_MAX);
 }
 
 void	sig_handler(int signo)
@@ -31,13 +31,13 @@ int	main()
 	int		size;
 
 	signal(SIGINT, sig_handler);
-	ft_printf("\n===== test4 Small Test: Nmalloc =====\n");
+	ft_printf("\n===== test3 Tiny Test: Nmalloc =====\n");
 
 	for (int j = 0; i < SIZE_MAX; i++)
 	{
-		size = rand() & (SMALL_MAX - 1);
-		if (size < TINY_MAX)
-			size = TINY_MAX;
+		size = rand() & (TINY_MAX - 1);
+		if (size == 0)
+			size = 1;
 		ptr[j] = malloc(size);
 		if (!ptr[j])
 		{

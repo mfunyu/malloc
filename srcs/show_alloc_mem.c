@@ -1,5 +1,6 @@
 #include "malloc_internal.h"
 #include "ft_printf.h"
+#include "utils.h"
 
 static size_t	_print_large_simple(t_mmap_chunk *lst)
 {
@@ -33,6 +34,8 @@ static size_t	_print_malloc_simple(char *zone, t_magazine magazine)
 			ft_printf("%p ~ %p : %zu bytes\n", MEM(chunk), MEM(chunk) + size, size);
 			sum += size;
 		}
+		if (chunk == NEXTCHUNK(chunk))
+			break ;
 		chunk = NEXTCHUNK(chunk);
 	}
 	return (sum);
@@ -42,6 +45,8 @@ void	show_alloc_mem()
 {
 	size_t	total;
 
+	if (!g_malloc.is_initialized)
+		return (error_msg("ShowAllocMem: malloc is not initialized")) ;
 	total = 0;
 	total += _print_malloc_simple("TINY", g_malloc.tiny_magazine);
 	total += _print_malloc_simple("SMALL", g_malloc.small_magazine);

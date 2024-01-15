@@ -11,7 +11,8 @@ void	set_flags_from_environment()
 		g_malloc.flags[SHOW_ABBR] = 1;
 	if (getenv("MallocHelp")) {
 		ft_printf("environment variables that can be set for debug:\n"
-		"- MallocShowHeap - dispay heap\n"
+		"- MallocShowHeap - dispay heap in detail\n"
+		"- MallocShowAbbr - dispay heap\n"
 		"- MallocHelp - show this help!\n");
 	}
 }

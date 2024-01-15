@@ -1,17 +1,67 @@
 # malloc
 
+## mandatory
+
+### compilation
+
+```
+make
+```
+### usage
+- can be run with any program compiled with libc
+- for Linux
+  ```
+  LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=. ./a.out
+  ```
+- for mac
+  ```
+  DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1 ./a.out
+  ```
+
+## bonus
+
+ - `show_alloc_mem_ex()` function is available
+ - malloc debug environment variables are enabled
+ - freed memory is defragmented
+
+### compilation
+  ```
+  make fclean
+  make bonus
+  ```
+
+### environments
+
+- types
+
+  Name | Details
+  :--:|:--
+  MallocShowHeap | show detailed heap at the end of the execution
+  MallocShowAbbr | show abbriviated heap log at the end of the execution
+  MallocHelp | show availiable environment variables and quick explanations
+
+- usage
+  - a. export environment variable
+    ```
+	export MallocShowHeap=1
+	```
+  - b. without exporting (for Linux)
+    ```
+	MallocShowHeap=1 LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=. ./a.out
+	```
+
 # Tests
 
-## `test/correction`
+## single tests
 
 ### usage
 
-- run 
+- run
   ```
   ./test/run.sh [N]
   ```
 - compare
-  - result cannot be compared with original version if this message is shown     
+  - result cannot be compared with original version if this message is shown
     >\> executable 'original' cannot be created for this test
 
   - the same test can be run with original malloc by `./original` if this message is shown
@@ -21,7 +71,17 @@
     ./original
     ```
 
-### basic tests
+- apply enviroment varialbes to a test without using export
+  - compile
+    ```
+    make single_test FILENO=[N]
+    ```
+  - run
+    ```
+    MallocHelp=1 LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=. ./single_test
+    ```
+
+### test details
 
 Test no. | Name | Details
 :--:|:--:|:--
@@ -31,6 +91,15 @@ Test no. | Name | Details
 3 | tiny test | `Nmalloc` : malloc as much as possible with tiny allocation size.
 4 | small test | `Nmalloc` : malloc as much as possible with small allocation size.
 5 | large test | `Nmalloc` : malloc as much as possible with large allocation size.
+6 | basic realloc test | `malloc -> realloc` : realloc malloced ptr with different sizes and check there contents.
+
+## benchmark tests
+
+- The library needs to be compiled with `make bonus`
+
+```
+./test/benchmark.sh
+```
 
 ## Google Test
 

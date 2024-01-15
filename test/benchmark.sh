@@ -12,7 +12,7 @@ PROMPT="${CYAN}$>${RESET}"
 printf "${GREEN}[ Benchmark Test ]\n"
 printf "${YELLOW}This test must be run with 'make bonus' compilation\n"
 printf "${PROMPT} "
-make correction FILENAME="test_bench.c"
+make single_test FILENAME="test_bench.c"
 
 
 if [ $(uname) == "Darwin" ] ; then
@@ -21,8 +21,8 @@ else
 	export LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=.
 fi
 
-time ./correction 1
-time ./correction 10
-time ./correction 100
-time ./correction 1000
-time ./correction 10000
+time ./single_test 1
+time ./single_test 10
+time ./single_test 100
+time ./single_test 1000
+time ./single_test 10000
