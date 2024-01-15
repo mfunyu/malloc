@@ -52,7 +52,7 @@ make
 
 # Tests
 
-## `test/correction`
+## `test/single_test`
 
 ### usage
 
@@ -74,11 +74,11 @@ make
 - apply enviroment varialbes to a test without using export
   - compile
     ```
-    make correction FILENO=[N]
+    make single_test FILENO=[N]
     ```
   - run
     ```
-    MallocHelp=1 LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=. ./correction
+    MallocHelp=1 LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=. ./single_test
     ```
 
 ### test details

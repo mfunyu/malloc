@@ -9,7 +9,7 @@
 !srcs/
 !srcs/**
 !test/
-!test/correction/
+!test/single_test/
 !test/check/
 !test/googletest/
 !.github/

@@ -109,17 +109,17 @@ TESTDIR = ./test
 
 FILENO = 0
 FILENAME = test$(FILENO).c
-.PHONY	: correction
-correction	: all
-	$(CC) $(INCLUDES) $(TESTDIR)/correction/$(FILENAME) -L. -lft_malloc $(LIBS) -o $@
+.PHONY	: single_test
+single_test	: all
+	$(CC) $(INCLUDES) $(TESTDIR)/single_test/$(FILENAME) -L. -lft_malloc $(LIBS) -o $@
 
 .PHONY	: original
 original	: all
-	$(CC) $(INCLUDES) $(TESTDIR)/correction/$(FILENAME) $(LIBS) -o $@
+	$(CC) $(INCLUDES) $(TESTDIR)/single_test/$(FILENAME) $(LIBS) -o $@
 
 .PHONY	: t_clean
 t_clean	:
-	$(RM) correction original
+	$(RM) single_test original
 
 # ---------------------------------------------------------------------------- #
 #                                  GOOGLE TEST                                 #
