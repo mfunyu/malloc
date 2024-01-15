@@ -67,7 +67,7 @@ endif
 # ---------------------------------------------------------------------------- #
 
 .PHONY	: all
-all		: $(NAME)
+all	: $(NAME) ## Run basic compilation
 
 -include $(DEPS)
 
@@ -84,22 +84,22 @@ $(DIR_OBJS):
 	@mkdir $@
 
 .PHONY	: clean
-clean	:
+clean	: ## Delete executables
 	$(MAKE) clean -C $(LIBFT)
 	$(MAKE) clean -C $(PRINTF) LIBFT=../$(LIBFT)
 	$(RM) -R $(DIR_OBJS)
 
 .PHONY	: fclean
-fclean	: clean g_clean t_clean c_clean
+fclean	: clean g_clean t_clean c_clean ## Delete all executables, object files, and test executables
 	$(MAKE) fclean -C $(LIBFT)
 	$(MAKE) fclean -C $(PRINTF) LIBFT=../$(LIBFT)
 	$(RM) $(NAME) libft_malloc.so .env
 
 .PHONY	: re
-re		: fclean all
+re	: fclean all ## Run fclean and all
 
 .PHONY	: bonus
-bonus	:
+bonus	: ## (bonus) Run bonus compilation, make fclean required for the first time
 	make BONUS=1
 
 # ---------------------------------------------------------------------------- #
@@ -127,11 +127,11 @@ t_clean	:
 GTESTDIR= $(TESTDIR)/googletest
 
 .PHONY	: gtest
-gtest	: all g_build
+gtest	: all g_build ## (test) Build and run google tests
 	cd $(GTESTDIR)/build && ctest
 
 .PHONY	: test
-test	: all g_build
+test	: all g_build ## (bonus) Run google tests for bonus
 	cd $(GTESTDIR)/build && MallocShowHeap=1 ./test_malloc 2> ../log
 
 .PHONY	: g_build
@@ -153,7 +153,7 @@ g_clean	:
 CHECKDIR = $(TESTDIR)/check
 
 .PHONY	: check 
-check	: all
+check	: all ## (test) Compile files under ./test/check directory
 	gcc -o $(CHECKDIR)/c_free $(CHECKDIR)/c_free.c
 	gcc -o $(CHECKDIR)/c_malloc $(CHECKDIR)/c_malloc.c
 	gcc -o $(CHECKDIR)/c_realloc $(CHECKDIR)/c_realloc.c
@@ -168,6 +168,15 @@ c_clean	:
 #                                 WORKDIR SETUP                                #
 # ---------------------------------------------------------------------------- #
 
-.PHONY	: SETUP
-setup	:
+.PHONY	: setup
+setup	: ## (dev) Setup pre-commit hook 
 	cp .github/hooks/pre-commit .git/hooks/
+
+# ---------------------------------------------------------------------------- #
+#                                     HELP                                     #
+# ---------------------------------------------------------------------------- #
+
+.PHONY	: help
+help	: ## Display this help screen
+	@grep -E '^[a-zA-Z_-]+.*:.*?## .*$$' Makefile \
+	| awk 'BEGIN {FS = "\t:.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
