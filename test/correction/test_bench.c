@@ -22,6 +22,8 @@ int		main(int ac, char **av)
 		for (int i = 0; i < 1000; i++)
 		{
 			int size = rand() & (TINY_MAX - 1);
+			if (size == 0)
+				size = 1;
 			ptr[i] = malloc(size);
 			if (!ptr[i])
 			{
