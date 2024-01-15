@@ -107,10 +107,11 @@ bonus	: ## (bonus) Run bonus compilation, make fclean required for the first tim
 # ---------------------------------------------------------------------------- #
 TESTDIR = ./test
 
-FILENAME = test0.c
+FILENO = 0
+FILENAME = test$(FILENO).c
 .PHONY	: correction
 correction	: all
-	$(CC) $(INCLUDES) $(TESTDIR)/correction/$(FILENAME) $(LIBS) $(NAME) -o $@
+	$(CC) $(INCLUDES) $(TESTDIR)/correction/$(FILENAME) -L. -lft_malloc $(LIBS) -o $@
 
 .PHONY	: original
 original	: all
