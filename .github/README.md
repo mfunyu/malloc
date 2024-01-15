@@ -52,16 +52,16 @@ make
 
 # Tests
 
-## `test/single_test`
+## single tests
 
 ### usage
 
-- run 
+- run
   ```
   ./test/run.sh [N]
   ```
 - compare
-  - result cannot be compared with original version if this message is shown     
+  - result cannot be compared with original version if this message is shown
     >\> executable 'original' cannot be created for this test
 
   - the same test can be run with original malloc by `./original` if this message is shown
@@ -92,6 +92,14 @@ Test no. | Name | Details
 4 | small test | `Nmalloc` : malloc as much as possible with small allocation size.
 5 | large test | `Nmalloc` : malloc as much as possible with large allocation size.
 6 | basic realloc test | `malloc -> realloc` : realloc malloced ptr with different sizes and check there contents.
+
+## benchmark tests
+
+- The library needs to be compiled with `make bonus`
+
+```
+./test/benchmark.sh
+```
 
 ## Google Test
 
