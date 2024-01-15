@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <signal.h>
 
 # define STORE 1000000
 # define TINY_MAX 1024
