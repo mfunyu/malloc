@@ -49,8 +49,10 @@ static void _exit_close(void)__attribute__((destructor));
 
 static void	_exit_close(void)
 {
-	dlclose(handle_malloc);
-	dlclose(handle_free);
+	if (handle_malloc)
+		dlclose(handle_malloc);
+	if (handle_free)
+		dlclose(handle_free);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -171,7 +173,7 @@ TEST(MallocTinyTest, BigMultiple) {
 TEST(MallocTinyTest, OverLimit) { // does not segfault anyway
 	_print_test_name("MallocTinyTest", "OverLimit");
 	void	*ptr[104];
-	
+
 	for (int i = 0; i < 104; i++)
 		ptr[i] = malloc(1000);
 	free(ptr[0]);

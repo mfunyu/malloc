@@ -36,7 +36,8 @@ static void _exit_close(void)__attribute__((destructor));
 
 static void	_exit_close(void)
 {
-	dlclose(handle_realloc);
+	if (handle_realloc)
+		dlclose(handle_realloc);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -124,34 +125,28 @@ void	TestBlocked(size_t original_size, size_t new_size)
 
 
 TEST(ReallocTest, SameSize) {
-	_print_test_name("ReallocTest", "SameSize");
 	TestDiff(12, 12, true);
 	TestDiff(1234, 1234, true);
 }
 
 TEST(ReallocTest, SameAlignedSize) {
-	_print_test_name("ReallocTest", "SameAlignedSize");
 	int		size = 4 * MALLOC_ALIGNMENT;
 	TestDiff(size + 2, size + MALLOC_ALIGNMENT, true);
 }
 
 TEST(ReallocTest, EdgeSize) {
-	_print_test_name("ReallocTest", "EdgeSize");
 	TestDiff(12, 16, true);
 }
 
 TEST(ReallocTest, Expanding) {
-	_print_test_name("ReallocTest", "Expanding");
 	TestDiff(12, 17, true);
 }
 
 TEST(ReallocTest, Realloced) {
-	_print_test_name("ReallocTest", "Realloced");
 	TestBlocked(12, 32);
 }
 
 TEST(ReallocTest, NullZero) {
-	_print_test_name("ReallocTest", "NullZero");
 	void	*ptr = NULL;
 	void	*new_ptr;
 
@@ -160,7 +155,7 @@ TEST(ReallocTest, NullZero) {
 }
 
 TEST(ReallocTest, ReserveContents) {
-	_print_test_name("ReallocTest", "ReserveContents");
+
 	for (int i = 0; i < 100; i++)
 	{
 		void	*str= set_random_data(size_generator());
@@ -168,7 +163,7 @@ TEST(ReallocTest, ReserveContents) {
 			return ;
 		char	*str1 = strdup((char *)str);
 		char	*str2 = (char *)ft_realloc(str, size_generator());
-		
+
 		EXPECT_EQ(strcmp(str1, str2), 0);
 	}
 }
