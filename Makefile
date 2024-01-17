@@ -5,6 +5,7 @@
 # srcs/
 SRCS	:= malloc.c \
 			realloc.c \
+			calloc.c \
 			free.c \
 			init.c \
 			allocate.c \
