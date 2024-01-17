@@ -71,5 +71,8 @@ void	*malloc(size_t size)
 	ptr = malloc_(size);
 	if (ptr == NULL)
 		errno = ENOMEM;
+# ifdef BONUS
+	debug_result(ptr);
+# endif
 	return (ptr);
 }

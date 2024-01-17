@@ -19,7 +19,7 @@ void	malloc_debug(void *ret_addr, size_t size)
 	if (!g_malloc.flags[DEBUG])
 		return ;
 	alloc_debug("malloc", ret_addr);
-	ft_printf("malloc(%zu)\n", size);
+	ft_printf("malloc(%zu)", size);
 }
 
 void	free_debug(void *ret_addr, void *ptr)
@@ -27,7 +27,8 @@ void	free_debug(void *ret_addr, void *ptr)
 	if (!g_malloc.flags[DEBUG])
 		return ;
 	alloc_debug("free", ret_addr);
-	ft_printf("free(%p)\n", ptr);
+	ft_printf("free(%p)", ptr);
+	ft_printf("\n");
 }
 
 void	realloc_debug(void *ret_addr, void *ptr, size_t size)
@@ -35,5 +36,12 @@ void	realloc_debug(void *ret_addr, void *ptr, size_t size)
 	if (!g_malloc.flags[DEBUG])
 		return ;
 	alloc_debug("realloc", ret_addr);
-	ft_printf("realloc(%p, %zu)\n", ptr, size);
+	ft_printf("realloc(%p, %zu)", ptr, size);
+}
+
+void	debug_result(void *ptr)
+{
+	if (!g_malloc.flags[DEBUG])
+		return ;
+	ft_printf(" = %p\n", ptr);
 }

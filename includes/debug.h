@@ -14,6 +14,7 @@ void	alloc_debug(const char *func_name, void *ret_addr);
 void	malloc_debug(void *ret_addr, size_t size);
 void	free_debug(void *ret_addr, void *ptr);
 void	realloc_debug(void *ret_addr, void *ptr, size_t size);
+void	debug_result(void *ptr);
 
 #endif /* DEBUG_H */
 
