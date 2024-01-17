@@ -2,6 +2,9 @@
 #include "libft.h"
 #include "utils.h"
 #include "freelist.h"
+# ifdef BONUS
+#  include "debug.h"
+# endif
 #include <errno.h>
 
 /*
@@ -98,6 +101,9 @@ void	*realloc(void *ptr, size_t size)
 {
 	void	*retval;
 
+# ifdef BONUS
+	realloc_debug(__builtin_return_address(0), ptr, size);
+# endif
 	if (ptr == NULL)
 		retval = malloc_(size);
 	else if (size == 0)

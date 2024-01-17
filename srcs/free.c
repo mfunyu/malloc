@@ -1,6 +1,9 @@
 #ifdef __APPLE__
 #include <malloc/malloc.h>
 #endif
+#ifdef BONUS
+# include "debug.h"
+#endif
 #include "malloc_internal.h"
 #include "freelist.h"
 #include "utils.h"
@@ -63,6 +66,9 @@ void	free(void *ptr)
 	if (!ptr)
 		return ;
 
+#ifdef BONUS
+	free_debug(__builtin_return_address(0), ptr);
+#endif
 #ifdef __APPLE__
 	malloc_zone_t	*zone;
 

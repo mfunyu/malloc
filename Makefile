@@ -56,7 +56,8 @@ ifdef BONUS
 				print_alloc.c \
 				show_freelist.c \
 				extend_region.c \
-				consolidation.c
+				consolidation.c \
+				debug.c
 	VPATH	+= srcs/bonus
 	CFLAGS	+= -D BONUS
 endif
