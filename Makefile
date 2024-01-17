@@ -33,7 +33,7 @@ VPATH	:= srcs srcs/utils
 
 NAME	= libft_malloc_$(HOSTTYPE).so
 CC		:= gcc
-CFLAGS	= -Wall -Wextra -Werror -D DEBUG
+CFLAGS	= -Wall -Wextra -Werror -D FD=2 
 INCLUDES:= -I includes -I $(LIBFT) -I $(PRINTF) -I .
 LIBS	:= -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
 
