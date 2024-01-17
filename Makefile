@@ -2,6 +2,7 @@
 #                                    SOURCES                                   #
 # ---------------------------------------------------------------------------- #
 
+# srcs/
 SRCS	:= malloc.c \
 			realloc.c \
 			free.c \
@@ -9,6 +10,7 @@ SRCS	:= malloc.c \
 			allocate.c \
 			show_alloc_mem.c
 
+# srcs/utils
 SRCS	+= alignment.c \
 			get_page_size.c \
 			mmap_by_size.c \
@@ -41,9 +43,6 @@ HOSTTYPE ?= $(shell uname -m)_$(shell uname -s)
 
 ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), amd64)
 	CFLAGS += -fPIC
-	HOST_ARCH = .amd64
-else ifeq ($(shell uname), Darwin)
-	DARWIN = 1
 endif
 
 # ---------------------------------------------------------------------------- #
@@ -105,6 +104,7 @@ bonus	: ## (bonus) Run bonus compilation, make fclean required for the first tim
 # ---------------------------------------------------------------------------- #
 #                                ADVANCED RULES                                #
 # ---------------------------------------------------------------------------- #
+
 TESTDIR = ./test
 
 FILENO = 0
