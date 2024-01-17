@@ -9,10 +9,31 @@
 #include "utils.h"
 #include <sys/mman.h>
 
+static bool	_is_allocated(t_magazine *magazine, t_malloc_chunk *chunk)
+{
+#ifdef BONUS
+	t_malloc_footer	*footer;
+
+	for (t_malloc_chunk *lst = magazine->regions; lst; )
+	{
+		if (magazine->regions <= chunk && chunk < magazine->top)
+			return (true);
+		footer = (void *)magazine->regions + magazine->size - REGION_FOOTERSIZE;
+		lst = footer->fd;
+	}	
+#else
+	if (magazine->regions <= chunk && chunk < magazine->top)
+		return (true);
+#endif
+	return (false);
+}
+
 static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
 {
 	t_malloc_chunk	*next;
 
+	if (!_is_allocated(magazine, chunk))
+		return (error_msg("pointer being freed was not allocated"));
 	chunk->size &= ~ALLOCED;
 # ifdef BONUS
 	chunk = consolidation(magazine, chunk);
@@ -37,6 +58,8 @@ static void	_free_mmap(t_mmap_chunk **alloced_lst, t_mmap_chunk *chunk)
 			lst = lst->fd;
 		if (lst->fd == chunk)
 			lst->fd = chunk->fd;
+		else
+			return (error_msg("pointer being freed was not allocated"));
 	}
 	if (munmap(chunk, CHUNKSIZE(chunk)))
 		return (error_msg("munmap failed"));
@@ -49,7 +72,7 @@ void	free_(void *ptr)
 
 	chunk = CHUNK(ptr);
 	if (((uintptr_t)chunk & (TINY_QUANTUM - 1)))
-		return (error_msg("pointer being freed was not allocated"));
+		return (error_msg("Non-aligned pointer being freed"));
 	size = ALLOCSIZE(chunk);
 	if (IS_MAPPED(chunk))
 		_free_mmap(&(g_malloc.large_allocations), (t_mmap_chunk *)chunk);
@@ -58,7 +81,7 @@ void	free_(void *ptr)
 	else if (!((uintptr_t)chunk & (SMALL_QUANTUM - 1)))
 		_free_alloc(&(g_malloc.small_magazine), chunk);
 	else
-		error_msg("not a valid pointer");
+		return (error_msg("pointer being freed was not allocated"));
 }
 
 void	free(void *ptr)
