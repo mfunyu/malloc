@@ -27,7 +27,11 @@ static void	_extend_chunk(t_malloc_chunk *chunk, t_magazine *magazine, size_t ch
 	next = NEXTCHUNK(chunk);
 	size_diff = chunk_size - CHUNKSIZE(chunk); /* Always positive */
 	if (next == magazine->top)
+	{
 		magazine->top = remaindering(next, size_diff, magazine->type);
+		if (!magazine->top)
+			magazine->top = NEXTCHUNK(next);
+	}
 	else
 	{
 		freelist_pop(magazine->freelist, next);
