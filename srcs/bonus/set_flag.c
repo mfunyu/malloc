@@ -15,7 +15,7 @@ void	set_flags_from_environment()
 		ft_printf("environment variables that can be set for debug:\n"
 		"- MallocShowHeap - display heap in detail\n"
 		"- MallocShowAbbr - display heap\n"
-		"- MallocDebug - display log for each\n"
+		"- MallocDebug - display log for each *alloc, free call\n"
 		"- MallocHelp - show this help!\n");
 	}
 }

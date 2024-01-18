@@ -1,5 +1,7 @@
 # malloc
 
+Use bonus compilation to enable all features
+
 ## mandatory
 
 ### compilation
@@ -38,6 +40,7 @@ make
   :--:|:--
   MallocShowHeap | show detailed heap at the end of the execution
   MallocShowAbbr | show abbriviated heap log at the end of the execution
+  MallocDebug | log each call to each `malloc` `free` `realloc` `calloc` function
   MallocHelp | show availiable environment variables and quick explanations
 
 - usage
