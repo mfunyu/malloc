@@ -116,7 +116,7 @@ void	*realloc(void *ptr, size_t size)
 	if (retval == NULL)
 		errno = ENOMEM;
 # ifdef BONUS
-	debug_result(ptr);
+	debug_result(retval);
 # endif
 	return (retval);
 }
