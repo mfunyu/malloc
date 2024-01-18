@@ -66,7 +66,7 @@ void	*malloc(size_t size)
 	void	*ptr;
 
 # ifdef BONUS
-	malloc_debug(__builtin_return_address(0), size);
+	alloc_debug(__func__, __builtin_return_address(0), size);
 # endif
 	ptr = malloc_(size);
 	if (ptr == NULL)
