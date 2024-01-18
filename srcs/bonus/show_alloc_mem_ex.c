@@ -6,6 +6,12 @@ void show_alloc_mem_ex(void)__attribute__((destructor));
 
 void	show_alloc_mem_ex()
 {
+	if (g_malloc.flags[SHOW_FREE])
+	{
+		show_freelist(g_malloc.tiny_magazine);
+		show_freelist(g_malloc.small_magazine);
+		return ;
+	}
 	if (!g_malloc.flags[SHOW_HEAP] && !g_malloc.flags[SHOW_ABBR])
 		return ;
 	print_malloc(g_malloc.tiny_magazine, TINY);
