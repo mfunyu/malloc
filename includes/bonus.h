@@ -5,6 +5,8 @@ typedef enum e_flag
 {
 	SHOW_HEAP,
 	SHOW_ABBR,
+	SHOW_FREE,
+	DEBUG,
 	TOTAL
 }			e_flag;
 

@@ -17,15 +17,14 @@ static size_t	_print_large_simple(t_mmap_chunk *lst)
 	return (sum);
 }
 
-static size_t	_print_malloc_simple(char *zone, t_magazine magazine)
+static size_t	_print_region_simple(t_malloc_chunk *region)
 {
 	t_malloc_chunk	*chunk;
 	size_t			sum;
 	size_t			size;
 
 	sum = 0;
-	chunk = magazine.regions;
-	ft_printf("%s : %p\n", zone, chunk);
+	chunk = region;
 	while (!IS_FOOTER(chunk))
 	{
 		if (IS_ALLOCED(chunk))
@@ -37,6 +36,22 @@ static size_t	_print_malloc_simple(char *zone, t_magazine magazine)
 		if (chunk == NEXTCHUNK(chunk))
 			break ;
 		chunk = NEXTCHUNK(chunk);
+	}
+	return (sum);
+}
+
+static size_t	_print_malloc_simple(char *zone, t_magazine magazine)
+{
+	size_t	sum;
+	t_malloc_chunk	*footer;
+
+	sum = 0;
+	for (t_malloc_chunk *region = magazine.regions; region; )
+	{
+		ft_printf("%s : %p\n", zone, region);
+		sum += _print_region_simple(region);
+		footer = (void *)region + magazine.size - REGION_FOOTERSIZE;
+		region = footer->fd;
 	}
 	return (sum);
 }

@@ -1,5 +1,8 @@
 #include "malloc_internal.h"
 #include "init.h"
+# ifdef BONUS
+#  include "debug.h"
+# endif
 #include <errno.h>
 
 /*
@@ -62,8 +65,14 @@ void	*malloc(size_t size)
 {
 	void	*ptr;
 
+# ifdef BONUS
+	alloc_debug(__func__, __builtin_return_address(0), size);
+# endif
 	ptr = malloc_(size);
 	if (ptr == NULL)
 		errno = ENOMEM;
+# ifdef BONUS
+	debug_result(ptr);
+# endif
 	return (ptr);
 }

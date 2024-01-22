@@ -22,6 +22,8 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 		if (CHUNKSIZE(chunk) >= chunk_size)
 		{
 			magazine->top = remaindering(chunk, chunk_size, magazine->type);
+			if (!magazine->top)
+				magazine->top = NEXTCHUNK(chunk);
 			return (chunk);
 		}
 		freelist_add(magazine->freelist, magazine->top);
@@ -30,6 +32,8 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 	if (!chunk)
 		return (NULL);
 	magazine->top = remaindering(chunk, chunk_size, magazine->type);
+	if (!magazine->top)
+		magazine->top = NEXTCHUNK(chunk);
 	return (chunk);
 }
 

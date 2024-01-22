@@ -3,6 +3,7 @@
 !*.h
 !*.cc
 !*.txt
+!*.py
 !*.md
 
 !includes/
@@ -12,6 +13,7 @@
 !test/single_test/
 !test/check/
 !test/googletest/
+!calcs/
 !.github/
 
 !./Makefile

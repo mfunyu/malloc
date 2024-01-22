@@ -2,6 +2,9 @@
 #include "libft.h"
 #include "utils.h"
 #include "freelist.h"
+# ifdef BONUS
+#  include "debug.h"
+# endif
 #include <errno.h>
 
 /*
@@ -24,7 +27,11 @@ static void	_extend_chunk(t_malloc_chunk *chunk, t_magazine *magazine, size_t ch
 	next = NEXTCHUNK(chunk);
 	size_diff = chunk_size - CHUNKSIZE(chunk); /* Always positive */
 	if (next == magazine->top)
+	{
 		magazine->top = remaindering(next, size_diff, magazine->type);
+		if (!magazine->top)
+			magazine->top = NEXTCHUNK(next);
+	}
 	else
 	{
 		freelist_pop(magazine->freelist, next);
@@ -41,8 +48,8 @@ static bool	_is_chunk_extendable(t_malloc_chunk *chunk, size_t size, size_t chun
 {
 	t_malloc_chunk	*next;
 
-	if (size > TINY_MAX && (ALLOCSIZE(chunk) <= TINY_MAX
-			|| !((uintptr_t)chunk & (SMALL_QUANTUM - 1)))) /* tiny to large */
+	if (size > TINY_MAX && (CHUNKSIZE(chunk) <= TINY_MAX
+			|| CHUNKSIZE(chunk) % SMALL_QUANTUM)) /* tiny to small */
 		return (false);
 
 	next = NEXTCHUNK(chunk);
@@ -98,6 +105,9 @@ void	*realloc(void *ptr, size_t size)
 {
 	void	*retval;
 
+# ifdef BONUS
+	realloc_debug(__builtin_return_address(0), ptr, size);
+# endif
 	if (ptr == NULL)
 		retval = malloc_(size);
 	else if (size == 0)
@@ -109,5 +119,8 @@ void	*realloc(void *ptr, size_t size)
 		retval = realloc_(ptr, size);
 	if (retval == NULL)
 		errno = ENOMEM;
+# ifdef BONUS
+	debug_result(retval);
+# endif
 	return (retval);
 }

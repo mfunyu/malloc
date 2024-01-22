@@ -1,7 +1,8 @@
 # malloc
 
-![ft_malloc](https://github.com/mfunyu/malloc/assets/60470877/40ea80fb-2e8a-4f91-a58b-7f26cf748f11)
+Use bonus compilation to enable all features
 
+![ft_malloc](https://github.com/mfunyu/malloc/assets/60470877/40ea80fb-2e8a-4f91-a58b-7f26cf748f11)
 
 ## mandatory
 
@@ -14,7 +15,7 @@ make
 - can be run with any program compiled with libc
 - for Linux
   ```
-  LD_PRELOAD=./libft_malloc.so LD_LIBRARY_PATH=. ./a.out
+  LD_PRELOAD=./libft_malloc.so ./a.out
   ```
 - for mac
   ```
@@ -39,8 +40,10 @@ make
 
   Name | Details
   :--:|:--
-  MallocShowHeap | show detailed heap at the end of the execution
-  MallocShowAbbr | show abbriviated heap log at the end of the execution
+  MallocShowHeap | show detailed heap log and freelists at the end of the execution
+  MallocShowAbbr | show abbriviated heap log and freelists at the end of the execution
+  MallocShowFree | show freelists at the end of the execution
+  MallocDebug | log each call to each `malloc` `free` `realloc` `calloc` function
   MallocHelp | show availiable environment variables and quick explanations
 
 - usage

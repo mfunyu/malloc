@@ -2,13 +2,16 @@
 #                                    SOURCES                                   #
 # ---------------------------------------------------------------------------- #
 
+# srcs/
 SRCS	:= malloc.c \
 			realloc.c \
+			calloc.c \
 			free.c \
 			init.c \
 			allocate.c \
 			show_alloc_mem.c
 
+# srcs/utils
 SRCS	+= alignment.c \
 			get_page_size.c \
 			mmap_by_size.c \
@@ -31,7 +34,7 @@ VPATH	:= srcs srcs/utils
 
 NAME	= libft_malloc_$(HOSTTYPE).so
 CC		:= gcc
-CFLAGS	= -Wall -Wextra -Werror -D DEBUG
+CFLAGS	= -Wall -Wextra -Werror -D FD=2 
 INCLUDES:= -I includes -I $(LIBFT) -I $(PRINTF) -I .
 LIBS	:= -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
 
@@ -41,9 +44,6 @@ HOSTTYPE ?= $(shell uname -m)_$(shell uname -s)
 
 ifeq ($(shell dpkg-architecture -qDEB_HOST_ARCH), amd64)
 	CFLAGS += -fPIC
-	HOST_ARCH = .amd64
-else ifeq ($(shell uname), Darwin)
-	DARWIN = 1
 endif
 
 # ---------------------------------------------------------------------------- #
@@ -57,7 +57,8 @@ ifdef BONUS
 				print_alloc.c \
 				show_freelist.c \
 				extend_region.c \
-				consolidation.c
+				consolidation.c \
+				debug.c
 	VPATH	+= srcs/bonus
 	CFLAGS	+= -D BONUS
 endif
@@ -105,6 +106,7 @@ bonus	: ## (bonus) Run bonus compilation, make fclean required for the first tim
 # ---------------------------------------------------------------------------- #
 #                                ADVANCED RULES                                #
 # ---------------------------------------------------------------------------- #
+
 TESTDIR = ./test
 
 FILENO = 0
