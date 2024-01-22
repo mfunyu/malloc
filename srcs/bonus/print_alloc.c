@@ -48,7 +48,7 @@ static void	_print_header(t_malloc_chunk *chunk)
 	if (IS_FOOTER(chunk))
 		ft_printf("%s", GRAY);
 	print_first_col(&(chunk->size));
-	ft_printf(" %8d (%9p) ", ALLOCSIZE(chunk), CHUNKSIZE(chunk));
+	ft_printf(" %8d (%9p) ", CHUNKSIZE(chunk), CHUNKSIZE(chunk));
 	ft_printf("|%c|%c| size\n", IS_ALLOCED(chunk) ? 'A' : '-', IS_PREV_IN_USE(chunk) ? 'P' : '-');
 }
 
@@ -119,7 +119,7 @@ void	print_large(t_mmap_chunk *lst)
 		ft_printf(" %24p | fd\n", lst->fd);
 		print_line('-');
 		print_first_col(&(lst->size));
-		ft_printf(" %12d (%9p) | size\n", ALLOCSIZE(lst), CHUNKSIZE(lst));
+		ft_printf(" %12d (%9p) | size\n", CHUNKSIZE(lst), CHUNKSIZE(lst));
 		if (!g_malloc.flags[SHOW_ABBR])
 		{
 			print_line('-');
