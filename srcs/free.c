@@ -74,7 +74,7 @@ void	free_(void *ptr)
 	chunk = CHUNK(ptr);
 	if (((uintptr_t)chunk & (TINY_QUANTUM - 1)))
 		return (error_msg("Non-aligned pointer being freed"));
-	size = ALLOCSIZE(chunk);
+	size = CHUNKSIZE(chunk);
 	if (IS_MAPPED(chunk))
 		_free_mmap(&(g_malloc.large_allocations), (t_mmap_chunk *)chunk);
 	else if (size <= TINY_MAX || size % SMALL_QUANTUM)
