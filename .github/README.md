@@ -2,6 +2,8 @@
 
 Use bonus compilation to enable all features
 
+![ft_malloc](https://github.com/mfunyu/malloc/assets/60470877/40ea80fb-2e8a-4f91-a58b-7f26cf748f11)
+
 ## mandatory
 
 ### compilation
