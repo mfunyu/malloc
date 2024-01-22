@@ -16,6 +16,7 @@ SRCS	+= alignment.c \
 			get_page_size.c \
 			mmap_by_size.c \
 			error.c \
+			extend_region.c \
 			remaindering.c \
 			freelist.c
 
@@ -56,7 +57,6 @@ ifdef BONUS
 				show_alloc_mem_ex.c \
 				print_alloc.c \
 				show_freelist.c \
-				extend_region.c \
 				consolidation.c \
 				debug.c
 	VPATH	+= srcs/bonus

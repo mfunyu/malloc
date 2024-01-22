@@ -2,16 +2,6 @@
 #include "utils.h"
 #include "freelist.h"
 
-static void	*_handle_not_enough_space(t_magazine *magazine)
-{
-# ifdef BONUS
-	return (extend_region(magazine));
-# else
-	(void)magazine;
-	return (error_null("not enough space"));
-# endif
-}
-
 static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 {
 	t_malloc_chunk	*chunk;
@@ -28,7 +18,7 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 		}
 		freelist_add(magazine->freelist, magazine->top);
 	}
-	chunk = _handle_not_enough_space(magazine);
+	chunk = extend_region(magazine);
 	if (!chunk)
 		return (NULL);
 	magazine->top = remaindering(chunk, chunk_size, magazine->type);

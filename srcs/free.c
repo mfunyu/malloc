@@ -11,12 +11,11 @@
 
 static bool	_is_allocated(t_magazine *magazine, t_malloc_chunk *chunk)
 {
+	t_malloc_chunk	*footer;
+	
 	if (magazine->regions <= chunk && chunk < magazine->top)
 		return (true);
 
-#ifdef BONUS
-	t_malloc_chunk	*footer;
-	
 	footer = (void *)magazine->regions + magazine->size - REGION_FOOTERSIZE;
 	for (t_malloc_chunk *region = footer->fd; region; )
 	{
@@ -25,7 +24,6 @@ static bool	_is_allocated(t_magazine *magazine, t_malloc_chunk *chunk)
 			return (true);
 		region = footer->fd;
 	}
-#endif
 	return (false);
 }
 
