@@ -97,7 +97,8 @@ fclean	: clean g_clean t_clean c_clean ## Delete all executables, object files, 
 	$(RM) $(NAME) libft_malloc.so .env
 
 .PHONY	: re
-re	: fclean all ## Run fclean and all
+re	: fclean ## Run fclean and all
+	$(MAKE) all
 
 .PHONY	: bonus
 bonus	: ## (bonus) Run bonus compilation, make fclean required for the first time
