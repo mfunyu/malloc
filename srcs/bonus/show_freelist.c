@@ -59,7 +59,7 @@ void	show_freelist(t_magazine magazine)
 	ft_printf("< FreeList >\n");
 
 	_print_single_line();
-	for (size_t i = 0; i < 128; i++)
+	for (size_t i = 0; i < 64; i++)
 	{
 		lst = magazine.freelist[i];
 		if (!lst)
