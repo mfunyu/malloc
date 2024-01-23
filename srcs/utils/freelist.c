@@ -21,8 +21,8 @@ int	get_index_by_size(size_t size)
 {
 	int		index;
 
-	if (size <= 1024)
-		index = (size >> 4) - 1;
+	if (size <= 1024 || size % SMALL_QUANTUM)
+		index = (size >> 4) - 2;
 	else
 		index = largebin_index(size);
 	return (index);

@@ -45,7 +45,7 @@ static int	_get_size_by_index(size_t index)
 	size_t	size;
 
 	if (index < 64)
-		size = (index + 1) << 4;
+		size = (index + 2) << 4;
 	else
 		size = _largebin_index_size(index);
 	return (size);
