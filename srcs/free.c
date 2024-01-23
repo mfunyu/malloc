@@ -101,4 +101,7 @@ void	free(void *ptr)
 	}
 #endif
 	free_(ptr);
+#ifdef BONUS
+	debug_result(NULL);
+#endif
 }
