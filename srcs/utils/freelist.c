@@ -22,7 +22,7 @@ int	get_index_by_size(size_t size)
 	int		index;
 
 	if (size <= 1024)
-		index = size >> 4;
+		index = (size >> 4) - 1;
 	else
 		index = largebin_index(size);
 	return (index);

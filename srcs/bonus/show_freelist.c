@@ -45,7 +45,7 @@ static int	_get_size_by_index(size_t index)
 	size_t	size;
 
 	if (index < 64)
-		size = index << 4;
+		size = (index + 1) << 4;
 	else
 		size = _largebin_index_size(index);
 	return (size);
@@ -59,7 +59,7 @@ void	show_freelist(t_magazine magazine)
 	ft_printf("< FreeList >\n");
 
 	_print_single_line();
-	for (size_t i = 2; i < 128; i++)
+	for (size_t i = 0; i < 128; i++)
 	{
 		lst = magazine.freelist[i];
 		if (!lst)
