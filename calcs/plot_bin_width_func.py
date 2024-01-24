@@ -29,13 +29,13 @@ def exponential(x):
 
 def plot_exponential_function():
     # Generate x values
-    x_values = np.linspace(0, 64, 100)  # Adjust the range as needed
+    x_values = np.linspace(0, 63, 100)  # Adjust the range as needed
 
     # Calculate corresponding y values
     y_values = exponential(x_values)
 
     # Plot the function
-    plt.plot(x_values, y_values, label='$e^{0.19x}$')
+    plt.plot(x_values, y_values, label='$e^{0.199x}$')
 
 def exponential_function(x, a, b, c):
     return a * np.exp(b * x) + c
@@ -63,7 +63,7 @@ def show():
     plt.xlim(0)
     plt.ylim(0)
     plt.title('Exponential Approximation Plot')
-
+    plt.grid()
     plt.legend()
     plt.show()
 
@@ -81,18 +81,19 @@ def plot(x_values, y_values):
 
 
 def func():
-    prev_index = -1
-    prev_value = 1024
+    prev_index = 0
+    prev_value = 1536
     x_values = []
     y_values = []
 
-    for size in range(1024, 1040385):
+    for size in range(1536, 1040385):
         index = bin(size)
         if (index != prev_index):
             width = size - prev_value
-            x_values.append(index)
+            print(f"[{index - 1}] width: {width} value: {prev_value} ~ {size} (y = {exponential(index)})")
+            x_values.append(index - 1)
             y_values.append(width)
-            print(f"[{index}] width: {width} value: {size} ~")
+
             prev_index = index
             prev_value = size
 
