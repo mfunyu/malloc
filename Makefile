@@ -61,6 +61,7 @@ ifdef BONUS
 				debug.c
 	VPATH	+= srcs/bonus
 	CFLAGS	+= -D BONUS
+	LIBS	+= -ldl
 endif
 
 # ---------------------------------------------------------------------------- #
