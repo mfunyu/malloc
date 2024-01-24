@@ -15,7 +15,7 @@ def get_best_coeffs(coeffs):
     print("[Find the best coeffs]")
 
     while 1 :
-        total = 1024
+        total = 1024 + 512
         shift = 8
         width = 0 
         for x in range(0, 64):
