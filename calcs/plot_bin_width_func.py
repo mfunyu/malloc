@@ -6,26 +6,26 @@ from scipy.optimize import curve_fit
 def bin(size):
     if size >> 9 <= 34:
         return ((size >> 9) + -3)
-    if size >> 10 <= 23:
+    if size >> 10 <= 22:
         return ((size >> 10) + 14)
     if size >> 11 <= 16:
-        return ((size >> 11) + 26)
-    if size >> 12 <= 12:
-        return ((size >> 12) + 34)
+        return ((size >> 11) + 25)
+    if size >> 12 <= 11:
+        return ((size >> 12) + 33)
     if size >> 13 <= 9:
-        return ((size >> 13) + 40)
+        return ((size >> 13) + 39)
     if size >> 14 <= 8:
-        return ((size >> 14) + 45)
-    if size >> 15 <= 8:
-        return ((size >> 15) + 49)
+        return ((size >> 14) + 44)
+    if size >> 15 <= 7:
+        return ((size >> 15) + 48)
     if size >> 16 <= 7:
-        return ((size >> 16) + 53)
-    if size >> 17 <= 7:
-        return ((size >> 17) + 57)
-    return (0)
+        return ((size >> 16) + 52)
+    if size >> 17 <= 6:
+        return ((size >> 17) + 56)
+    return (63)
 
 def exponential(x):
-    return np.exp(0.19 * x) + 511
+    return np.exp(0.199 * x) + 511
 
 def plot_exponential_function():
     # Generate x values
@@ -81,20 +81,20 @@ def plot(x_values, y_values):
 
 
 def func():
-    prev = -1
-    val = 1024
+    prev_index = -1
+    prev_value = 1024
     x_values = []
     y_values = []
 
-    for i in range(1024, 1040385):
-        index = bin(i)
-        if (index != prev):
-            width = i - val
+    for size in range(1024, 1040385):
+        index = bin(size)
+        if (index != prev_index):
+            width = size - prev_value
             x_values.append(index)
             y_values.append(width)
-            print(f"[{index}] width: {width} value: ~ {i - 1}")
-            prev = index
-            val = i
+            print(f"[{index}] width: {width} value: {size} ~")
+            prev_index = index
+            prev_value = size
 
     plot(x_values, y_values)
 
