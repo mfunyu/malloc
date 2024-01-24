@@ -8,7 +8,7 @@ int	largebin_index(size_t size)
 		return ((size >> 9) + -3);
 	if (size >> 10 <= 22)
 		return ((size >> 10) + 14);
-	if (size >> 11 <= 15)
+	if (size >> 11 <= 16)
 		return ((size >> 11) + 25);
 	if (size >> 12 <= 11)
 		return ((size >> 12) + 33);
