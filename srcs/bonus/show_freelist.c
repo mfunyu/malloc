@@ -55,6 +55,7 @@ void	show_freelist(t_magazine magazine)
 {
 	t_malloc_chunk	*lst;
 	size_t			size;
+	int				cnt;
 
 	ft_printf("< FreeList >\n");
 
@@ -64,15 +65,17 @@ void	show_freelist(t_magazine magazine)
 		lst = magazine.freelist[i];
 		if (!lst)
 			continue ;
-		size = _get_size_by_index(i);
+		size = _get_size_by_index(i, magazine.type);
 		ft_printf(" [%i]", i);
 		ft_printf(" (%i) |", size);
+		cnt = 0;
 		while (lst)
 		{
 			ft_printf("-> %p |", lst);
 			lst = lst->fd;
+			cnt++;
 		}
-		ft_printf("\n");
+		ft_printf(" (%d)\n", cnt);
 		_print_single_line();
 	}
 	ft_printf("\n");
