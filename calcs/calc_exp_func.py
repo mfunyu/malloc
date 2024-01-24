@@ -11,23 +11,6 @@ print("[Calculate the exponential function that best fit for the bin width]\n")
 def exponential(coeffs, x):
     return np.exp(coeffs * x) + 511
 
-def get_min_coeeffs():
-    print("[Find the minimum coeffs]")
-    coeffs = 0.16
-    while coeffs < 0.2:
-        total = 1024
-        for x in range (0, 64):
-            y = exponential(coeffs, x)
-            # print(f"[{x}] {total} ~ {total + y}, {y}")
-            total = total + y
-
-        print(f"coeffs: {coeffs}, total:{total}, diff:{total - MAX_VALUE}")
-        if (total >= MAX_VALUE):
-            break
-
-        coeffs += 0.001
-    return (coeffs)
-
 def get_best_coeffs(coeffs):
     print("[Find the best coeffs]")
 
@@ -54,8 +37,7 @@ def get_best_coeffs(coeffs):
 
     return (coeffs)
 
-coeffs = get_min_coeeffs()
-coeffs = get_best_coeffs(coeffs)
+coeffs = get_best_coeffs(0.16)
 
 print("[Result]")
 print(f"f(x) = 511 + e^({coeffs} * x)")
