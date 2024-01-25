@@ -9,19 +9,33 @@
 #include "utils.h"
 #include <sys/mman.h>
 
-static bool	_is_allocated(t_magazine *magazine, t_malloc_chunk *chunk)
+static bool	_is_allocated_block(t_malloc_chunk *region, t_malloc_chunk *address)
+{
+	t_malloc_chunk	*chunk;
+
+	chunk = region;
+	while (chunk >= address && !IS_FOOTER(chunk))
+	{
+		if (chunk == address)
+			return (IS_ALLOCED(chunk));
+		chunk = NEXTCHUNK(chunk);
+	}
+	return (false);
+}
+
+static bool	_is_allocated(t_magazine *magazine, t_malloc_chunk *address)
 {
 	t_malloc_chunk	*footer;
 	
-	if (magazine->regions <= chunk && chunk < magazine->top)
-		return (true);
+	if (magazine->regions <= address && address < magazine->top)
+		return (_is_allocated_block(magazine->regions, address));
 
 	footer = (void *)magazine->regions + magazine->size - REGION_FOOTERSIZE;
 	for (t_malloc_chunk *region = footer->fd; region; )
 	{
 		footer = (void *)region + magazine->size - REGION_FOOTERSIZE;
-		if (region <= chunk && chunk < footer)
-			return (true);
+		if (region <= address && address < footer)
+			return (_is_allocated_block(region, address));
 		region = footer->fd;
 	}
 	return (false);
