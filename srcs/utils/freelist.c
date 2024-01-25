@@ -29,7 +29,7 @@ int	get_index_by_size(size_t size)
 {
 	int		index;
 
-	if (size <= align_malloc(TINY_MAX, TINY))
+	if (size <= TINY_BLOCKSIZE_MAX)
 		index = (size >> 4) - 2;
 	else
 		index = largebin_index(size);

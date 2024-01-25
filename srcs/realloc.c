@@ -48,8 +48,7 @@ static bool	_is_chunk_extendable(t_malloc_chunk *chunk, size_t size, size_t chun
 {
 	t_malloc_chunk	*next;
 
-	if (size > TINY_MAX && (CHUNKSIZE(chunk) <= TINY_MAX
-			|| CHUNKSIZE(chunk) % SMALL_QUANTUM)) /* tiny to small */
+	if (size > TINY_MAX && CHUNKSIZE(chunk) <= TINY_BLOCKSIZE_MAX) /* tiny to small */
 		return (false);
 
 	next = NEXTCHUNK(chunk);

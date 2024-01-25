@@ -19,8 +19,12 @@
 # define APPROX_PAGE_SIZE 4096
 # define MALLOC_ABSOLUTE_SIZE_MAX (SIZE_MAX - (2 * APPROX_PAGE_SIZE))
 
+# define ALIGN(size, align) ((size + (align - 1)) & ~(align - 1))
+
 # define MALLOC_ALIGNMENT 16
 # define MIN_CHUNKSIZE (MALLOC_ALIGNMENT + CHUNK_HEADERSIZE)
+# define TINY_BLOCKSIZE_MAX ALIGN(TINY_MAX + CHUNK_OVERHEAD, TINY_QUANTUM)
+# define SMALL_BLOCKSIZE_MAX ALIGN(SMALL_MAX + CHUNK_OVERHEAD, SMALL_QUANTUM)
 
 # define CHUNK_OVERHEAD 8
 # define CHUNK_HEADERSIZE 16
@@ -34,8 +38,6 @@
 # define IS_MAPPED(chunk) (chunk->size & MAPPED)
 # define GET_FLAGS(chunk) (chunk->size & (ALL - 1))
 # define IS_FOOTER(chunk) (CHUNKSIZE(chunk) == 0 && IS_ALLOCED(chunk))
-
-# define ALIGN(size, align) ((size + (align - 1)) & ~(align - 1))
 
 # define CHUNKSIZE(chunk) (chunk->size & ~(ALL - 1))
 # define ALLOCSIZE(chunk) (CHUNKSIZE(chunk) - CHUNK_OVERHEAD)
