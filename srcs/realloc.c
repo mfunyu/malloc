@@ -59,11 +59,28 @@ static bool	_is_chunk_extendable(t_malloc_chunk *chunk, size_t size, size_t chun
 	return (true);
 }
 
+static int	_realloc_check(t_magazine *magazine, t_malloc_chunk *chunk, size_t size)
+{
+	size_t	chunk_size;
+
+	if (!_is_allocated(magazine, chunk))
+		return (error_ret("pointer being realloc'd was not allocated", -1));
+	if (ALLOCSIZE(chunk) >= size)
+		return (true);
+	chunk_size = align_malloc(size, magazine->type);
+	if (_is_chunk_extendable(chunk, size, chunk_size))
+	{
+		_extend_chunk(chunk, magazine, chunk_size);
+		return (true);
+	}
+	return (false);
+}
+
 void	*realloc_(void *ptr, size_t size)
 {
 	t_malloc_chunk	*chunk;
-	size_t			chunk_size;
 	void			*retval;
+	int				ret;
 
 	if (size > MALLOC_ABSOLUTE_SIZE_MAX)
 		return (NULL);
@@ -72,31 +89,13 @@ void	*realloc_(void *ptr, size_t size)
 		return (error_null("pointer being realloc'd was not allocated"));
 
 	if (size <= TINY_MAX)
-	{
-		if (!_is_allocated(&(g_malloc.tiny_magazine), chunk))
-			return (error_null("pointer being realloc'd was not allocated"));
-		if (ALLOCSIZE(chunk) >= size)
-			return (ptr);
-		chunk_size = align_malloc(size, TINY);
-		if (_is_chunk_extendable(chunk, size, chunk_size))
-		{
-			_extend_chunk(chunk, &(g_malloc.tiny_magazine), chunk_size);
-			return (ptr);
-		}
-	}
+		ret = _realloc_check(&(g_malloc.tiny_magazine), chunk, size);
 	else if (size <= SMALL_MAX)
-	{
-		if (!_is_allocated(&(g_malloc.small_magazine), chunk))
-			return (error_null("pointer being realloc'd was not allocated"));
-		if (ALLOCSIZE(chunk) >= size)
-			return (ptr);
-		chunk_size = align_malloc(size, SMALL);
-		if (_is_chunk_extendable(chunk, size, chunk_size))
-		{
-			_extend_chunk(chunk, &(g_malloc.small_magazine), chunk_size);
-			return (ptr);
-		}
-	}
+		ret = _realloc_check(&(g_malloc.small_magazine), chunk, size);
+	if (ret == true)
+		return (ptr);
+	else if (ret == -1)
+		return (NULL);
 	retval = malloc_(size);
 	if (!retval)
 		return (NULL);
