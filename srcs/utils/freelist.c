@@ -30,7 +30,11 @@ int	get_index_by_size(size_t size)
 	int		index;
 
 	if (size <= TINY_BLOCKSIZE_MAX)
+	{
 		index = (size >> 4) - 2;
+		if (index > 63)
+			index = 63;
+	} 
 	else
 		index = largebin_index(size);
 	return (index);
