@@ -2,6 +2,7 @@
 # define UTILS_H
 
 # include <stddef.h>
+# include <stdbool.h>
 
 typedef struct	s_malloc_chunk t_malloc_chunk;
 typedef struct	s_magazine t_magazine;
@@ -10,6 +11,8 @@ typedef enum	s_size e_size;
 int		get_page_size();
 
 void	*mmap_by_size(size_t map_size);
+
+bool	_is_allocated(t_magazine *magazine, t_malloc_chunk *address);
 
 /* alignment.c */
 size_t	align_malloc(size_t size, e_size type);

@@ -15,6 +15,7 @@ SRCS	:= malloc.c \
 SRCS	+= alignment.c \
 			get_page_size.c \
 			mmap_by_size.c \
+			is_allocated.c \
 			error.c \
 			extend_region.c \
 			remaindering.c \
