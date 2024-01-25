@@ -23,16 +23,24 @@ def add_func_c(total, shift, index):
     func_c += f"	if (size >> {shift} <= {max_value})\n"
     func_c += f"		return ((size >> {shift}) + {index - max_value});\n"
 
+
+def print_data(i, width, shift, total):
+    print(f"[{i}] width: {width} (shift: {shift}) {total}", end = "")
+    if (shift != 9):
+        print(f" ~ {total + width}", end = "")
+    print("")
+
 for i in range(0, 64):
     y = exponential(i)
     if (y >= (1 << (shift + 1))): # width is greater than next shift value
         shift += 1
         width = 1 << shift
-        print(f"[{i}] width: {width} (shift: {shift}) {total} ~ {total + width}")
+        print_data(i, width, shift, total)
         add_func_py(total - 1, shift - 1, i - 1)
         add_func_c(total - 1, shift - 1, i - 1)
     else:
-        print(f"  [{i}] width: {width} (shift: {shift}) {total} ~ {total + width}")
+        print("  ", end = "")
+        print_data(i, width, shift, total)
 
     total += width
 
