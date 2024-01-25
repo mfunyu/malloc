@@ -70,11 +70,13 @@ void	*realloc_(void *ptr, size_t size)
 	chunk = CHUNK(ptr);
 	if (((uintptr_t)chunk & (TINY_QUANTUM - 1)))
 		return (error_null("pointer being realloc'd was not allocated"));
-	if (ALLOCSIZE(chunk) >= size)
-		return (ptr);
 
 	if (size <= TINY_MAX)
 	{
+		if (!_is_allocated(&(g_malloc.tiny_magazine), chunk))
+			return (error_null("pointer being realloc'd was not allocated"));
+		if (ALLOCSIZE(chunk) >= size)
+			return (ptr);
 		chunk_size = align_malloc(size, TINY);
 		if (_is_chunk_extendable(chunk, size, chunk_size))
 		{
@@ -84,6 +86,10 @@ void	*realloc_(void *ptr, size_t size)
 	}
 	else if (size <= SMALL_MAX)
 	{
+		if (!_is_allocated(&(g_malloc.small_magazine), chunk))
+			return (error_null("pointer being realloc'd was not allocated"));
+		if (ALLOCSIZE(chunk) >= size)
+			return (ptr);
 		chunk_size = align_malloc(size, SMALL);
 		if (_is_chunk_extendable(chunk, size, chunk_size))
 		{
