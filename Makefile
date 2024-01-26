@@ -159,7 +159,7 @@ g_clean	:
 CHECKDIR = $(TESTDIR)/check
 
 .PHONY	: check 
-check	: all ## (test) Compile files under ./test/check directory
+check	:  ## (test) Compile files under ./test/check directory
 	gcc -o $(CHECKDIR)/c_free $(CHECKDIR)/c_free.c
 	gcc -o $(CHECKDIR)/c_malloc $(CHECKDIR)/c_malloc.c
 	gcc -o $(CHECKDIR)/c_realloc $(CHECKDIR)/c_realloc.c
