@@ -65,7 +65,7 @@ typedef struct s_malloc_chunk
 	size_t					prev_size;
 	size_t					size;
 	struct s_malloc_chunk	*next;
-	struct s_malloc_chunk	*bk;
+	struct s_malloc_chunk	*prev;
 }			t_malloc_chunk;
 
 typedef struct s_malloc_footer

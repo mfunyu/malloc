@@ -56,9 +56,9 @@ void	freelist_add(t_malloc_chunk *freelist[64], t_malloc_chunk *add)
 	index = get_index(add);
 	next = freelist[index];
 	if (next)
-		next->bk = add;
+		next->prev = add;
 	add->next = next;
-	add->bk = NULL;
+	add->prev = NULL;
 	freelist[index] = add;
 }
 
@@ -69,9 +69,9 @@ void	freelist_pop(t_malloc_chunk *freelist[64], t_malloc_chunk *pop)
 	int				index;
 
 	next = pop->next;
-	prev = pop->bk;
+	prev = pop->prev;
 	if (next)
-		next->bk = prev;
+		next->prev = prev;
 	if (prev)
 		prev->next = next;
 	else

@@ -22,10 +22,10 @@ static void	_print_unused(t_malloc_chunk *chunk)
 	print_line('-');
 	print_row_ptr(&(chunk->next), "next");
 	print_line('-');
-	print_row_ptr(&(chunk->bk), "bk");
+	print_row_ptr(&(chunk->prev), "prev");
 	if (CHUNKSIZE(chunk) > 32) {
 		print_line('-');
-		print_row((void *)&(chunk->bk) + 8, NULL, NULL);
+		print_row((void *)&(chunk->prev) + 8, NULL, NULL);
 		print_first_col(NULL);
 		i = CHUNKSIZE(chunk) - 32;
 		ft_printf(" [%10d (%9p)] |\n", i, i);
