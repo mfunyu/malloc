@@ -49,7 +49,7 @@ typedef enum s_bitflag
 	PREV_IN_USE = 1 << 0,	// 1
 	ALLOCED = 1 << 1,		// 2
 	MAPPED = 1 << 2,		// 4
-	ALL = 1 << 3			// 8
+	ALL = 1 << 3			// 8 (for manage flags) 
 }			e_bitflag;
 
 typedef enum s_size
