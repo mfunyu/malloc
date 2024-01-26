@@ -63,7 +63,7 @@ static int	_realloc_check(t_magazine *magazine, t_malloc_chunk *chunk, size_t ne
 {
 	size_t	chunk_size;
 
-	if (!_is_allocated(magazine, chunk))
+	if (!is_allocated_hint(chunk, magazine->type))
 		return (error_ret("pointer being realloc'd was not allocated", -1));
 	if (ALLOCSIZE(chunk) >= new_size)
 		return (true);

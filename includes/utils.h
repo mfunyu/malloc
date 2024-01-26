@@ -12,7 +12,7 @@ int		get_page_size();
 
 void	*mmap_by_size(size_t map_size);
 
-bool	_is_allocated(t_magazine *magazine, t_malloc_chunk *address);
+bool	is_allocated_hint(t_malloc_chunk *address, e_size hint);
 
 /* alignment.c */
 size_t	align_malloc(size_t size, e_size type);

@@ -56,7 +56,8 @@ typedef enum s_size
 {
 	TINY,
 	SMALL,
-	LARGE
+	LARGE,
+	NONE
 }			e_size;
 
 typedef struct s_malloc_chunk

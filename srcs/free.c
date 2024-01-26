@@ -13,7 +13,7 @@ static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
 {
 	t_malloc_chunk	*next;
 
-	if (!_is_allocated(magazine, chunk))
+	if (!is_allocated_hint(chunk, magazine->type))
 		return (error_msg("pointer being freed was not allocated"));
 	chunk->size &= ~ALLOCED;
 # ifdef BONUS
