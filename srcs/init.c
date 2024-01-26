@@ -31,7 +31,7 @@ t_malloc_chunk	*init_region(size_t	size)
 	footer->prev_size = CHUNKSIZE(head);
 	footer->size = 0;
 	footer->size |= ALLOCED;
-	footer->fd = NULL;
+	footer->next = NULL;
 	return (head);
 }
 

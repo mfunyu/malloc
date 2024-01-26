@@ -80,7 +80,7 @@ void	show_freelist(t_magazine magazine)
 		while (lst)
 		{
 			ft_printf("-> %p |", lst);
-			lst = lst->fd;
+			lst = lst->next;
 			cnt++;
 		}
 		ft_printf(" (%d)\n", cnt);

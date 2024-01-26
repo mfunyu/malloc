@@ -25,12 +25,12 @@ static bool	_is_allocated_magazine(t_magazine *magazine, t_malloc_chunk *address
 		return (_is_allocated_block(magazine->regions, address));
 
 	footer = (void *)magazine->regions + magazine->size - REGION_FOOTERSIZE;
-	for (t_malloc_chunk *region = footer->fd; region; )
+	for (t_malloc_chunk *region = footer->next; region; )
 	{
 		footer = (void *)region + magazine->size - REGION_FOOTERSIZE;
 		if (region <= address && address < footer)
 			return (_is_allocated_block(region, address));
-		region = footer->fd;
+		region = footer->next;
 	}
 	return (false);
 }
@@ -44,7 +44,7 @@ static bool	_is_allocated_mmap(t_mmap_chunk *allocations, t_malloc_chunk *addres
 	{
 		if (CHUNK(address) == chunk)
 			return (IS_MAPPED(address));
-		chunk = chunk->fd;
+		chunk = chunk->next;
 	}
 	return (false);
 }

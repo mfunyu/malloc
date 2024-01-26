@@ -82,7 +82,7 @@ static void	*_allocate_large_mmap(t_mmap_chunk **large_allocs, size_t size)
 	chunk = mmap_by_size(aligned_size);
 	if (!chunk)
 		return (NULL);
-	chunk->fd = *large_allocs;
+	chunk->next = *large_allocs;
 	chunk->size = aligned_size;
 	chunk->size |= MAPPED;
 	*large_allocs = chunk;

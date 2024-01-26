@@ -31,14 +31,14 @@ static void	_free_mmap(t_mmap_chunk **alloced_lst, t_mmap_chunk *chunk)
 	t_mmap_chunk	*lst;
 
 	if (*alloced_lst == chunk)
-		*alloced_lst = chunk->fd;
+		*alloced_lst = chunk->next;
 	else
 	{
 		lst = *alloced_lst;
-		while (lst && lst->fd != chunk)
-			lst = lst->fd;
-		if (lst->fd == chunk)
-			lst->fd = chunk->fd;
+		while (lst && lst->next != chunk)
+			lst = lst->next;
+		if (lst->next == chunk)
+			lst->next = chunk->next;
 		else
 			return (error_msg("pointer being freed was not allocated"));
 	}
