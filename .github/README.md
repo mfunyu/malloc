@@ -28,6 +28,8 @@ make
  - malloc debug environment variables are enabled
  - freed memory is defragmented
 
+> ! does not work with multi-threaded programs
+
 ### compilation
   ```
   make fclean
