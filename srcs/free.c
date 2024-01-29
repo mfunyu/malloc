@@ -9,31 +9,11 @@
 #include "utils.h"
 #include <sys/mman.h>
 
-static bool	_is_allocated(t_magazine *magazine, t_malloc_chunk *chunk)
-{
-	if (magazine->regions <= chunk && chunk < magazine->top)
-		return (true);
-
-#ifdef BONUS
-	t_malloc_chunk	*footer;
-	
-	footer = (void *)magazine->regions + magazine->size - REGION_FOOTERSIZE;
-	for (t_malloc_chunk *region = footer->fd; region; )
-	{
-		footer = (void *)region + magazine->size - REGION_FOOTERSIZE;
-		if (region <= chunk && chunk < footer)
-			return (true);
-		region = footer->fd;
-	}
-#endif
-	return (false);
-}
-
 static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
 {
 	t_malloc_chunk	*next;
 
-	if (!_is_allocated(magazine, chunk))
+	if (!is_allocated_hint(chunk, magazine->type))
 		return (error_msg("pointer being freed was not allocated"));
 	chunk->size &= ~ALLOCED;
 # ifdef BONUS
@@ -51,14 +31,14 @@ static void	_free_mmap(t_mmap_chunk **alloced_lst, t_mmap_chunk *chunk)
 	t_mmap_chunk	*lst;
 
 	if (*alloced_lst == chunk)
-		*alloced_lst = chunk->fd;
+		*alloced_lst = chunk->next;
 	else
 	{
 		lst = *alloced_lst;
-		while (lst && lst->fd != chunk)
-			lst = lst->fd;
-		if (lst->fd == chunk)
-			lst->fd = chunk->fd;
+		while (lst && lst->next != chunk)
+			lst = lst->next;
+		if (lst->next == chunk)
+			lst->next = chunk->next;
 		else
 			return (error_msg("pointer being freed was not allocated"));
 	}
@@ -77,7 +57,7 @@ void	free_(void *ptr)
 	size = CHUNKSIZE(chunk);
 	if (IS_MAPPED(chunk))
 		_free_mmap(&(g_malloc.large_allocations), (t_mmap_chunk *)chunk);
-	else if (size <= TINY_MAX || size % SMALL_QUANTUM)
+	else if (size <= TINY_BLOCKSIZE_MAX)
 		_free_alloc(&(g_malloc.tiny_magazine), chunk);
 	else if (!((uintptr_t)chunk & (SMALL_QUANTUM - 1)))
 		_free_alloc(&(g_malloc.small_magazine), chunk);
@@ -103,4 +83,7 @@ void	free(void *ptr)
 	}
 #endif
 	free_(ptr);
+#ifdef BONUS
+	debug_result(NULL);
+#endif
 }

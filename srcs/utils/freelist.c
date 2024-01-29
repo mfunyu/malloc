@@ -4,27 +4,41 @@
 
 int	largebin_index(size_t size)
 {
-	if (size >> 6 <= 48)
-		return (48 + (size >> 6));
-	if (size >> 9 <= 20)
-		return (91 + (size >> 9));
-	if (size >> 12 <= 10)
-		return (110 + (size >> 12));
-	if (size >> 15 <= 4)
-		return (119 + (size >> 15));
-	if (size >> 18 <= 2)
-		return (124 + (size >> 18));
-	return (126);
+	if (size >> 9 <= 34)
+		return ((size >> 9) + -3);
+	if (size >> 10 <= 22)
+		return ((size >> 10) + 14);
+	if (size >> 11 <= 16)
+		return ((size >> 11) + 25);
+	if (size >> 12 <= 11)
+		return ((size >> 12) + 33);
+	if (size >> 13 <= 9)
+		return ((size >> 13) + 39);
+	if (size >> 14 <= 8)
+		return ((size >> 14) + 44);
+	if (size >> 15 <= 7)
+		return ((size >> 15) + 48);
+	if (size >> 16 <= 7)
+		return ((size >> 16) + 52);
+	if (size >> 17 <= 6)
+		return ((size >> 17) + 56);
+	return (63);
 }
 
 int	get_index_by_size(size_t size)
 {
 	int		index;
 
-	if (size <= 1024)
-		index = size >> 4;
+	if (size <= TINY_BLOCKSIZE_MAX)
+	{
+		index = (size >> 4) - 2;
+	} 
 	else
 		index = largebin_index(size);
+	if (index < 0)
+		index = 0;
+	if (index > 63)
+		index = 63;
 	return (index);
 }
 
@@ -36,7 +50,7 @@ int	get_index(t_malloc_chunk *chunk)
 	return (get_index_by_size(chunk_size));
 }
 
-void	freelist_add(t_malloc_chunk *freelist[128], t_malloc_chunk *add)
+void	freelist_add(t_malloc_chunk *freelist[64], t_malloc_chunk *add)
 {
 	int				index;
 	t_malloc_chunk	*next;
@@ -44,24 +58,24 @@ void	freelist_add(t_malloc_chunk *freelist[128], t_malloc_chunk *add)
 	index = get_index(add);
 	next = freelist[index];
 	if (next)
-		next->bk = add;
-	add->fd = next;
-	add->bk = NULL;
+		next->prev = add;
+	add->next = next;
+	add->prev = NULL;
 	freelist[index] = add;
 }
 
-void	freelist_pop(t_malloc_chunk *freelist[128], t_malloc_chunk *pop)
+void	freelist_pop(t_malloc_chunk *freelist[64], t_malloc_chunk *pop)
 {
 	t_malloc_chunk	*next;
 	t_malloc_chunk	*prev;
 	int				index;
 
-	next = pop->fd;
-	prev = pop->bk;
+	next = pop->next;
+	prev = pop->prev;
 	if (next)
-		next->bk = prev;
+		next->prev = prev;
 	if (prev)
-		prev->fd = next;
+		prev->next = next;
 	else
 	{
 		index = get_index(pop);
@@ -69,21 +83,35 @@ void	freelist_pop(t_malloc_chunk *freelist[128], t_malloc_chunk *pop)
 	}
 }
 
+static t_malloc_chunk	*_find_first_hit(t_malloc_chunk *freelist, size_t size)
+{
+	t_malloc_chunk	*lst;
+
+	lst = freelist;
+	while (lst)
+	{
+		if (CHUNKSIZE(lst) >= size)
+			return (lst);
+		lst = lst->next;
+	}
+	return (NULL);
+}
+
 void	*freelist_takeout(t_magazine *magazine, size_t size)
 {
 	int				index;
 	t_malloc_chunk	*chunk;
-	t_malloc_chunk	*next;
 	t_malloc_chunk	*remainder;
 
 	index = get_index_by_size(size);
-	if (!magazine->freelist[index])
+
+	if (magazine->type == TINY)
+		chunk = magazine->freelist[index];
+	else if (magazine->type == SMALL)
+		chunk = _find_first_hit(magazine->freelist[index], size);
+	if (!chunk)
 		return (NULL);
-	chunk = magazine->freelist[index];
-	next = chunk->fd;
-	if (next)
-		next->bk = NULL;
-	magazine->freelist[index] = next;
+	freelist_pop(magazine->freelist, chunk);
 	remainder = remaindering(chunk, size, magazine->type);
 	if (remainder)
 		freelist_add(magazine->freelist, remainder);

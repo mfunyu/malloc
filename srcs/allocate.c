@@ -2,22 +2,12 @@
 #include "utils.h"
 #include "freelist.h"
 
-static void	*_handle_not_enough_space(t_magazine *magazine)
-{
-# ifdef BONUS
-	return (extend_region(magazine));
-# else
-	(void)magazine;
-	return (error_null("not enough space"));
-# endif
-}
-
 static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 {
 	t_malloc_chunk	*chunk;
 
 	chunk = magazine->top;
-	if (chunk && !IS_ALLOCED(chunk))
+	if (chunk && !IS_ALLOCED(chunk)) /* footer is marked as alloced */
 	{
 		if (CHUNKSIZE(chunk) >= chunk_size)
 		{
@@ -28,7 +18,7 @@ static void	*_find_unused_chunk(t_magazine *magazine, size_t chunk_size)
 		}
 		freelist_add(magazine->freelist, magazine->top);
 	}
-	chunk = _handle_not_enough_space(magazine);
+	chunk = extend_region(magazine);
 	if (!chunk)
 		return (NULL);
 	magazine->top = remaindering(chunk, chunk_size, magazine->type);
@@ -92,7 +82,7 @@ static void	*_allocate_large_mmap(t_mmap_chunk **large_allocs, size_t size)
 	chunk = mmap_by_size(aligned_size);
 	if (!chunk)
 		return (NULL);
-	chunk->fd = *large_allocs;
+	chunk->next = *large_allocs;
 	chunk->size = aligned_size;
 	chunk->size |= MAPPED;
 	*large_allocs = chunk;

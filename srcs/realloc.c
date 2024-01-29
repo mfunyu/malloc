@@ -44,12 +44,11 @@ static void	_extend_chunk(t_malloc_chunk *chunk, t_magazine *magazine, size_t ch
 	next->size |= PREV_IN_USE;
 }
 
-static bool	_is_chunk_extendable(t_malloc_chunk *chunk, size_t size, size_t chunk_size)
+static bool	_is_chunk_extendable(t_malloc_chunk *chunk, size_t new_size, size_t chunk_size)
 {
 	t_malloc_chunk	*next;
 
-	if (size > TINY_MAX && (CHUNKSIZE(chunk) <= TINY_MAX
-			|| CHUNKSIZE(chunk) % SMALL_QUANTUM)) /* tiny to small */
+	if (new_size > TINY_MAX && CHUNKSIZE(chunk) <= TINY_BLOCKSIZE_MAX) /* tiny to small */
 		return (false);
 
 	next = NEXTCHUNK(chunk);
@@ -60,39 +59,44 @@ static bool	_is_chunk_extendable(t_malloc_chunk *chunk, size_t size, size_t chun
 	return (true);
 }
 
-void	*realloc_(void *ptr, size_t size)
+static int	_realloc_check(t_magazine *magazine, t_malloc_chunk *chunk, size_t new_size)
+{
+	size_t	chunk_size;
+
+	if (!is_allocated_hint(chunk, magazine->type))
+		return (error_ret("pointer being realloc'd was not allocated", -1));
+	if (ALLOCSIZE(chunk) >= new_size)
+		return (true);
+	chunk_size = align_malloc(new_size, magazine->type);
+	if (_is_chunk_extendable(chunk, new_size, chunk_size))
+	{
+		_extend_chunk(chunk, magazine, chunk_size);
+		return (true);
+	}
+	return (false);
+}
+
+void	*realloc_(void *ptr, size_t new_size)
 {
 	t_malloc_chunk	*chunk;
-	size_t			chunk_size;
 	void			*retval;
+	int				ret;
 
-	if (size > MALLOC_ABSOLUTE_SIZE_MAX)
+	if (new_size > MALLOC_ABSOLUTE_SIZE_MAX)
 		return (NULL);
 	chunk = CHUNK(ptr);
 	if (((uintptr_t)chunk & (TINY_QUANTUM - 1)))
 		return (error_null("pointer being realloc'd was not allocated"));
-	if (ALLOCSIZE(chunk) >= size)
-		return (ptr);
 
-	if (size <= TINY_MAX)
-	{
-		chunk_size = align_malloc(size, TINY);
-		if (_is_chunk_extendable(chunk, size, chunk_size))
-		{
-			_extend_chunk(chunk, &(g_malloc.tiny_magazine), chunk_size);
-			return (ptr);
-		}
-	}
-	else if (size <= SMALL_MAX)
-	{
-		chunk_size = align_malloc(size, SMALL);
-		if (_is_chunk_extendable(chunk, size, chunk_size))
-		{
-			_extend_chunk(chunk, &(g_malloc.small_magazine), chunk_size);
-			return (ptr);
-		}
-	}
-	retval = malloc_(size);
+	if (new_size <= TINY_MAX)
+		ret = _realloc_check(&(g_malloc.tiny_magazine), chunk, new_size);
+	else if (new_size <= SMALL_MAX)
+		ret = _realloc_check(&(g_malloc.small_magazine), chunk, new_size);
+	if (ret == true)
+		return (ptr);
+	else if (ret == -1)
+		return (NULL);
+	retval = malloc_(new_size);
 	if (!retval)
 		return (NULL);
 	ft_memmove(retval, ptr, ALLOCSIZE(chunk));

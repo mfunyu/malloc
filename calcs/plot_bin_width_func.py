@@ -6,36 +6,36 @@ from scipy.optimize import curve_fit
 def bin(size):
     if size >> 9 <= 34:
         return ((size >> 9) + -3)
-    if size >> 10 <= 23:
+    if size >> 10 <= 22:
         return ((size >> 10) + 14)
     if size >> 11 <= 16:
-        return ((size >> 11) + 26)
-    if size >> 12 <= 12:
-        return ((size >> 12) + 34)
+        return ((size >> 11) + 25)
+    if size >> 12 <= 11:
+        return ((size >> 12) + 33)
     if size >> 13 <= 9:
-        return ((size >> 13) + 40)
+        return ((size >> 13) + 39)
     if size >> 14 <= 8:
-        return ((size >> 14) + 45)
-    if size >> 15 <= 8:
-        return ((size >> 15) + 49)
+        return ((size >> 14) + 44)
+    if size >> 15 <= 7:
+        return ((size >> 15) + 48)
     if size >> 16 <= 7:
-        return ((size >> 16) + 53)
-    if size >> 17 <= 7:
-        return ((size >> 17) + 57)
-    return (0)
+        return ((size >> 16) + 52)
+    if size >> 17 <= 6:
+        return ((size >> 17) + 56)
+    return (63)
 
 def exponential(x):
-    return np.exp(0.19 * x) + 511
+    return np.exp(0.199 * x) + 511
 
 def plot_exponential_function():
     # Generate x values
-    x_values = np.linspace(0, 64, 100)  # Adjust the range as needed
+    x_values = np.linspace(0, 63, 100)  # Adjust the range as needed
 
     # Calculate corresponding y values
     y_values = exponential(x_values)
 
     # Plot the function
-    plt.plot(x_values, y_values, label='$e^{0.19x}$')
+    plt.plot(x_values, y_values, label='$e^{0.199x}$')
 
 def exponential_function(x, a, b, c):
     return a * np.exp(b * x) + c
@@ -63,7 +63,7 @@ def show():
     plt.xlim(0)
     plt.ylim(0)
     plt.title('Exponential Approximation Plot')
-
+    plt.grid()
     plt.legend()
     plt.show()
 
@@ -81,20 +81,21 @@ def plot(x_values, y_values):
 
 
 def func():
-    prev = -1
-    val = 1024
+    prev_index = 0
+    prev_value = 1536
     x_values = []
     y_values = []
 
-    for i in range(1024, 1040385):
-        index = bin(i)
-        if (index != prev):
-            width = i - val
-            x_values.append(index)
+    for size in range(1536, 1040385):
+        index = bin(size)
+        if (index != prev_index):
+            width = size - prev_value
+            print(f"[{index - 1}] width: {width} value: {prev_value} ~ {size} (y = {exponential(index)})")
+            x_values.append(index - 1)
             y_values.append(width)
-            print(f"[{index}] width: {width} value: ~ {i - 1}")
-            prev = index
-            val = i
+
+            prev_index = index
+            prev_value = size
 
     plot(x_values, y_values)
 
