@@ -30,11 +30,10 @@ int	get_index_by_size(size_t size)
 	int		index;
 
 	if (size <= TINY_BLOCKSIZE_MAX)
-	{
 		index = (size >> 4) - 2;
-	} 
 	else
 		index = largebin_index(size);
+	
 	if (index < 0)
 		index = 0;
 	if (index > 63)
@@ -112,6 +111,7 @@ void	*freelist_takeout(t_magazine *magazine, size_t size)
 	if (!chunk)
 		return (NULL);
 	freelist_pop(magazine->freelist, chunk);
+
 	remainder = remaindering(chunk, size, magazine->type);
 	if (remainder)
 		freelist_add(magazine->freelist, remainder);
