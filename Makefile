@@ -36,7 +36,7 @@ VPATH	:= srcs srcs/utils
 
 NAME	= libft_malloc_$(HOSTTYPE).so
 CC		:= gcc
-CFLAGS	= -Wall -Wextra -Werror -D FD=2 
+CFLAGS	= -Wall -Wextra -Werror -D FD=2
 INCLUDES:= -I includes -I $(LIBFT) -I $(PRINTF) -I .
 LIBS	:= -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
 
@@ -63,6 +63,10 @@ ifdef BONUS
 	VPATH	+= srcs/bonus
 	CFLAGS	+= -D BONUS
 	LIBS	+= -ldl
+endif
+
+ifdef DEBUG
+	CFLAGS	+= -g
 endif
 
 # ---------------------------------------------------------------------------- #
@@ -105,6 +109,10 @@ re	: fclean ## Run fclean and all
 .PHONY	: bonus
 bonus	: ## (bonus) Run bonus compilation, make fclean required for the first time
 	make BONUS=1
+
+.PHONY	: debug
+debug	: ## (debug) Compile with debug flag -g, make fclean required for the first time
+	make DEBUG=1
 
 # ---------------------------------------------------------------------------- #
 #                                ADVANCED RULES                                #
