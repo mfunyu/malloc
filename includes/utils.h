@@ -22,8 +22,8 @@ void	*remaindering(t_malloc_chunk *current, size_t size_req, e_size type);
 void	*extend_region(t_magazine *magazine);
 
 /* error.c */
-void	*error_null(char *error_msg);
-int		error_ret(char *error_msg, int ret);
-void	error_msg(char *error_msg);
+void	*print_error_ret_null(char *error_msg);
+int		print_error_ret_value(char *error_msg, int ret);
+void	print_error_ret(char *error_msg);
 
 #endif /* UTILS_H */

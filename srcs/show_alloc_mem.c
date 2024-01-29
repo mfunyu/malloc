@@ -61,7 +61,7 @@ void	show_alloc_mem()
 	size_t	total;
 
 	if (!g_malloc.is_initialized)
-		return (error_msg("ShowAllocMem: malloc is not initialized")) ;
+		return (print_error_ret("ShowAllocMem: malloc is not initialized")) ;
 	total = 0;
 	total += _print_malloc_simple("TINY", g_malloc.tiny_magazine);
 	total += _print_malloc_simple("SMALL", g_malloc.small_magazine);

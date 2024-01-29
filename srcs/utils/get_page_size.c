@@ -9,6 +9,6 @@ int		get_page_size()
 		return (page_size);
 	page_size = getpagesize();
 	if (page_size == -1)
-		return (error_ret("getpagesize failed", -1));
+		return (print_error_ret_value("getpagesize failed", -1));
 	return (page_size);
 }

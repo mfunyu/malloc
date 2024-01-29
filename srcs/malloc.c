@@ -68,9 +68,11 @@ void	*malloc(size_t size)
 # ifdef BONUS
 	alloc_debug(__func__, __builtin_return_address(0), size);
 # endif
+
 	ptr = malloc_(size);
 	if (ptr == NULL)
 		errno = ENOMEM;
+
 # ifdef BONUS
 	debug_result(ptr);
 # endif

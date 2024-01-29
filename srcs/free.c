@@ -14,7 +14,7 @@ static void	_free_alloc(t_magazine *magazine, t_malloc_chunk *chunk)
 	t_malloc_chunk	*next;
 
 	if (!is_allocated_hint(chunk, magazine->type))
-		return (error_msg("pointer being freed was not allocated"));
+		return (print_error_ret("pointer being freed was not allocated"));
 	chunk->size &= ~ALLOCED;
 # ifdef BONUS
 	chunk = consolidation(magazine, chunk);
@@ -40,10 +40,10 @@ static void	_free_mmap(t_mmap_chunk **alloced_lst, t_mmap_chunk *chunk)
 		if (lst->next == chunk)
 			lst->next = chunk->next;
 		else
-			return (error_msg("pointer being freed was not allocated"));
+			return (print_error_ret("pointer being freed was not allocated"));
 	}
 	if (munmap(chunk, CHUNKSIZE(chunk)))
-		return (error_msg("munmap failed"));
+		return (print_error_ret("munmap failed"));
 }
 
 void	free_(void *ptr)
@@ -53,7 +53,7 @@ void	free_(void *ptr)
 
 	chunk = CHUNK(ptr);
 	if (((uintptr_t)chunk & (TINY_QUANTUM - 1)))
-		return (error_msg("Non-aligned pointer being freed"));
+		return (print_error_ret("Non-aligned pointer being freed"));
 	size = CHUNKSIZE(chunk);
 	if (IS_MAPPED(chunk))
 		_free_mmap(&(g_malloc.large_allocations), (t_mmap_chunk *)chunk);
@@ -62,7 +62,7 @@ void	free_(void *ptr)
 	else if (!((uintptr_t)chunk & (SMALL_QUANTUM - 1)))
 		_free_alloc(&(g_malloc.small_magazine), chunk);
 	else
-		return (error_msg("pointer being freed was not allocated"));
+		return (print_error_ret("pointer being freed was not allocated"));
 }
 
 void	free(void *ptr)
