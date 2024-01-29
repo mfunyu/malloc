@@ -20,12 +20,12 @@ static void	_print_unused(t_malloc_chunk *chunk)
 	size_t			i;
 
 	print_line('-');
-	print_row_ptr(&(chunk->next), "next");
+	print_row_ptr(&(chunk->fd), "fd");
 	print_line('-');
-	print_row_ptr(&(chunk->prev), "prev");
+	print_row_ptr(&(chunk->bk), "bk");
 	if (CHUNKSIZE(chunk) > 32) {
 		print_line('-');
-		print_row((void *)&(chunk->prev) + 8, NULL, NULL);
+		print_row((void *)&(chunk->bk) + 8, NULL, NULL);
 		print_first_col(NULL);
 		i = CHUNKSIZE(chunk) - 32;
 		ft_printf(" [%10d (%9p)] |\n", i, i);
@@ -48,7 +48,7 @@ static void	_print_header(t_malloc_chunk *chunk)
 	if (IS_FOOTER(chunk))
 		ft_printf("%s", GRAY);
 	print_first_col(&(chunk->size));
-	ft_printf(" %8d (%9p) ", CHUNKSIZE(chunk), CHUNKSIZE(chunk));
+	ft_printf(" %8d (%9p) ", ALLOCSIZE(chunk), CHUNKSIZE(chunk));
 	ft_printf("|%c|%c| size\n", IS_ALLOCED(chunk) ? 'A' : '-', IS_PREV_IN_USE(chunk) ? 'P' : '-');
 }
 
@@ -59,7 +59,7 @@ static void	_print_other_chunk(t_malloc_chunk *chunk, bool is_footer)
 	_print_header(chunk);
 	print_line('-');
 	if (is_footer)
-		print_row_ptr(&(chunk->next), "next");
+		print_row_ptr(&(chunk->fd), "fd");
 	else
 		print_row(NULL, "(( abbriviated ))", NULL);
 	print_line('=');
@@ -105,7 +105,7 @@ void	print_malloc(t_magazine magazine, e_size type)
 			chunk = NEXTCHUNK(chunk);
 		}
 		_print_other_chunk(chunk, true);
-		region = chunk->next;
+		region = chunk->fd;
 	}
 }
 
@@ -116,17 +116,17 @@ void	print_large(t_mmap_chunk *lst)
 	{
 		print_line('=');
 		print_first_col(lst);
-		ft_printf(" %24p | next\n", lst->next);
+		ft_printf(" %24p | fd\n", lst->fd);
 		print_line('-');
 		print_first_col(&(lst->size));
-		ft_printf(" %12d (%9p) | size\n", CHUNKSIZE(lst), CHUNKSIZE(lst));
+		ft_printf(" %12d (%9p) | size\n", ALLOCSIZE(lst), CHUNKSIZE(lst));
 		if (!g_malloc.flags[SHOW_ABBR])
 		{
 			print_line('-');
 			print_row(MEM(lst), NULL, "mem");
 		}
 		print_line('=');
-		lst = lst->next;
+		lst = lst->fd;
 	}
 }
 

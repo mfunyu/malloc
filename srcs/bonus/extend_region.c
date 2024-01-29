@@ -10,7 +10,7 @@ void	*extend_region(t_magazine *magazine)
 	if (!region)
 		return (NULL);
 	footer = (void *)region + magazine->size - REGION_FOOTERSIZE;
-	footer->next = magazine->regions;
+	footer->fd = magazine->regions;
 	magazine->regions = region;
 	magazine->top = region;
 	return (region);

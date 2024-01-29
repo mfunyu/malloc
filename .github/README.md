@@ -28,8 +28,6 @@ make
  - malloc debug environment variables are enabled
  - freed memory is defragmented
 
-> ! does not work with multi-threaded programs
-
 ### compilation
   ```
   make fclean
@@ -100,7 +98,6 @@ Test no. | Name | Details
 4 | small test | `Nmalloc` : malloc as much as possible with small allocation size.
 5 | large test | `Nmalloc` : malloc as much as possible with large allocation size.
 6 | basic realloc test | `malloc -> realloc` : realloc malloced ptr with different sizes and check there contents.
-7 | freelists test | `mallocx2 -> free` : malloc twice each time and free the first one to allow them to be stored in a freelist.
 
 ## benchmark tests
 

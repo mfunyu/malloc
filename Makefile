@@ -15,9 +15,7 @@ SRCS	:= malloc.c \
 SRCS	+= alignment.c \
 			get_page_size.c \
 			mmap_by_size.c \
-			is_allocated.c \
 			error.c \
-			extend_region.c \
 			remaindering.c \
 			freelist.c
 
@@ -36,7 +34,7 @@ VPATH	:= srcs srcs/utils
 
 NAME	= libft_malloc_$(HOSTTYPE).so
 CC		:= gcc
-CFLAGS	= -Wall -Wextra -Werror -D FD=2
+CFLAGS	= -Wall -Wextra -Werror -D FD=2 
 INCLUDES:= -I includes -I $(LIBFT) -I $(PRINTF) -I .
 LIBS	:= -L$(LIBFT) -lft -L$(PRINTF) -lftprintf
 
@@ -58,15 +56,11 @@ ifdef BONUS
 				show_alloc_mem_ex.c \
 				print_alloc.c \
 				show_freelist.c \
+				extend_region.c \
 				consolidation.c \
 				debug.c
 	VPATH	+= srcs/bonus
 	CFLAGS	+= -D BONUS
-	LIBS	+= -ldl
-endif
-
-ifdef DEBUG
-	CFLAGS	+= -g
 endif
 
 # ---------------------------------------------------------------------------- #
@@ -103,16 +97,11 @@ fclean	: clean g_clean t_clean c_clean ## Delete all executables, object files, 
 	$(RM) $(NAME) libft_malloc.so .env
 
 .PHONY	: re
-re	: fclean ## Run fclean and all
-	$(MAKE) all
+re	: fclean all ## Run fclean and all
 
 .PHONY	: bonus
 bonus	: ## (bonus) Run bonus compilation, make fclean required for the first time
 	make BONUS=1
-
-.PHONY	: debug
-debug	: ## (debug) Compile with debug flag -g, make fclean required for the first time
-	make DEBUG=1
 
 # ---------------------------------------------------------------------------- #
 #                                ADVANCED RULES                                #
@@ -167,7 +156,7 @@ g_clean	:
 CHECKDIR = $(TESTDIR)/check
 
 .PHONY	: check 
-check	:  ## (test) Compile files under ./test/check directory
+check	: all ## (test) Compile files under ./test/check directory
 	gcc -o $(CHECKDIR)/c_free $(CHECKDIR)/c_free.c
 	gcc -o $(CHECKDIR)/c_malloc $(CHECKDIR)/c_malloc.c
 	gcc -o $(CHECKDIR)/c_realloc $(CHECKDIR)/c_realloc.c

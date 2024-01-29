@@ -12,7 +12,7 @@ static size_t	_print_large_simple(t_mmap_chunk *lst)
 		ft_printf("LARGE : %p\n", lst);
 		ft_printf("%p ~ %p : %zu bytes\n", MEM(lst), MEM(lst) + CHUNKSIZE(lst), CHUNKSIZE(lst));
 		sum += CHUNKSIZE(lst);
-		lst = lst->next;
+		lst = lst->fd;
 	}
 	return (sum);
 }
@@ -51,7 +51,7 @@ static size_t	_print_malloc_simple(char *zone, t_magazine magazine)
 		ft_printf("%s : %p\n", zone, region);
 		sum += _print_region_simple(region);
 		footer = (void *)region + magazine.size - REGION_FOOTERSIZE;
-		region = footer->next;
+		region = footer->fd;
 	}
 	return (sum);
 }

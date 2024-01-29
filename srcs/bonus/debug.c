@@ -28,6 +28,7 @@ void	free_debug(void *ret_addr, void *ptr)
 		return ;
 	print_caller("free", ret_addr);
 	ft_printf("free(%p)", ptr);
+	ft_printf("\n");
 }
 
 void	realloc_debug(void *ret_addr, void *ptr, size_t size)
@@ -42,8 +43,5 @@ void	debug_result(void *ptr)
 {
 	if (!g_malloc.flags[DEBUG])
 		return ;
-	if (!ptr)
-		ft_printf(" -> terminated\n");
-	else
-		ft_printf(" = %p\n", ptr);
+	ft_printf(" = %p\n", ptr);
 }

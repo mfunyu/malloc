@@ -27,35 +27,27 @@ static void	_print_single_line()
 	ft_putchar_fd('\n', FILENO);
 }
 
-static int	_smallbin_index_size(size_t index)
+static int	_largebin_index_size(size_t index)
 {
-	if (index <= 31)
-		return (1 << 9);
-	if (index <= 36)
-		return (1 << 10);
-	if (index <= 41)
-		return (1 << 11);
-	if (index <= 44)
-		return (1 << 12);
-	if (index <= 48)
-		return (1 << 13);
-	if (index <= 52)
-		return (1 << 14);
-	if (index <= 55)
-		return (1 << 15);
-	if (index <= 59)
-		return (1 << 16);
-	return (1 << 17);
+	if (index <= 97)
+		return ((index - 48) << 6);
+	if (index <= 112)
+		return ((index - 91) << 9);
+	if (index <= 120)
+		return ((index - 110) << 12);
+	if (index <= 124)
+		return ((index - 119) << 15);
+	return ((index - 124) << 18);
 }
 
-static int	_get_size_by_index(size_t index, e_size type)
+static int	_get_size_by_index(size_t index)
 {
 	size_t	size;
 
-	if (type == TINY)
-		size = (index + 2) << 4;
-	else if (type == SMALL)
-		size = _smallbin_index_size(index);
+	if (index < 64)
+		size = index << 4;
+	else
+		size = _largebin_index_size(index);
 	return (size);
 }
 
@@ -63,27 +55,24 @@ void	show_freelist(t_magazine magazine)
 {
 	t_malloc_chunk	*lst;
 	size_t			size;
-	int				cnt;
 
 	ft_printf("< FreeList >\n");
 
 	_print_single_line();
-	for (size_t i = 0; i < 64; i++)
+	for (size_t i = 2; i < 128; i++)
 	{
 		lst = magazine.freelist[i];
 		if (!lst)
 			continue ;
-		size = _get_size_by_index(i, magazine.type);
+		size = _get_size_by_index(i);
 		ft_printf(" [%i]", i);
 		ft_printf(" (%i) |", size);
-		cnt = 0;
 		while (lst)
 		{
 			ft_printf("-> %p |", lst);
-			lst = lst->next;
-			cnt++;
+			lst = lst->fd;
 		}
-		ft_printf(" (%d)\n", cnt);
+		ft_printf("\n");
 		_print_single_line();
 	}
 	ft_printf("\n");

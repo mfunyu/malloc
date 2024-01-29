@@ -10,12 +10,10 @@ RESET="\033[m"
 PROMPT="${CYAN}$>${RESET}"
 
 printf "${GREEN}[ Benchmark Test ]\n"
+printf "${YELLOW}This test must be run with 'make bonus' compilation\n"
 printf "${PROMPT} "
 make single_test FILENAME="test_bench.c"
-if [ $? -ne 0 ] ; then
-	printf "${RED}Error: make failed\n"
-	exit 1
-fi
+
 
 if [ $(uname) == "Darwin" ] ; then
 	export DYLD_INSERT_LIBRARIES=./libft_malloc.so DYLD_FORCE_FLAT_NAMESPACE=1
