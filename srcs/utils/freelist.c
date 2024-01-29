@@ -32,11 +32,13 @@ int	get_index_by_size(size_t size)
 	if (size <= TINY_BLOCKSIZE_MAX)
 	{
 		index = (size >> 4) - 2;
-		if (index > 63)
-			index = 63;
 	} 
 	else
 		index = largebin_index(size);
+	if (index < 0)
+		index = 0;
+	if (index > 63)
+		index = 63;
 	return (index);
 }
 
@@ -102,7 +104,7 @@ void	*freelist_takeout(t_magazine *magazine, size_t size)
 	t_malloc_chunk	*remainder;
 
 	index = get_index_by_size(size);
-	
+
 	if (magazine->type == TINY)
 		chunk = magazine->freelist[index];
 	else if (magazine->type == SMALL)
