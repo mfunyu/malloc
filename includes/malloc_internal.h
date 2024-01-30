@@ -23,10 +23,10 @@
 # define ALIGN(size, align) ((size + (align - 1)) & ~(align - 1))
 
 # define MIN_CHUNKSIZE ALIGN(sizeof(t_malloc_chunk), TINY_QUANTUM) /* 32 */
-/* total aligned chunk size for maximum size block,
-add TINY_QUANTUM because it is smaller than MIN_CHUNKSIZE and therefore possible to have a block indivisible  */
-# define TINY_BLOCKSIZE_MAX ALIGN(TINY_MAX + CHUNK_OVERHEAD, TINY_QUANTUM) + TINY_QUANTUM /* 1056 */
-# define SMALL_BLOCKSIZE_MAX ALIGN(SMALL_MAX + CHUNK_OVERHEAD, SMALL_QUANTUM)
+/* total aligned chunk size for maximum size chunk,
+add TINY_QUANTUM because it is smaller than MIN_CHUNKSIZE and therefore possible to have a chunk indivisible  */
+# define TINY_CHUNKSIZE_MAX ALIGN(TINY_MAX + CHUNK_OVERHEAD, TINY_QUANTUM) + TINY_QUANTUM /* 1056 */
+# define SMALL_CHUNKSIZE_MAX ALIGN(SMALL_MAX + CHUNK_OVERHEAD, SMALL_QUANTUM)
 
 /* chunk related sizes */
 # define CHUNK_OVERHEAD 8

@@ -3,7 +3,7 @@
 
 #include "ft_printf.h"
 
-static bool	_is_allocated_block(t_malloc_chunk *region, t_malloc_chunk *address)
+static bool	_is_allocated_chunk(t_malloc_chunk *region, t_malloc_chunk *address)
 {
 	t_malloc_chunk	*chunk;
 
@@ -22,14 +22,14 @@ static bool	_is_allocated_magazine(t_magazine *magazine, t_malloc_chunk *address
 	t_malloc_chunk	*footer;
 
 	if (magazine->regions <= address && address < magazine->top)
-		return (_is_allocated_block(magazine->regions, address));
+		return (_is_allocated_chunk(magazine->regions, address));
 
 	footer = (void *)magazine->regions + magazine->size - REGION_FOOTERSIZE;
 	for (t_malloc_chunk *region = footer->next; region; )
 	{
 		footer = (void *)region + magazine->size - REGION_FOOTERSIZE;
 		if (region <= address && address < footer)
-			return (_is_allocated_block(region, address));
+			return (_is_allocated_chunk(region, address));
 		region = footer->next;
 	}
 	return (false);

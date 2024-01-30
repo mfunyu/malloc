@@ -94,7 +94,7 @@ make
 Test no. | Name | Details
 :--:|:--:|:--
 0 | basic test | `Nmallocs -> Nfrees` : malloc multiple size in all size regions, and free them all at the end. Check most basic allocations.
-1 | basic test1 | `malloc -> free -> malloc` : malloc the exact same size region just after the free of the same size block.
+1 | basic test1 | `malloc -> free -> malloc` : malloc the exact same size region just after the free of the same size chunk.
 2 | basic test2 | `malloc -> wirte -> read` : malloc ereas and write and read from them to varify if it works.
 3 | tiny test | `Nmalloc` : malloc as much as possible with tiny allocation size.
 4 | small test | `Nmalloc` : malloc as much as possible with small allocation size.

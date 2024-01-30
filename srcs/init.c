@@ -3,7 +3,7 @@
 
 t_malloc	g_malloc;
 
-static size_t	_calc_region_size(size_t max_block_size)
+static size_t	_calc_region_size(size_t max_allocation_size)
 {
 	size_t	region_size;
 	size_t	page_size;
@@ -11,7 +11,7 @@ static size_t	_calc_region_size(size_t max_block_size)
 	page_size = get_page_size();
 	if (!page_size)
 		return (0);
-	region_size = (max_block_size + CHUNK_OVERHEAD) * MIN_ALLOCNUMS + REGION_FOOTERSIZE;
+	region_size = (max_allocation_size + CHUNK_OVERHEAD) * MIN_ALLOCNUMS + REGION_FOOTERSIZE;
 	return (ALIGN(region_size, page_size));
 }
 

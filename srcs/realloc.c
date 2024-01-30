@@ -14,7 +14,7 @@
 ** - size == 0 && ptr: the call is equivalent to free(ptr).
 ** - ptr == NULL: the call is equivalent to malloc(size), for all values of size.
 ** - ptr != NULL: it must have been returned by an earlier call to malloc(), calloc(), or  realloc().
-** - fail: If realloc() fails the original block is left untouched; it is not freed or moved.
+** - fail: If realloc() fails the original chunk is left untouched; it is not freed or moved.
 ** - success: If the area pointed to was moved, a free(ptr) is done.
 */
 
@@ -48,7 +48,7 @@ static bool	_is_chunk_extendable(t_malloc_chunk *chunk, size_t new_size, size_t 
 {
 	t_malloc_chunk	*next;
 
-	if (new_size > TINY_MAX && CHUNKSIZE(chunk) <= TINY_BLOCKSIZE_MAX) /* tiny to small */
+	if (new_size > TINY_MAX && CHUNKSIZE(chunk) <= TINY_CHUNKSIZE_MAX) /* tiny to small */
 		return (false);
 
 	next = NEXTCHUNK(chunk);

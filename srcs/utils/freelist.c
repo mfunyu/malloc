@@ -29,11 +29,11 @@ int	get_index_by_size(size_t size)
 {
 	int		index;
 
-	if (size <= TINY_BLOCKSIZE_MAX)
+	if (size <= TINY_CHUNKSIZE_MAX)
 		index = (size >> 4) - 2;
 	else
 		index = largebin_index(size);
-	
+
 	if (index < 0)
 		index = 0;
 	if (index > 63)
