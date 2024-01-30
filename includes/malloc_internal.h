@@ -12,8 +12,8 @@
 # define MALLOC_ALIGNMENT 16
 # define TINY_QUANTUM MALLOC_ALIGNMENT /* 16 */
 # define SMALL_QUANTUM 512
-# define NUMS_TINY_SLOTS 64
-# define TINY_MAX ((NUMS_TINY_SLOTS) * TINY_QUANTUM) /* 1024 */
+# define NUM_FREELIST_SLOTS 64
+# define TINY_MAX ((NUM_FREELIST_SLOTS) * TINY_QUANTUM) /* 1024 */
 # define SMALL_MAX 127 * 8192 /* 1040384 */
 # define MIN_ALLOCNUMS 100
 
@@ -22,15 +22,19 @@
 
 # define ALIGN(size, align) ((size + (align - 1)) & ~(align - 1))
 
-# define MIN_CHUNKSIZE ALIGN(CHUNK_HEADERSIZE + 1, TINY_QUANTUM) /* 32 */
+# define MIN_CHUNKSIZE ALIGN(sizeof(t_malloc_chunk), TINY_QUANTUM) /* 32 */
+/* total aligned chunk size for maximum size block,
+add TINY_QUANTUM because it is smaller than MIN_CHUNKSIZE and therefore possible to have a block indivisible  */
 # define TINY_BLOCKSIZE_MAX ALIGN(TINY_MAX + CHUNK_OVERHEAD, TINY_QUANTUM) + TINY_QUANTUM /* 1056 */
 # define SMALL_BLOCKSIZE_MAX ALIGN(SMALL_MAX + CHUNK_OVERHEAD, SMALL_QUANTUM)
 
+/* chunk related sizes */
 # define CHUNK_OVERHEAD 8
 # define CHUNK_HEADERSIZE 16
 # define REGION_FOOTERSIZE ALIGN(sizeof(t_malloc_footer), MALLOC_ALIGNMENT)
 # define LARGE_HEADERSIZE sizeof(t_mmap_chunk)
 
+/* chunk related calculations */
 # define CHUNK(ptr) ((void *)ptr - CHUNK_HEADERSIZE)
 # define MEM(chunk) ((void *)chunk + CHUNK_HEADERSIZE)
 # define IS_PREV_IN_USE(chunk) (chunk->size & PREV_IN_USE)
@@ -49,7 +53,7 @@ typedef enum s_bitflag
 	PREV_IN_USE = 1 << 0,	// 1
 	ALLOCED = 1 << 1,		// 2
 	MAPPED = 1 << 2,		// 4
-	ALL = 1 << 3			// 8 (for manage flags) 
+	ALL = 1 << 3			// 8 (for manage flags)
 }			e_bitflag;
 
 typedef enum s_size
