@@ -3,7 +3,7 @@
 
 t_malloc	g_malloc;
 
-static size_t	_calc_region_size(size_t max_block_size)
+static size_t	_calc_region_size(size_t max_allocation_size)
 {
 	size_t	region_size;
 	size_t	page_size;
@@ -11,7 +11,7 @@ static size_t	_calc_region_size(size_t max_block_size)
 	page_size = get_page_size();
 	if (!page_size)
 		return (0);
-	region_size = (max_block_size + CHUNK_OVERHEAD) * MIN_ALLOCNUMS + REGION_FOOTERSIZE;
+	region_size = (max_allocation_size + CHUNK_OVERHEAD) * MIN_ALLOCNUMS + REGION_FOOTERSIZE;
 	return (ALIGN(region_size, page_size));
 }
 
@@ -57,20 +57,12 @@ static int	_init_magazine(t_magazine *magazine, e_size type)
 	return (0);
 }
 
-static int	_init_validations()
-{
-	if ((MALLOC_ALIGNMENT & (MALLOC_ALIGNMENT - 1)) != 0)
-		return (error_ret("malloc alignment should be a power of two", -1));
-	return (0);
-}
-
 int		init_malloc()
 {
-	if (_init_validations() == -1)
-		return (-1);
 # ifdef BONUS
 	set_flags_from_environment();
 # endif
+
 	if (_init_magazine(&(g_malloc.tiny_magazine), TINY) == -1)
 		return (-1);
 	if (_init_magazine(&(g_malloc.small_magazine), SMALL) == -1)

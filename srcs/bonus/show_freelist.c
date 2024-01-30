@@ -79,7 +79,7 @@ void	show_freelist(t_magazine magazine)
 		cnt = 0;
 		while (lst)
 		{
-			ft_printf("-> %p |", lst);
+			ft_printf("-> %p (%zu)|", lst, CHUNKSIZE(lst));
 			lst = lst->next;
 			cnt++;
 		}

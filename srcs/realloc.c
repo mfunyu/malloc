@@ -14,7 +14,7 @@
 ** - size == 0 && ptr: the call is equivalent to free(ptr).
 ** - ptr == NULL: the call is equivalent to malloc(size), for all values of size.
 ** - ptr != NULL: it must have been returned by an earlier call to malloc(), calloc(), or  realloc().
-** - fail: If realloc() fails the original block is left untouched; it is not freed or moved.
+** - fail: If realloc() fails the original chunk is left untouched; it is not freed or moved.
 ** - success: If the area pointed to was moved, a free(ptr) is done.
 */
 
@@ -48,7 +48,7 @@ static bool	_is_chunk_extendable(t_malloc_chunk *chunk, size_t new_size, size_t 
 {
 	t_malloc_chunk	*next;
 
-	if (new_size > TINY_MAX && CHUNKSIZE(chunk) <= TINY_BLOCKSIZE_MAX) /* tiny to small */
+	if (new_size > TINY_MAX && CHUNKSIZE(chunk) <= TINY_CHUNKSIZE_MAX) /* tiny to small */
 		return (false);
 
 	next = NEXTCHUNK(chunk);
@@ -64,7 +64,7 @@ static int	_realloc_check(t_magazine *magazine, t_malloc_chunk *chunk, size_t ne
 	size_t	chunk_size;
 
 	if (!is_allocated_hint(chunk, magazine->type))
-		return (error_ret("pointer being realloc'd was not allocated", -1));
+		return (print_error_ret_value("pointer being realloc'd was not allocated", -1));
 	if (ALLOCSIZE(chunk) >= new_size)
 		return (true);
 	chunk_size = align_malloc(new_size, magazine->type);
@@ -86,7 +86,7 @@ void	*realloc_(void *ptr, size_t new_size)
 		return (NULL);
 	chunk = CHUNK(ptr);
 	if (((uintptr_t)chunk & (TINY_QUANTUM - 1)))
-		return (error_null("pointer being realloc'd was not allocated"));
+		return (print_error_ret_null("pointer being realloc'd was not allocated"));
 
 	if (new_size <= TINY_MAX)
 		ret = _realloc_check(&(g_malloc.tiny_magazine), chunk, new_size);

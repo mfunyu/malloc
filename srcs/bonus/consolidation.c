@@ -32,9 +32,9 @@ t_malloc_chunk	*consolidation(t_magazine *magazine, t_malloc_chunk *chunk)
 
 	max = 0;
 	if (magazine->type == TINY)
-		max = TINY_BLOCKSIZE_MAX;
+		max = TINY_CHUNKSIZE_MAX;
 	else if (magazine->type == SMALL)
-		max = SMALL_BLOCKSIZE_MAX;
+		max = SMALL_CHUNKSIZE_MAX;
 
 	if (!IS_ALLOCED(NEXTCHUNK(chunk)) &&
 			NEXTCHUNK(chunk)->size + CHUNKSIZE(chunk) <= max)
